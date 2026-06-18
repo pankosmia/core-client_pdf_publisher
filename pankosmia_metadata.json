@@ -1,9 +1,11 @@
 {
-  "id": "contenthandler-template",
+  "id": "core-client_pdf_publisher",
+  "minServerVersion": "0.16.1",
   "require": {
     "net": false,
-    "debug": true
+    "debug": false
   },
+
   "i18n": {
     "title": {
       "en": "contenthandler-template"
@@ -13,6 +15,104 @@
     },
     "stub_content": {
       "en": "Content goes here"
+    },
+    "choose_layout": {
+      "en": "Choose layout"
+    },
+    "choose_documents": {
+      "en": "Choose document(s)"
+    },
+    "configure_section": {
+      "en": "Configure section"
+    },
+    "add_section": {
+      "en": "New section"
+    },
+    "edit_section": {
+      "en": "Edit section"
+    },
+    "markdownSection": {
+      "en": "Simple formatting"
+    },
+    "pdfSection": {
+      "en": "Import PDF"
+    },
+    "paraBibleSection": {
+      "en": "Formatted Bible"
+    },
+    "bcvBibleSection": {
+      "en": "Bible by verse"
+    },
+    "twoColumnSection": {
+      "en": "Two Bibles in two columns"
+    },
+    "jxlSimpleSection": {
+      "en": "Juxtalinear"
+    },
+    "bookNoteSection": {
+      "en": "Book introduction"
+    },
+    "biblePlusNotesSection": {
+      "en": "Notes focus(by verse)"
+    },
+    "notesOnlySection": {
+      "en": "Notes only"
+    },
+    "fourColumnSpreadSection": {
+      "en": "Four Bibles on facing pages"
+    },
+    "jxlSpreadSection": {
+      "en": "Juxtalinear on facing pages"
+    },
+    "obsSection": {
+      "en": "Obs"
+    },
+    "obsPlusNotesSection": {
+      "en": "Obs with notes "
+    },
+    "free_format": {
+      "en": "Free-format content"
+    },
+    "one-page-bible": {
+      "en": "One-page Bible"
+    },
+    "one-page-notes": {
+      "en": "One-page notes"
+    },
+    "double-page": {
+      "en": "Double-page spread"
+    },
+    "obs": {
+      "en": "Obs"
+    },
+    "selectRessourceForBook": {
+      "en": "Please select resources first to load available book ranges.",
+      "fr": "Sélectionnez des ressources avant de pouvoir choisir les livres"
+    },
+    "noOverlap": {
+      "en": "Your ressources containt no Book in commun",
+      "fr": "Vos ressources ne contiennent aucun livre en commun"
+    },
+    "multipleSelection": {
+      "en": "Multiple layouts",
+      "fr": "Layouts muliple"
+    },
+    "multipleSelectionDescription": {
+      "en": "Select several layouts, they will be cycled through for each selected book of the Bible",
+      "fr": "Sélectionner plusieurs layour, ils seront cycle pour chaque libre sélectionné"
+    },
+    "print": {
+      "en": "Print",
+      "fr": "Imprimer"
+    },
+    "pdf_sections": {
+      "en": "PDF sections"
+    },
+    "general_setting": {
+      "en": "General settings"
+    },
+    "remember_save": {
+      "en": "Remember to save your project"
     }
   }
 }

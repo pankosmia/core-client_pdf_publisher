@@ -1,0 +1,61 @@
+export const bcv_bible_page_styles = `%%%ATPAGE%%%
+
+%%%BODY%%%
+
+%%%P%%%
+
+%%%H1%%%
+
+.cvCol {
+    font-weight: bold;
+    width: %CVCOLUMNWIDTH%pt;
+    font-size: %%FOOTNOTEFONTSIZE%%pt;
+    line-height: %%BODYLINEHEIGHT%%pt;
+}
+.verseContent {
+    display: inline-block;
+    width: %VERSECOLUMNWIDTH%pt;
+    vertical-align: top;
+}
+
+.verseRecord {
+    page-break-inside: avoid;
+    vertical-align: top;
+    display: flex;
+}
+
+::footnote-call {
+    content: none;
+}
+
+::footnote-marker {
+    content: none;
+}
+
+.note {
+    font-family: %%BODYFONT2%%;
+    font-size: %%BODYFONTSIZE%%pt;
+    line-height: %%BODYLINEHEIGHT%%pt;
+    text-align: left;
+    float: footnote;
+    margin-bottom: 0pt;
+    padding-left: 6pt;
+    text-indent: -6pt;
+    font-family: %%FOOTNOTEFONT%%;
+}
+
+.note_n {
+    font-weight: bold;
+    font-size: 6pt;
+    vertical-align: top;
+}
+
+.note .b {
+    font-weight: bold;
+}
+
+.cv {
+    font-weight: bold;
+    font-size: %%FOOTNOTEFONTSIZE%%pt;
+    line-height: %%BODYLINEHEIGHT%%pt;
+}`;

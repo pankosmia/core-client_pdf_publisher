@@ -1,0 +1,65 @@
+export const two_col_page_styles = `%%%ATPAGE%%%
+
+%%%BODY%%%
+
+%%%P%%%
+
+%%%H1%%%
+
+%%%TWOCOL%%%
+
+.verseRecord {
+    page-break-inside: avoid;
+    vertical-align: top;
+    display: flex;
+}
+
+.col1, .col2 {
+    vertical-align: top;
+    display: inline-block;
+    width: %%2COLUMNWIDTH%%pt;
+    text-align: justify;
+}
+
+.col2 {
+    margin-right: 12pt;
+    text-indent: 1em;
+}
+
+.cv {
+    font-style: italic;
+    font-weight: bold;
+}
+
+::footnote-call {
+    content: none;
+}
+
+::footnote-marker {
+    content: none;
+}
+
+.note {
+    font-size: %%FOOTNOTEFONTSIZE%%pt;
+    line-height: %%FOOTNOTELINEHEIGHT%%pt;
+    text-align: justify;
+    float: footnote;
+    margin-bottom: 0pt;
+    padding-left: 6pt;
+    text-indent: -6pt;
+    font-family: %%FOOTNOTEFONT%%;
+}
+
+.not_first_note {
+    padding-left: 12pt;
+}
+
+.note_n {
+    font-weight: bold;
+    font-size: 6pt;
+    vertical-align: top;
+}
+
+.note .b {
+    font-weight: bold;
+}`;

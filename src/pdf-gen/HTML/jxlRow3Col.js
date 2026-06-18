@@ -1,0 +1,4 @@
+export const jxlRow3Col = `<tr>
+    <td class="%%SOURCECLASS%%"><span class="sourceContent">%%SOURCE%%</span> <span class="jxlMorph">%%VERBS%%</span></td>
+    <td class="jxlGloss3Col">%%GLOSS%%%%NOTECALLERS%%</td>
+</tr>`;
