@@ -1,4 +1,9 @@
-import { PanDialog, i18nContext, PanStepperPicker } from "pankosmia-rcl";
+import {
+  PanDialog,
+  i18nContext,
+  PanStepperPicker,
+  debugContext,
+} from "pankosmia-rcl";
 
 import { DialogContent, Box } from "@mui/material";
 import { useState, useContext, useEffect, cloneElement } from "react";
@@ -9,16 +14,19 @@ import { conversionSection } from "../../pdf-gen/helpers/constants";
 import { RessourceSelection } from "./Sections/RessourceSelection";
 import { ConfigSection } from "./Sections/ConfigSection";
 import { BRangesPicker } from "./Sections/BRangesPicker";
-
+import { getJson } from "pithekos-lib";
 export function ContentDialogue({
   type,
   setWrapper,
   initSection,
   indexSection,
   ButtonToPress,
+  wrapperName,
+  openFromOutside = 0,
+  onCloseFromOutise = null,
 }) {
   const { i18nRef } = useContext(i18nContext);
-
+  const { debugRef } = useContext(debugContext);
   const [currentSectionsSignature, setCurrentSectionsSignature] = useState([]);
   const [currentSections, setCurrentSections] = useState([]);
   const [bRanges, setBRanges] = useState([]);
@@ -28,6 +36,7 @@ export function ContentDialogue({
     useState(false);
   const [isRessourcesStep3Complete, setIsRessourcesStep3Complete] =
     useState(false);
+  const [summary, setSummary] = useState({});
 
   const steps = [
     doI18n("pages:core-client_pdf_publisher:choose_layout", i18nRef.current),
@@ -37,6 +46,12 @@ export function ContentDialogue({
       i18nRef.current,
     ),
   ];
+  useEffect(() => {
+    if (openFromOutside >= 1) {
+      setOpen(true);
+    }
+  }, [openFromOutside]);
+
   const isStepValid = (step) => {
     switch (step) {
       case 0:
@@ -50,6 +65,16 @@ export function ContentDialogue({
     }
   };
   console.log(currentSections);
+  useEffect(() => {
+    const getProjectSummaries = async () => {
+      let summariesResponse = await getJson(
+        "/api/burrito/metadata/summaries",
+        debugRef.current,
+      );
+      setSummary(summariesResponse.json);
+    };
+    getProjectSummaries();
+  }, []);
 
   useEffect(() => {
     if (open) {
@@ -72,12 +97,18 @@ export function ContentDialogue({
       case 0:
         return (
           <>
-            <BRangesPicker
-              bRanges={bRanges}
-              setBRanges={setBRanges}
-              currentSections={currentSections}
-            />
+            {wrapperName === "bcvWrapper" ? (
+              <BRangesPicker
+                bRanges={bRanges}
+                setBRanges={setBRanges}
+                currentSections={currentSections}
+              />
+            ) : (
+              <></>
+            )}
+
             <SelectSection
+              wrapperName={wrapperName}
               currentSections={currentSections}
               setCurrentSections={setCurrentSections}
             />
@@ -91,6 +122,7 @@ export function ContentDialogue({
             setCurrentSections={setCurrentSections}
             currentSectionsSignature={currentSectionsSignature}
             setIsRessourcesStepComplete={setIsRessourcesStep2Complete}
+            summary={summary}
           />
         );
       case 2:
@@ -123,15 +155,21 @@ export function ContentDialogue({
   return (
     <Box>
       <>
-        {cloneElement(ButtonToPress, {
-          onClick: () => setOpen(true),
-        })}
+        {ButtonToPress &&
+          cloneElement(ButtonToPress, {
+            onClick: () => setOpen(true),
+          })}
       </>
 
       <PanDialog
         fullWidth={true}
         isOpen={open}
-        closeFn={() => setOpen(false)}
+        closeFn={() => {
+          setOpen(false);
+          if (onCloseFromOutise) {
+            onCloseFromOutise();
+          }
+        }}
         size="md"
         titleLabel={
           type === "edit"
@@ -190,6 +228,9 @@ export function ContentDialogue({
                 setCurrentSections([]);
                 setCurrentSectionsSignature([]);
                 setOpen(false);
+                if (onCloseFromOutise) {
+                  onCloseFromOutise();
+                }
               }
             }}
           />

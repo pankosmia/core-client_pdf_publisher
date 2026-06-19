@@ -12,7 +12,7 @@ export default function Bcv(props) {
       }}
       viewBox="0 0 72 72"
     >
-      <g clipPath="url(#clip0_1567_23062)" id="BcvBible">
+      <g id="BcvBible">
         <rect
           x="32.5"
           y="14"

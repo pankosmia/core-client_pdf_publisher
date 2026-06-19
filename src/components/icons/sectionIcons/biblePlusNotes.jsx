@@ -12,7 +12,7 @@ export default function BiblePlusNotes(props) {
       }}
       viewBox="0 0 72 72"
     >
-      <g clipPath="url(#clip0_1567_23056)" id="BiblePlusNotes">
+      <g id="BiblePlusNotes">
         <rect
           x="32.5"
           y="14"

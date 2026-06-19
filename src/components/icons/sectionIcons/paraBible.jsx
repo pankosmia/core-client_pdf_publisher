@@ -12,7 +12,7 @@ export default function ParaBible(props) {
       }}
       viewBox="0 0 72 72"
     >
-      <g clipPath="url(#clip0_1567_23065)" id="ParaBible">
+      <g id="ParaBible">
         <rect
           x="32.5"
           y="14"

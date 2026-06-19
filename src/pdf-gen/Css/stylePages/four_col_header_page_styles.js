@@ -11,7 +11,7 @@ export const four_col_header_page_styles = `%%%ATDOUBLEPAGEHEADER%%%
 .col1, .col2, .col3, .col4 {
     vertical-align: top;
     display: inline-block;
-    width: %%2COLUMNWIDTH%%pt;
+    width: %%TWOCOLUMNWIDTH%%pt;
     text-align: justify;
 }
 

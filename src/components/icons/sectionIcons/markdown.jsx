@@ -12,7 +12,7 @@ export default function Markdown(props) {
       }}
       viewBox="0 0 72 72"
     >
-      <g clipPath="url(#clip0_1567_23064)" id="Markdown">
+      <g id="Markdown">
         <rect
           x="32.5"
           y="14"

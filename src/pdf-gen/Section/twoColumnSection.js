@@ -17,7 +17,7 @@ export class twoColumnSection extends Section {
 
   signature() {
     return {
-      sectionType: "2Column",
+      sectionType: "twoColumn",
       requiresWrapper: this.requiresWrapper(),
       fields: [
         {

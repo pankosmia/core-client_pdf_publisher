@@ -12,7 +12,7 @@ export default function BookNote(props) {
       }}
       viewBox="0 0 72 72"
     >
-      <g clipPath="url(#clip0_1567_23063)" id="BookNote">
+      <g id="BookNote">
         <rect
           x="32.5"
           y="14"

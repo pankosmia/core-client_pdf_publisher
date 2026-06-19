@@ -98,8 +98,8 @@
       "fr": "Layouts muliple"
     },
     "multipleSelectionDescription": {
-      "en": "Select several layouts, they will be cycled through for each selected book of the Bible",
-      "fr": "Sélectionner plusieurs layour, ils seront cycle pour chaque libre sélectionné"
+      "en": "You can assemble several layouts, they will be cycled through for each selected book of the section.",
+      "fr": "Vous pouvez assemblez plusieurs layouts, ils seront cicler pour chaque livre de chaque section"
     },
     "print": {
       "en": "Print",
@@ -113,6 +113,22 @@
     },
     "remember_save": {
       "en": "Remember to save your project"
+    },
+    "bcvWrapper": {
+      "en": "Bible books"
+    },
+    "obsWrapper": {
+      "en": "Open Bible Stories"
+    },
+    "markdownWrapper": {
+      "en": "Markdown file"
+    },
+    "pdfWrapper": {
+      "en": "PDF file"
+    },
+    "selectRessource": {
+      "en": "Select resource",
+      "fr": "Selectionner ressource"
     }
   }
 }

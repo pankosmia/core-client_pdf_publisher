@@ -24,6 +24,8 @@ import {
   Accordion,
   AccordionDetails,
   Chip,
+  SpeedDial,
+  SpeedDialAction,
 } from "@mui/material";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import "react-pdf/dist/Page/AnnotationLayer.css";
@@ -45,9 +47,7 @@ import {
 import Arrow from "../components/utils/arrow";
 import ArrowLeft from "../components/utils/arrow";
 import { sectionHandlerLookup } from "../pdf-gen/sectionHandlerLookup";
-// import localForage from 'localforage';
-// import readLocalResources from '@/components/Resources/useReadLocalResources';
-// import packageInfo from '../../../../package.json';
+import FloatingTextMenu from "../components/SpeedDial/FloatingTextMenu";
 
 const allowedSelected = [
   "md",
@@ -63,42 +63,7 @@ const allowedSelected = [
   "scriptureSrc",
 ];
 
-export function findProjectInfo(meta, autoGrapha) {
-  return autoGrapha?.filter((a) => a.path === meta)[0];
-}
-
-function summariesToProjects(summaries) {
-  return Object.entries(summaries).map(([key, value]) => {
-    const parts = key.split("/");
-    const id = parts[parts.length - 1];
-
-    return {
-      path: key,
-      bookId: value.book_codes || "",
-      name: value.name,
-      id,
-      type: mapFlavorToType(value.flavor),
-    };
-  });
-}
-
-function mapFlavorToType(flavor) {
-  if (flavor === "textTranslation") return "Text Translation";
-  if (flavor === "x-juxtalinear") return "Juxtalinear";
-  if (flavor === "textStories") return "OBS";
-  return "Unknown";
-}
-
 export function PdfPublisher() {
-  const [listResourcesForPdf, setListResourcesForPdf] = useState({
-    book: {},
-    jxl: {},
-    md: {},
-    html: {},
-    OBS: {},
-    tNotes: {},
-    "OBS-TN": {},
-  });
   const { debugRef } = useContext(debugContext);
   const { i18nRef } = useContext(i18nContext);
   // fake selected project
@@ -132,6 +97,11 @@ export function PdfPublisher() {
     verbose: [true, false],
   };
 
+  const actionsSpeedDial = [
+    { name: "Bcv", onClick: () => console.log("Edit") },
+    { name: "Simple", onClick: () => console.log("Duplicate") },
+    { name: "Obs", onClick: () => console.log("Delete") },
+  ];
   // the selected headerInfo
   const [headerInfo, setHeaderInfo] = useState(
     '{"sizes":"9on11","fonts":"allGentium","pages":"EXECUTIVE", "verbose":false}',
@@ -243,7 +213,7 @@ export function PdfPublisher() {
 
     setWrappers(newOrder);
   };
-
+  console.log(wrappers);
   return (
     <Box>
       <Header
@@ -409,6 +379,8 @@ export function PdfPublisher() {
                                     flexWrap: "wrap",
                                     padding: 2,
                                     gap: 1,
+                                    width: "100%",
+                                    justifyContent: "start",
                                   }}
                                 >
                                   {w.ranges.map((book, idss) => (
@@ -528,6 +500,7 @@ export function PdfPublisher() {
                                   flexDirection: "row",
                                   alignItems: "center",
                                   justifyContent: "flex-end",
+                                  width: "100%",
                                   gap: 1,
                                 }}
                               >
@@ -535,6 +508,7 @@ export function PdfPublisher() {
                                   type={"edit"}
                                   initSection={wrappers[id]}
                                   setWrapper={setWrappers}
+                                  wrapperName={wrappers[id].type}
                                   indexSection={id}
                                   ButtonToPress={
                                     <IconButton>
@@ -558,18 +532,19 @@ export function PdfPublisher() {
               )}
             </Droppable>
           </DragDropContext>
-          <ContentDialogue
+          <FloatingTextMenu i18nRef={i18nRef} setWrappers={setWrappers} />
+          {/* <ContentDialogue
             type={"add"}
             setWrapper={setWrappers}
             ButtonToPress={
-              <Button variant="contained" startIcon={<Add />}>
+              <Button variant="contained" startIcon={}>
                 {doI18n(
                   `pages:core-client_pdf_publisher:add_section`,
                   i18nRef.current,
                 )}
               </Button>
             }
-          />
+          /> */}
         </Box>
         <Box
           sx={{

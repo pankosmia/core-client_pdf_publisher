@@ -4,7 +4,7 @@ export const TWOCOL = `h2.verseRecordHeadLeft, h2.verseRecordHeadRight {
     font-style: italic;
     font-weight: bold;
     margin: 0;
-    width: %%2COLUMNWIDTH%%pt;
+    width: %%TWOCOLUMNWIDTH%%pt;
     font-family: %%HEADINGFONT%%;
 }
 
@@ -18,13 +18,13 @@ h2.verseRecordHeadRight {
 
 .leftColumn {
     display: inline-block;
-    width: %%2COLUMNWIDTH%%pt;
+    width: %%TWOCOLUMNWIDTH%%pt;
     vertical-align: top;
     margin-right: %%HALFCOLUMNGAP%%pt;
 }
 
 .rightColumn {
-    width: %%2COLUMNWIDTH%%pt;
+    width: %%TWOCOLUMNWIDTH%%pt;
     height: 100%;
     display: inline-block;
     vertical-align: top;

@@ -12,7 +12,7 @@ export default function Obs(props) {
       }}
       viewBox="0 0 72 72"
     >
-      <g clipPath="url(#clip0_1567_23057)" id="Obs">
+      <g id="Obs">
         <rect
           x="32.5"
           y="14"

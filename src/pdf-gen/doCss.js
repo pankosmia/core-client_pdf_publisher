@@ -154,7 +154,10 @@ export async function setupCSS(options) {
       ],
       ["COLUMNGAP", pageFormat.columnGap[spaceOption]],
       ["HALFCOLUMNGAP", pageFormat.columnGap[spaceOption] / 2],
-      ["2COLUMNWIDTH", (pageBodyWidth - pageFormat.columnGap[spaceOption]) / 2],
+      [
+        "TWOCOLUMNWIDTH",
+        (pageBodyWidth - pageFormat.columnGap[spaceOption]) / 2,
+      ],
       [
         "3COLUMNWIDTH",
         (pageBodyWidth - pageFormat.columnGap[spaceOption] * 2) / 3,

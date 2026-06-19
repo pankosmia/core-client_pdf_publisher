@@ -12,7 +12,7 @@ export default function FourColumn(props) {
       }}
       viewBox="0 0 72 72"
     >
-      <g clipPath="url(#clip0_1567_23066)" id="FourColumn">
+      <g id="FourColumn">
         <rect
           x="5.5"
           y="14"
@@ -25,7 +25,7 @@ export default function FourColumn(props) {
         <line x1="9" y1="27" x2="14" y2="27" stroke="black" strokeWidth="4" />
         <line x1="22" y1="20" x2="30" y2="20" stroke="black" strokeWidth="4" />
         <line x1="22" y1="27" x2="27" y2="27" stroke="black" strokeWidth="4" />
-        <g clipPath="url(#clip1_1567_23066)">
+        <g>
           <path d="M13 52H29V54H13V52ZM13 56H23V58H13V56Z" fill="black" />
           <path
             d="M11.6773 53.44V54H9.6023V53.44H10.3023V51.6025C10.3023 51.5558 10.3031 51.5092 10.3048 51.4625C10.3065 51.4142 10.309 51.3658 10.3123 51.3175L9.8973 51.6625C9.86064 51.6908 9.82397 51.7083 9.7873 51.715C9.7523 51.72 9.71897 51.72 9.6873 51.715C9.65564 51.7083 9.6273 51.6975 9.6023 51.6825C9.5773 51.6658 9.55897 51.6492 9.5473 51.6325L9.3023 51.3075L10.4373 50.355H11.0773V53.44H11.6773Z"
@@ -33,7 +33,7 @@ export default function FourColumn(props) {
           />
         </g>
       </g>
-      <g clipPath="url(#clip2_1567_23066)">
+      <g>
         <rect
           x="38.5"
           y="14"

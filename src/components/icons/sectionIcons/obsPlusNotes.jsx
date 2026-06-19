@@ -12,7 +12,7 @@ export default function ObsPlusNotes(props) {
       }}
       viewBox="0 0 72 72"
     >
-      <g clipPath="url(#clip0_1567_23058)" id="ObsPlusNotes">
+      <g id="ObsPlusNotes">
         <rect
           x="32.5"
           y="14"
@@ -27,7 +27,7 @@ export default function ObsPlusNotes(props) {
         />
         <line x1="36" y1="20" x2="44" y2="20" stroke="black" strokeWidth="4" />
         <line x1="36" y1="27" x2="41" y2="27" stroke="black" strokeWidth="4" />
-        <g clipPath="url(#clip1_1567_23058)">
+        <g>
           <path d="M40 34H56V36H40V34ZM40 38H50V40H40V38Z" fill="black" />
           <path
             d="M38.6773 35.44V36H36.6023V35.44H37.3023V33.6025C37.3023 33.5558 37.3031 33.5092 37.3048 33.4625C37.3065 33.4142 37.309 33.3658 37.3123 33.3175L36.8973 33.6625C36.8606 33.6908 36.824 33.7083 36.7873 33.715C36.7523 33.72 36.719 33.72 36.6873 33.715C36.6556 33.7083 36.6273 33.6975 36.6023 33.6825C36.5773 33.6658 36.559 33.6492 36.5473 33.6325L36.3023 33.3075L37.4373 32.355H38.0773V35.44H38.6773Z"

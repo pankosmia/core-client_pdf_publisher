@@ -23,7 +23,7 @@ export function BRangesPicker({ bRanges, setBRanges, currentSections }) {
 
   useEffect(() => {
     if (bRanges?.length) {
-      setSelectedBooks(bRanges);
+      setSelectedBooks(bRanges.map((b) => b.toUpperCase()));
     }
   }, [bRanges]);
 
@@ -42,11 +42,16 @@ export function BRangesPicker({ bRanges, setBRanges, currentSections }) {
   }, [booksOption]);
 
   const toggleBook = (book) => {
-    setSelectedBooks((prev) => {
-      const exists = prev.includes(book);
-      const updated = exists ? prev.filter((b) => b !== book) : [...prev, book];
+    const normalized = book.toUpperCase();
 
-      setBRanges(updated);
+    setSelectedBooks((prev) => {
+      const exists = prev.includes(normalized);
+
+      const updated = exists
+        ? prev.filter((b) => b !== normalized)
+        : [...prev, normalized];
+
+      setBRanges(updated); // <- NO mapping here anymore
       return updated;
     });
   };
@@ -74,7 +79,12 @@ export function BRangesPicker({ bRanges, setBRanges, currentSections }) {
         updated = prev.filter((b) => !groupBooks.includes(b));
       } else {
         // select group
-        updated = [...new Set([...prev, ...groupBooks])];
+        updated = [
+          ...new Set([
+            ...prev,
+            ...groupBooks.map((element) => element.toUpperCase()),
+          ]),
+        ];
       }
 
       setBRanges(updated);
@@ -82,7 +92,9 @@ export function BRangesPicker({ bRanges, setBRanges, currentSections }) {
     });
   };
   const isGroupSelected = (groupKey) =>
-    BOOK_GROUPS[groupKey]?.every((b) => selectedBooks.includes(b));
+    BOOK_GROUPS[groupKey]?.every((b) =>
+      selectedBooks.includes(b.toUpperCase()),
+    );
   return (
     <Card sx={{ mt: 2, p: 2 }}>
       <CardContent sx={{ padding: 0 }}>
@@ -106,12 +118,18 @@ export function BRangesPicker({ bRanges, setBRanges, currentSections }) {
 
             return (
               <Chip
-                key={bookKey}
-                label={label}
+                key={bookKey.toUpperCase()}
+                label={bookKey.toUpperCase()}
                 clickable
-                color={selectedBooks.includes(bookKey) ? "primary" : "default"}
+                color={
+                  selectedBooks.includes(bookKey.toUpperCase())
+                    ? "primary"
+                    : "default"
+                }
                 variant={
-                  selectedBooks.includes(bookKey) ? "filled" : "outlined"
+                  selectedBooks.includes(bookKey.toUpperCase())
+                    ? "filled"
+                    : "outlined"
                 }
                 onClick={() => toggleBook(bookKey)}
               />

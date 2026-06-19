@@ -35,16 +35,19 @@ export const constants = {
 };
 
 export const sectionsTypes = {
-  free_format: ["markdownSection", "pdfSection"],
-  "one-page-bible": [
-    "bcvBibleSection",
-    "jxlSimpleSection",
-    "paraBibleSection",
-    "twoColumnSection",
-  ],
-  "one-page-notes": ["bookNoteSection", "biblePlusNotesSection"],
-  "double-page": ["fourColumnSpreadSection", "jxlSpreadSection"],
-  // obs: ["obsSection", "obsPlusNotesSection"],
+  pdfWrapper: { free_format: ["pdfSection"] },
+  markdownWrapper: { free_format: ["markdownSection"] },
+  bcvWrapper: {
+    "one-page-bible": [
+      "bcvBibleSection",
+      "jxlSimpleSection",
+      "paraBibleSection",
+      "twoColumnSection",
+    ],
+    "one-page-notes": ["bookNoteSection", "biblePlusNotesSection"],
+    "double-page": ["fourColumnSpreadSection", "jxlSpreadSection"],
+  },
+  obsWrapper: { obs: ["obsSection", "obsPlusNotesSection"] },
 };
 
 export const iconBySection = {

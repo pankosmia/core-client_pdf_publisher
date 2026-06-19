@@ -17,10 +17,10 @@
     "sections": {
       "front": {},
       "bookNote": {},
-      "4ColumnSpread": {},
+      "fourColumnSpread": {},
       "jxlSpread": {},
       "jxlSimple": {},
-      "2Column": {},
+      "twoColumn": {},
       "bcvBible": {
         "cssValues": [
           ["CVCOLUMNWIDTH", [24]],
@@ -52,10 +52,10 @@
     "sections": {
       "front": {},
       "bookNote": {},
-      "4ColumnSpread": {},
+      "fourColumnSpread": {},
       "jxlSpread": {},
       "jxlSimple": {},
-      "2Column": {},
+      "twoColumn": {},
       "bcvBible": {
         "cssValues": [
           ["CVCOLUMNWIDTH", [50]],
@@ -87,10 +87,10 @@
     "sections": {
       "front": {},
       "bookNote": {},
-      "4ColumnSpread": {},
+      "fourColumnSpread": {},
       "jxlSpread": {},
       "jxlSimple": {},
-      "2Column": {},
+      "twoColumn": {},
       "bcvBible": {
         "cssValues": [
           ["CVCOLUMNWIDTH", [50]],
@@ -122,10 +122,10 @@
     "sections": {
       "front": {},
       "bookNote": {},
-      "4ColumnSpread": {},
+      "fourColumnSpread": {},
       "jxlSpread": {},
       "jxlSimple": {},
-      "2Column": {},
+      "twoColumn": {},
       "bcvBible": {
         "cssValues": [
           ["CVCOLUMNWIDTH", [70]],
@@ -157,10 +157,10 @@
     "sections": {
       "front": {},
       "bookNote": {},
-      "4ColumnSpread": {},
+      "fourColumnSpread": {},
       "jxlSpread": {},
       "jxlSimple": {},
-      "2Column": {},
+      "twoColumn": {},
       "bcvBible": {
         "cssValues": [
           ["CVCOLUMNWIDTH", [35]],
@@ -192,10 +192,10 @@
     "sections": {
       "front": {},
       "bookNote": {},
-      "4ColumnSpread": {},
+      "fourColumnSpread": {},
       "jxlSpread": {},
       "jxlSimple": {},
-      "2Column": {},
+      "twoColumn": {},
       "bcvBible": {
         "cssValues": [
           ["CVCOLUMNWIDTH", [25]],
@@ -227,10 +227,10 @@
     "sections": {
       "front": {},
       "bookNote": {},
-      "4ColumnSpread": {},
+      "fourColumnSpread": {},
       "jxlSpread": {},
       "jxlSimple": {},
-      "2Column": {},
+      "twoColumn": {},
       "bcvBible": {
         "cssValues": [
           ["CVCOLUMNWIDTH", [25]],

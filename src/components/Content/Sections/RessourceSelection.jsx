@@ -1,9 +1,20 @@
-import { Box, Button, Card, CardContent, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Divider,
+  Typography,
+} from "@mui/material";
 import AddScriptureModal from "../AddScriptureModal";
 import { convertionTypes } from "../../../pdf-gen/helpers/constants";
 import { useState, useEffect, useContext } from "react";
-import { getJson } from "pithekos-lib";
+import { doI18n, getJson } from "pithekos-lib";
 import { debugContext, i18nContext } from "pankosmia-rcl";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import { iconBySection } from "../../../pdf-gen/helpers/constants";
+import { Done, DragIndicator } from "@mui/icons-material";
+
 const allowedSelected = [
   "md",
   "pdf",
@@ -25,23 +36,12 @@ export function RessourceSelection({
   setIsRessourcesStepComplete,
   bRanges,
   card = true,
+  summary,
 }) {
   let { debugRef } = useContext(debugContext);
   let { i18nRef } = useContext(i18nContext);
   const [lang, setlang] = useState("");
-  const [typeSpec, setTypeSpec] = useState([{}]);
-  const [summary, setSummary] = useState(null);
 
-  useEffect(() => {
-    const getProjectSummaries = async () => {
-      let summariesResponse = await getJson(
-        "/api/burrito/metadata/summaries",
-        debugRef.current,
-      );
-      setSummary(summariesResponse.json);
-    };
-    getProjectSummaries();
-  }, []);
   useEffect(() => {
     async function getLang() {
       let langs = await getJson(`/api/settings/languages`);
@@ -78,11 +78,11 @@ export function RessourceSelection({
                 allowedSelected.includes(k2),
               );
               inRessources.forEach(([k2, v2]) => {
-                book.push(summary[v2].book_codes);
+                book.push(summary?.[v2]?.book_codes);
               });
             });
           } else {
-            book.push(summary[v].book_codes);
+            book.push(summary?.[v]?.book_codes);
           }
         });
       });
@@ -93,113 +93,238 @@ export function RessourceSelection({
       }
     }
   }, [summary, currentSections]);
-  return (
-    <Box>
-      {currentSectionsSignature.map((e, id) => {
-        const Wrapper = card ? Card : Box;
-        const ContentWrapper = card ? CardContent : Box;
-        return (
-          <Wrapper sx={{ mt: 2 }} key={id}>
-            <ContentWrapper>
-              <Box>
-                {e.fields
-                  .filter((f) => allowedSelected.includes(f.id))
-                  .map((f, ids) => {
-                    const isRequired = f?.nValues[0] >= 1;
-                    if (f.typeSpec) {
-                      const nInstances = f?.nValues?.[0] ?? 1;
 
-                      return Array.from({ length: nInstances }).map((_, i) => {
-                        // Read/write this instance's data from currentSections[id][f.id][i]
-                        const instanceData =
-                          currentSections?.[id]?.[f.id]?.[i] ?? {};
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
 
-                        const setInstanceData = (updater) => {
-                          setCurrentSections((prev) => {
-                            const copy = prev.map((s) => ({ ...s }));
-                            if (!copy[id]) copy[id] = {};
+    const sourceIndex = result.source.index;
+    const destinationIndex = result.destination.index;
 
-                            const fieldArr = [...(copy[id][f.id] || [])];
-                            const prevInstance = fieldArr[i] ?? {};
+    if (sourceIndex === destinationIndex) return;
 
-                            // Child calls setCurrentSections(prev => { let copy = [...prev]; copy[0][f.id] = src; return copy })
-                            // So we simulate that: pass [prevInstance] as the "prev", get back the updated array, take index 0
-                            if (typeof updater === "function") {
-                              const fakeArr = [prevInstance];
-                              const result = updater(fakeArr);
-                              fieldArr[i] = result[0];
-                            } else {
-                              fieldArr[i] = updater[0] ?? updater;
-                            }
+    setCurrentSections((prev) => {
+      const copy = [...prev];
+      const [removed] = copy.splice(sourceIndex, 1);
+      copy.splice(destinationIndex, 0, removed);
+      return copy;
+    });
+  };
 
-                            copy[id] = { ...copy[id], [f.id]: fieldArr };
-                            return copy;
-                          });
-                        };
+  const renderSection = (e, id) => {
+    return (
+      <Box>
+        {e.fields
+          .filter((f) => allowedSelected.includes(f.id))
+          .map((f, ids) => {
+            const isRequired = f?.nValues[0] >= 1;
+            if (f.typeSpec) {
+              const nInstances = f?.nValues?.[0] ?? 1;
 
-                        return (
-                          <Box>
-                            <Typography sx={{ fontWeight: "bold" }}>
-                              {f.label[lang]} {i + 1}
-                            </Typography>
-                            <RessourceSelection
-                              key={i}
-                              currentSectionsSignature={[
-                                { fields: f.typeSpec },
-                              ]}
-                              currentSections={[instanceData]}
-                              setCurrentSections={setInstanceData}
-                              setIsRessourcesStepComplete={
-                                setIsRessourcesStepComplete
-                              }
-                              card={false}
-                            />
-                          </Box>
-                        );
-                      });
+              return Array.from({ length: nInstances }).map((_, i) => {
+                // Read/write this instance's data from currentSections[id][f.id][i]
+                const instanceData = currentSections?.[id]?.[f.id]?.[i] ?? {};
+
+                const setInstanceData = (updater) => {
+                  setCurrentSections((prev) => {
+                    const copy = prev.map((s) => ({ ...s }));
+                    if (!copy[id]) copy[id] = {};
+
+                    const fieldArr = [...(copy[id][f.id] || [])];
+                    const prevInstance = fieldArr[i] ?? {};
+
+                    // Child calls setCurrentSections(prev => { let copy = [...prev]; copy[0][f.id] = src; return copy })
+                    // So we simulate that: pass [prevInstance] as the "prev", get back the updated array, take index 0
+                    if (typeof updater === "function") {
+                      const fakeArr = [prevInstance];
+                      const result = updater(fakeArr);
+                      fieldArr[i] = result[0];
                     } else {
-                      return (
-                        <Box
-                          key={ids}
+                      fieldArr[i] = updater[0] ?? updater;
+                    }
+
+                    copy[id] = { ...copy[id], [f.id]: fieldArr };
+                    return copy;
+                  });
+                };
+
+                return (
+                  <Box>
+                    <RessourceSelection
+                      key={i}
+                      currentSectionsSignature={[{ fields: f.typeSpec }]}
+                      currentSections={[instanceData]}
+                      setCurrentSections={setInstanceData}
+                      setIsRessourcesStepComplete={setIsRessourcesStepComplete}
+                      card={false}
+                      summary={summary}
+                    />
+                  </Box>
+                );
+              });
+            } else {
+              return (
+                <Box
+                  key={ids}
+                  sx={{
+                    m: 2,
+                    gap: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <Typography sx={{ fontWeight: "bold" }}>
+                    {f.label[lang]}
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 2,
+                      }}
+                    >
+                      {currentSections?.[id]?.[f.id] ? (
+                        <Typography
                           sx={{
-                            m: 2,
                             display: "flex",
-                            flexDirection: "row",
                             alignItems: "center",
+                            gap: 0.5,
                           }}
                         >
-                          <Typography>
-                            {f.label[lang]}
-                            {isRequired && (
-                              <span style={{ color: "red", marginLeft: 4 }}>
-                                *
-                              </span>
-                            )}
-                            {currentSections?.[id]?.[f.id]
-                              ? ` : ${currentSections[id][f.id]}`
-                              : ``}
-                          </Typography>
-                          <Box sx={{ ml: "auto" }}>
-                            <AddScriptureModal
-                              ChangeInSection={(src) =>
-                                setCurrentSections((prev) => {
-                                  let copy = [...prev];
-                                  copy[id][f.id] = src;
-                                  return copy;
-                                })
-                              }
-                              type={convertionTypes[f.id]}
-                            />
-                          </Box>
-                        </Box>
-                      );
-                    }
-                  })}
+                          <Done fontSize="small" />
+                          {summary?.[currentSections[id][f.id]]?.name}
+                          {isRequired && (
+                            <span style={{ color: "black", marginLeft: 4 }}>
+                              *
+                            </span>
+                          )}
+                        </Typography>
+                      ) : (
+                        <Typography>
+                          {doI18n(
+                            `pages:core-client_pdf_publisher:selectRessource`,
+                            i18nRef.current,
+                          )}
+                          {isRequired && (
+                            <span style={{ color: "black", marginLeft: 4 }}>
+                              *
+                            </span>
+                          )}
+                        </Typography>
+                      )}
+                    </Box>
+
+                    <Box sx={{ ml: "auto" }}>
+                      <AddScriptureModal
+                        ChangeInSection={(src) =>
+                          setCurrentSections((prev) => {
+                            let copy = [...prev];
+                            copy[id][f.id] = src;
+                            return copy;
+                          })
+                        }
+                        type={convertionTypes[f.id]}
+                      />
+                    </Box>
+                  </Box>
+                </Box>
+              );
+            }
+          })}
+      </Box>
+    );
+  };
+
+  return (
+    <Box>
+      {card ? (
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="resources-sections">
+            {(provided) => (
+              <Box ref={provided.innerRef} {...provided.droppableProps}>
+                {currentSectionsSignature.map((e, id) => {
+                  const Icon = iconBySection[e.sectionType + "Section"];
+                  return (
+                    <Draggable
+                      key={`${currentSections[id].id}`}
+                      draggableId={`${currentSections[id].id}`}
+                      index={id}
+                    >
+                      {(provided) => (
+                        <Card
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          sx={{ mb: 2 }}
+                        >
+                          <CardContent>
+                            <Box>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  flexDirection: "row",
+                                  padding: 2,
+                                  gap: 1,
+                                }}
+                              >
+                                <Box
+                                  {...provided.dragHandleProps}
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    mr: 1,
+                                    cursor: "grab",
+                                  }}
+                                >
+                                  <DragIndicator />
+                                </Box>
+                                <Box
+                                  sx={{
+                                    width: 48,
+                                    minWidth: 48,
+                                    height: 48,
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  <Icon sx={{ fontSize: 48 }} />
+                                </Box>
+                                <Typography sx={{ alignContent: "center" }}>
+                                  {doI18n(
+                                    `pages:core-client_pdf_publisher:${e.sectionType + "Section"}`,
+                                    i18nRef.current,
+                                  )}
+                                </Typography>
+                              </Box>
+
+                              <Divider sx={{ width: "100%" }} />
+                              {renderSection(e, id)}
+                            </Box>
+                          </CardContent>
+                        </Card>
+                      )}
+                    </Draggable>
+                  );
+                })}
+
+                {provided.placeholder}
               </Box>
-            </ContentWrapper>
-          </Wrapper>
-        );
-      })}
+            )}
+          </Droppable>
+        </DragDropContext>
+      ) : (
+        currentSectionsSignature.map((e, id) => (
+          <Box key={id}>{renderSection(e, id)}</Box>
+        ))
+      )}
     </Box>
   );
 }

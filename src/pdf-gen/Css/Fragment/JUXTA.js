@@ -1,5 +1,5 @@
 export const JUXTA = `.jxlGreek {
-    width: %%2COLUMNWIDTH%%pt;
+    width: %%TWOCOLUMNWIDTH%%pt;
     text-align: right;
     line-height: %%BODYLINEHEIGHT%%pt;
     font-size: %%BODYFONTSIZE%%pt;
@@ -11,7 +11,7 @@ export const JUXTA = `.jxlGreek {
 }
 
 .jxlGreek3Col {
-    width: %%2COLUMNWIDTH%%pt;
+    width: %%TWOCOLUMNWIDTH%%pt;
     text-align: right;
     line-height: %%BODYLINEHEIGHT%%pt;
     font-size: %%BODYFONTSIZE%%pt;
@@ -23,7 +23,7 @@ export const JUXTA = `.jxlGreek {
 }
 
 .jxlHebrew {
-    width: %%2COLUMNWIDTH%%pt;
+    width: %%TWOCOLUMNWIDTH%%pt;
     text-align: right;
     line-height: %%BODYLINEHEIGHT%%pt;
     font-size: %%BODYFONTSIZE%%pt;
@@ -35,7 +35,7 @@ export const JUXTA = `.jxlGreek {
 }
 
 .jxlGloss {
-    width: %%2COLUMNWIDTH%%pt;
+    width: %%TWOCOLUMNWIDTH%%pt;
     line-height: %%BODYLINEHEIGHT%%pt;
     font-size: %%BODYFONTSIZE%%pt;
     vertical-align: baseline;
@@ -44,7 +44,7 @@ export const JUXTA = `.jxlGreek {
 }
 
 .jxlGloss3Col {
-    width: %%2COLUMNWIDTH%%pt;
+    width: %%TWOCOLUMNWIDTH%%pt;
     line-height: %%BODYLINEHEIGHT%%pt;
     font-size: %%BODYFONTSIZE%%pt;
     vertical-align: baseline;

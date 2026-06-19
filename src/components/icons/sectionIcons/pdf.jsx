@@ -12,7 +12,7 @@ export default function Pdf(props) {
       }}
       viewBox="0 0 72 72"
     >
-      <g clipPath="url(#clip0_4850_14413)">
+      <g>
         <rect
           x="32.5"
           y="14"
@@ -22,7 +22,7 @@ export default function Pdf(props) {
           strokeOpacity="0.87"
           strokeWidth="4"
         />
-        <g clipPath="url(#clip1_4850_14413)">
+        <g>
           <path
             d="M54.5 30H46.5L44.5 28H38.5C37.4 28 36.51 28.9 36.51 30L36.5 42C36.5 43.1 37.4 44 38.5 44H54.5C55.6 44 56.5 43.1 56.5 42V32C56.5 30.9 55.6 30 54.5 30ZM54.5 42H38.5V30H43.67L45.67 32H54.5V42ZM43.91 38.42L45.5 36.84V41H47.5V36.84L49.09 38.43L50.5 37.01L46.51 33L42.5 37.01L43.91 38.42Z"
             fill="black"
