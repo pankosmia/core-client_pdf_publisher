@@ -1,0 +1,65 @@
+export const four_col_page_styles = `%%%ATDOUBLEPAGE%%%
+
+@page :first {
+    margin-top: %%FIRSTPAGEMARGINTOP%%pt;
+}
+
+%%%BODY%%%
+
+%%%P%%%
+
+%%%H1%%%
+
+%%%FOURCOL%%%
+
+.col1, .col2, .col3, .col4 {
+    vertical-align: top;
+    display: inline-block;
+    width: %%TWOCOLUMNWIDTH%%pt;
+    text-align: justify;
+}
+
+.col1, .col3 {
+    margin-right: 12pt;
+}
+.col2, .col3, .col4 {
+    text-indent: 1em;
+}
+
+::footnote-call {
+    content: none;
+}
+
+::footnote-marker {
+    content: none;
+}
+
+.note {
+    font-size: %%FOOTNOTEFONTSIZE%%pt;
+    line-height: %%FOOTNOTELINEHEIGHT%%pt;
+    text-align: justify;
+    float: footnote;
+    margin-bottom: 0pt;
+    padding-left: 6pt;
+    text-indent: -6pt;
+    font-family: %%FOOTNOTEFONT%%;
+}
+
+.not_first_note {
+    padding-left: 12pt;
+}
+
+.note_n {
+    font-weight: bold;
+    font-size: 6pt;
+    vertical-align: top;
+}
+
+.note .b {
+    font-weight: bold;
+}
+
+.cv {
+    font-style: italic;
+    font-size: 80%;
+}`;

@@ -1,0 +1,166 @@
+import { marked } from "marked";
+import DOMPurify from "isomorphic-dompurify";
+import { Section } from "./section";
+import { getJson } from "pithekos-lib";
+import { getCssFromLookUp, toTemp } from "../helpers/PankosmiaUtils";
+
+export class obsSection extends Section {
+  requiresWrapper() {
+    return ["obs"];
+  }
+
+  signature() {
+    return {
+      sectionType: "obs",
+      requiresWrapper: this.requiresWrapper(),
+      fields: [
+        {
+          id: "startOn",
+          label: {
+            en: "Start Page Side",
+            fr: "Côté pour première page",
+          },
+          typeEnum: [
+            {
+              id: "recto",
+              label: {
+                en: "Recto",
+                fr: "Recto",
+              },
+            },
+            {
+              id: "verso",
+              label: {
+                en: "Verso",
+                fr: "Verso",
+              },
+            },
+            {
+              id: "either",
+              label: {
+                en: "Next Page",
+                fr: "Page suivante",
+              },
+            },
+          ],
+          nValues: [1, 1],
+          suggestedDefault: "recto",
+        },
+        {
+          id: "showPageNumber",
+          label: {
+            en: "Show Page Number",
+            fr: "Afficher numéro de page",
+          },
+          typeName: "boolean",
+          nValues: [1, 1],
+          suggestedDefault: true,
+        },
+        {
+          id: "obsImg",
+          label: {
+            en: "OBS Source Images",
+            fr: "Source pour images OBS",
+          },
+          typeName: "obsImg",
+          nValues: [1, 1],
+        },
+        {
+          id: "obs",
+          label: {
+            en: "OBS Source",
+            fr: "Source pour OBS",
+          },
+          typeName: "obs",
+          nValues: [1, 1],
+        },
+      ],
+    };
+  }
+
+  async doSection({ section, templates, manifest, options }) {
+    let isFirst = true;
+    let stories = (
+      await getJson(
+        `/api/burrito/ingredients/raw/${section.content.obs}?ipath=content`,
+      )
+    ).json;
+    let mkdStories = Object.keys(stories).filter((e) => e.includes(".md"));
+    for (const mdName of mkdStories) {
+      const [name, suffix] = mdName.split(".");
+      if (suffix !== "md" || !parseInt(name)) {
+        continue;
+      }
+      if (section.firstStory && parseInt(name) < section.firstStory) {
+        continue;
+      }
+      if (section.lastStory && parseInt(name) > section.lastStory) {
+        continue;
+      }
+      let markdown = DOMPurify.sanitize(
+        marked.parse(stories[mdName].toString()),
+      );
+
+      const imagesLinks = [
+        ...markdown.matchAll(/!\[OBS Image\]\(([^)]+)\)/g),
+      ].map((match) => match[1]);
+
+      let imgRepo = (
+        await getJson(`/api/burrito/paths/${section.content.obsImg}`)
+      ).json;
+
+      imagesLinks.map((e) => {
+        let replacedValue = e;
+        let splited = e.split("/")[e.split("/").length - 1].split("-");
+        let obsNumber = splited[2];
+        let obsImgNumber = splited[3];
+        let path = imgRepo.find((e) =>
+          e.includes(`${obsNumber}-${obsImgNumber}`),
+        );
+        let link = `/burrito/ingredient/bytes/${section.content.obsImg}?ipath=${path}`;
+        replacedValue = replacedValue.replace(
+          /!\[OBS Image\]\([^)]+\)/g,
+          `![OBS Image not found](${link})`,
+        );
+        return (e, replacedValue);
+      });
+
+      imagesLinks.forEach((tup) => markdown.replace(tup[0], tup[1]));
+
+      const server = window.location.origin;
+      let srcPolyfill = `${server}/api/app-resources/pdf/paged.polyfill.js`;
+      let html = templates["obs_page"]
+        .replace("%%POLYFY%%", srcPolyfill)
+        .replace(
+          "%%TITLE%%",
+          `${section.id.replace("%%bookCode%%", name)} - ${section.type}`,
+        )
+        .replace("%%BODY%%", markdown)
+        .replace(
+          "%%CSS%%",
+          await getCssFromLookUp(options.cssLookUp, "obs_page_styles"),
+        );
+
+      let uuidHtml = await toTemp(html);
+      //   section.doPdfCallback &&
+      //     section.doPdfCallback({
+      //       type: "pdf",
+      //       level: 3,
+      //       msg: `Originating PDF ${path.join(options.pdfPath, `${section.id}_${name}.pdf}`)} for OBS story '${mdName}'`,
+      //       args: [
+      //         `${path.join(options.pdfPath, `${section.id}_${name}.pdf`)}`,
+      //         mdName,
+      //       ],
+      //     });
+      let pdfUuid = await window.api.generatePdf(uuidHtml);
+      manifest.push({
+        id: pdfUuid,
+        type: section.type,
+        startOn: isFirst ? section.content.startOn : "either",
+        showPageNumber: section.content.showPageNumber,
+        makeFromDouble: false,
+      });
+      isFirst = false;
+    }
+  }
+}

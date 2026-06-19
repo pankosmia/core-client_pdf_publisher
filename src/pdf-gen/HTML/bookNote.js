@@ -1,0 +1,6 @@
+export const bookNote = `<section class="bookNote">
+    <h1>%%NOTETITLE%%</h1>
+    <section class="bookNoteBody">
+        %%NOTEBODY%%
+    </section>
+</section>`;

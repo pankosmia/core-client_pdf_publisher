@@ -1,0 +1,149 @@
+export const juxta_page_styles = `%%%ATDOUBLEPAGE%%%
+
+%%%BODY%%%
+
+%%%P%%%
+
+%%%H1%%%
+
+%%%JUXTA%%%
+
+.greekLeft {
+    font-family: %%GREEKFONT%%;
+}
+
+h2.phraseN {
+    font-size: %%H4FONTSIZE%%pt;
+    line-height: %%DOUBLEBODYLINEHEIGHT%%pt;
+    font-style: italic;
+    font-weight: normal;
+    margin: 0;
+    width: %%PAGEBODYWIDTH%%pt;
+    text-align: left;
+    font-family: %%HEADINGFONT%%;
+}
+
+h2.sentenceRef {
+    font-size: %%H4FONTSIZE%%pt;
+    line-height: %%DOUBLEBODYLINEHEIGHT%%pt;
+    font-style: italic;
+    font-weight: normal;
+    margin: 0;
+    width: %%PAGEBODYWIDTH%%pt;
+    text-align: right;
+    font-family: %%HEADINGFONT%%;
+}
+
+.transAbbr {
+    font-family: %%BODYFONT%%;
+    font-weight: bold;
+    padding-right: 4pt;
+}
+
+.leftPane {
+    display: inline-block;
+    width: %%PAGEBODYWIDTH%%pt;
+    vertical-align: top;
+    margin-right: %%MARGININNER%%pt;
+}
+
+.rightPane {
+    width: %%PAGEBODYWIDTH%%pt;
+    height: 100%;
+    display: inline-block;
+    vertical-align: top;
+    margin-left: %%MARGININNER%%pt;
+}
+
+.rightPane table {
+    width: %%PAGEBODYWIDTH%%pt;
+    border-collapse: collapse;
+}
+
+.sentence {
+    string-set: sentenceN attr(data-n), cvRef attr(data-cv);
+    page-break-inside: avoid;
+    vertical-align: top;
+}
+
+.firstLeft, .otherLeft {
+    text-align: left;
+    margin-bottom: %%BODYFONT%%pt;
+    padding-left: 6pt;
+    text-indent: -6pt;
+}
+
+.chapterNote {
+    page-break-inside: avoid;
+    break-before: page;
+    padding-bottom: %%DOUBLEBODYLINEHEIGHT%%pt;
+    font-family: "Open Sans", sans-serif;
+}
+
+.bookNote {
+    break-after: page;
+    font-family: %%BODYFONT2%%;
+}
+
+.bookNoteBody {
+    columns: 2;
+    column-gap: %%DOUBLEMARGININNER%%pt;
+}
+
+.chapterNoteBody {
+    columns: 2;
+    column-gap: %%DOUBLEMARGININNER%%pt;
+}
+
+::footnote-call {
+    font-weight: bold;
+    font-size: 0.5em;
+    vertical-align: baseline;
+    position: relative;
+    top: -0.5em;
+    padding-left: 1pt;
+    line-height: 1;
+}
+
+::footnote-marker {
+    font-weight: bold;
+    font-size: 0.8em;
+    line-height: 1;
+}
+
+.no_break::footnote-call {
+    content: none;
+}
+
+.no_break::footnote-marker {
+    content: none;
+}
+
+.note, .bcvnote {
+    font-size: %%FOOTNOTEFONTSIZE%%pt;
+    line-height: %%FOOTNOTELINEHEIGHT%%pt;
+    text-align: justify;
+    margin-bottom: 0pt;
+    padding-left: 6pt;
+    text-indent: -6pt;
+    font-family: %%FOOTNOTEFONT%%;
+}
+
+.no_break {
+float:footnote;
+text-align-last:auto !important;
+
+}
+.not_first_note {
+    padding-left: 12pt;
+}
+
+.note_n {
+    font-weight: bold;
+    font-size: 6pt;
+    vertical-align: top;
+}
+
+.note .b {
+    font-weight: bold;
+}`;

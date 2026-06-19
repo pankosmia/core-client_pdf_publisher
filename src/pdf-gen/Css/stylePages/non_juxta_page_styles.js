@@ -1,0 +1,183 @@
+export const non_juxta_page_styles = `%%%ATPAGE%%%
+
+%%%BODY%%%
+
+%%%P%%%
+
+%%%H1%%%
+
+.front {}
+
+.front_body {
+    columns: 2;
+    column-gap: 12pt;
+    text-align: left;
+}
+
+.front_body p {
+    margin-bottom: %%BODYLINEHEIGHT%%pt;
+}
+
+.front_body h2 {
+    margin-bottom: %%BODYLINEHEIGHT%%pt;
+    font-size: %%BODYFONTSIZE%%pt;
+    line-height: %%BODYLINEHEIGHT%%pt;
+    font-weight: bold;
+    font-style: italic;
+    text-align: left;
+    font-family: %%HEADINGFONT%%;
+}
+.half_page {
+    break-before: page;
+}
+.half_page h2 {
+    font-weight: bold;
+    font-family: %%HEADINGFONT%%;
+}
+.title_page {
+    text-align: center;
+    font-size: 14pt;
+    line-height: 20pt;
+}
+.title_page > h1 {
+    text-align: center;
+    font-size: 18pt;
+    border: none;
+    margin-bottom: 60pt;
+    font-family: %%HEADINGFONT%%;
+}
+
+.title_page > h3 {
+    text-align: center;
+    font-size: 14pt;
+    border: none;
+    font-family: %%HEADINGFONT%%;
+}
+
+h3.pub_details {
+    margin-top: 144pt;
+    font-weight: normal;
+    font-size: 12pt;
+    font-family: %%HEADINGFONT%%;
+}
+
+h3.pub_details2 {
+    margin-top: 288pt;
+    font-weight: normal;
+    font-size: 12pt;
+    font-family: %%HEADINGFONT%%;
+}
+
+h3.descriptif {
+    margin-bottom: 60pt;
+    font-family: %%HEADINGFONT%%;
+}
+
+p.resource {
+    margin-bottom: 18pt;
+}
+
+p.small-gap {
+    margin-bottom: 10pt;
+}
+
+.half_page .front_body {
+    margin-top: 50pt;
+    columns: 1;
+    text-align: left;
+    font-family: Courrier, monospace;
+    font-size: 8pt;
+    line-height: 10pt;
+}
+.half_page .front_body ul {
+    list-style-type: none;
+}
+.half_page .front_body ul li {
+    margin-bottom: 10pt;
+}
+.preface .front_body h2, .technologie .front_body h2 {
+    margin: 0;
+    margin-bottom: 10pt;
+    font-size: 9pt;
+    line-height: 10pt;
+    font-weight: bold;
+    font-style: italic;
+    text-align: left;
+    font-family: %%HEADINGFONT%%;
+}
+.mode_emploi {}
+
+.mode_emploi_key {
+    margin-bottom: 0;
+}
+
+.image_number {
+    font-weight: bold;
+    padding-right: 0.5em;
+}
+.mode_emploi_key p {
+    text-align: left;
+    padding-left: 1em;
+    text-indent: -1em;
+    margin-bottom: 0;
+}
+.mode_emploi_image_div {
+    columns: 1;
+    margin-top: 10pt;
+    margin-bottom: 10pt;
+}
+.mode_emploi_image {
+    width: 388pt;
+    padding: 3pt;
+    border: solid 1pt black;
+}
+.saisi_figure {
+    columns: 1;
+}
+.saisi_image_div {
+    columns: 1;
+    margin-bottom: 10pt;
+}
+.saisi_image {
+    width: 388pt;
+    padding: 3pt;
+    border: solid 1pt black;
+}
+.bookNote {
+    break-after: page;
+}
+
+.bookNoteBody {
+    columns: 1;
+}
+
+%%%FOOTNOTE%%%
+
+.exp {
+    font-size: 70%;
+    vertical-align: baseline;
+    position: relative;
+    top: -0.5em;
+}
+.hr {
+    text-align: center;
+    margin-bottom: 20pt;
+    margin-top: 10pt;
+}
+h2 {
+    -webkit-column-break-after: avoid;
+}
+ul {
+    break-inside: auto;
+}
+.technologie .front_body ul li {
+    margin-bottom: 10pt;
+}
+.matieres .front_body {
+    columns: 1;
+    font-size: 12pt;
+    line-height: 14pt;
+}
+.matieres .pageNumber {
+    float: right;
+}`;

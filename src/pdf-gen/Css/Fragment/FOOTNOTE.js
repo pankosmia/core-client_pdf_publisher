@@ -1,0 +1,77 @@
+export const FOOTNOTE = `::footnote-call {
+    font-weight: bold;
+    font-size: 0.5em;
+    vertical-align: baseline;
+    position: relative;
+    top: -0.5em;
+    padding-left: 1pt;
+    line-height: 1;
+}
+
+::footnote-marker {
+    font-weight: bold;
+    font-size: 0.8em;
+    line-height: 1;
+}
+
+.note {
+    font-size: %%FOOTNOTEFONTSIZE%%pt;
+    line-height: %%FOOTNOTELINEHEIGHT%%pt;
+    text-align: justify;
+    float: footnote;
+    margin-bottom: 0pt;
+    padding-left: 6pt;
+    text-indent: -6pt;
+    font-family: %%FOOTNOTEFONT%%;
+}
+
+.not_first_note {
+    padding-left: 12pt;
+}
+
+.note_n {
+    font-weight: bold;
+    font-size: 6pt;
+    vertical-align: top;
+}
+
+.note .b {
+    font-weight: bold;
+}
+
+.note_h2, .note_h3, .note_h4, .note_body {
+    margin-bottom: %%BODYLINEHEIGHT%%pt;
+}
+
+.note_h2, .note_h3, .note_h4 {
+    -webkit-column-break-after: avoid;
+}
+
+.note_h2 {
+    font-weight: bold;
+}
+
+.note_h3 {
+    margin-top: %%FOOTNOTELINEHEIGHT%%pt;
+    font-style: italic;
+}
+
+.note_h4 {
+    font-style: italic;
+}
+
+.note_body {
+    text-align: left;
+}
+
+.note_list1 {
+    padding-left: 1em;
+    font-weight: bold;
+}
+
+.note_list2 {
+    display: list-item;
+    list-style-type: circle;
+    list-style-position: inside;
+    padding-left: 2em;
+}`;

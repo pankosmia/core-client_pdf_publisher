@@ -1,0 +1,14 @@
+export const page_number_master_styles = `@page {
+    size: %%PAGEWIDTH%%pt %%PAGEHEIGHT%%pt;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+%%%BODY%%%
+
+.pagenum {
+    font-size: %%FOOTNOTEFONTSIZE%%pt;
+    padding-top: %%PAGENUMBERTOPMARGIN%%pt;
+    text-align: center;
+    page-break-after: always;
+}`;

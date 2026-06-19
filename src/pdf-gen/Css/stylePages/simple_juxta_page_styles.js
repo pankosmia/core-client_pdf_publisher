@@ -1,0 +1,117 @@
+export const simple_juxta_page_styles = `%%%ATPAGE%%%
+
+%%%BODY%%%
+
+%%%P%%%
+
+%%%H1%%%
+
+%%%JUXTA%%%
+
+h2.sentenceHeader {
+    font-size: %%BODYFONTSIZE%%pt;
+    line-height: %%BODYLINEHEIGHT%%pt;
+    padding-bottom: %%BODYLINEHEIGHT%%pt;
+    font-weight: bold;
+    margin: 0;
+    width: %%PAGEBODYWIDTH%%pt;
+    text-align: center;
+    font-family: %%HEADINGFONT%%;
+}
+
+.phraseN {
+    font-style: italic;
+    font-weight: normal;
+}
+
+.sentenceRef {
+}
+
+.rightPane {
+    width: %%PAGEBODYWIDTH%%pt;
+    height: 100%;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.rightPane table {
+    width: %%PAGEBODYWIDTH%%pt;
+    border-collapse: collapse;
+}
+
+.sentence {
+    string-set: sentenceN attr(data-n), cvRef attr(data-cv);
+    vertical-align: top;
+    padding-bottom: %%BODYLINEHEIGHT%%pt;
+}
+
+.chapterNote {
+    page-break-inside: avoid;
+    break-before: page;
+    padding-bottom: %%DOUBLEBODYLINEHEIGHT%%pt;
+    font-family: "Open Sans", sans-serif;
+}
+
+.bookNote {
+    break-after: page;
+    font-family: %%BODYFONT2%%;
+}
+
+.chapterNoteBody {
+    columns: 2;
+    column-gap: %%DOUBLEMARGININNER%%pt;
+}
+
+::footnote-call {
+    font-weight: bold;
+    font-size: 0.5em;
+    vertical-align: baseline;
+    position: relative;
+    top: -0.5em;
+    padding-left: 1pt;
+    line-height: 1;
+}
+
+::footnote-marker {
+    font-weight: bold;
+    font-size: 0.8em;
+    line-height: 1;
+}
+
+.no_break::footnote-call {
+    content: none;
+}
+
+.no_break::footnote-marker {
+    content: none;
+}
+
+.note, .bcvnote {
+    font-size: %%FOOTNOTEFONTSIZE%%pt;
+    line-height: %%FOOTNOTELINEHEIGHT%%pt;
+    text-align: justify;
+    margin-bottom: 0pt;
+    padding-left: 6pt;
+    text-indent: -6pt;
+    font-family: %%FOOTNOTEFONT%%;
+}
+
+.no_break {
+float:footnote;
+text-align-last:auto !important;
+
+}
+
+.not_first_note {
+    padding-left: 12pt;
+}
+
+.note_n {
+    font-weight: bold;
+    font-size: 6pt;
+    vertical-align: top;
+}
+
+.note .b {
+    font-weight: bold;
+}`;

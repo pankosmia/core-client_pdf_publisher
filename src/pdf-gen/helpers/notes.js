@@ -1,0 +1,146 @@
+import { getJson, getText } from "pithekos-lib";
+export const cleanNoteLine = (noteLine) =>
+  noteLine
+    .trim()
+    .replace(/^#+ +/, "")
+    .replace(/^-+ +/, "")
+    .replace(/\(([Pp]our|[Vv]oir)[^)]+\)/g, "")
+    .replace(/\(\[.*?\)\)/g, "")
+    .replace(/\*\*([^*]+)\*\*/g, (m, m1) => `<span class="b">${m1}</span>`)
+    .replace(/\*([^*]+)\*/g, (m, m1) => `<i>${m1}</i>`)
+    .replace(/\[(.+?)\]\(.+?\)/g, "$1");
+
+export const formatNote = (noteRecord, templates) => {
+  const noteText = noteRecord
+    .replace(/\\n/g, "\nSPLIT\n")
+    .split("\nSPLIT\n")
+    .map((l) => l.trim())
+    .map((l) => l.replace(/^\*/, "-"));
+  const noteHeading = noteText[0].replace(/^# +/, "");
+  let noteParas = [];
+  for (const noteLine of noteText.slice(1)) {
+    let paraClass = "note_body";
+    if (noteLine.startsWith("####")) {
+      paraClass = "note_h4";
+    } else if (noteLine.startsWith("###")) {
+      paraClass = "note_h3";
+    } else if (noteLine.startsWith("##")) {
+      paraClass = "note_h2";
+    } else if (noteLine.trim().startsWith("-")) {
+      paraClass = "note_list2";
+    } else if (/^[0-9]+\./.test(noteLine.trim())) {
+      paraClass = "note_list1";
+    }
+    noteParas.push(
+      templates.markdownPara
+        .replace("%%CLASS%%", paraClass)
+        .replace("%%NOTE%%", cleanNoteLine(noteLine)),
+    );
+  }
+  return [noteHeading, noteParas.join("\n")];
+};
+// const maybeChapterNotes = (chapterN, noteType, notes, templates, verbose = false) => {
+//     const chapterNoteRecord = notes[`${chapterN}_intro`];
+//     if (chapterNoteRecord) {
+//         verbose && console.log(`     Notes for Chapter ${chapterN}`);
+//         const chapterNoteText = chapterNoteRecord.split(/(<br>)+/).filter(l => l.replace('<br>', '').length > 0);
+//         const chapterNoteHeading = chapterNoteText[0].replace(/^# +/, "");
+//         let noteParas = [];
+//         for (const noteLine of chapterNoteText.slice(1)) {
+//             let paraClass = "note_body";
+//             if (noteLine.startsWith("####")) {
+//                 paraClass = "note_h4"
+//             } else if (noteLine.startsWith("###")) {
+//                 paraClass = "note_h3"
+//             } else if (noteLine.startsWith("##")) {
+//                 paraClass = "note_h2"
+//             } else if (noteLine.trim().startsWith("-")) {
+//                 paraClass = "note_list2"
+//             } else if (/^[0-9]+\./.test(noteLine.trim())) {
+//                 paraClass = "note_list1"
+//             }
+//             noteParas.push(
+//                 templates.markdownPara
+//                     .replace("%%CLASS%%", paraClass)
+//                     .replace(
+//                         "%%NOTE%%",
+//                         cleanNoteLine(noteLine)
+//                     )
+//             );
+//         }
+//         return templates[`${noteType || 'chapter'}Note`]
+//             .replace('%%NOTETITLE%%', chapterNoteHeading)
+//             .replace('%%NOTEBODY%%', noteParas.join('\n'))
+//     } else {
+//         return "";
+//     }
+// }
+
+export const unpackCellRange = (cv) => {
+  let ret = [];
+  let [chapter, verseRange] = cv.split(":");
+  chapter = chapter.replace(/^0+/g, "");
+  if (!verseRange) {
+    return ret;
+  }
+  if (verseRange.includes("-")) {
+    let [fromV, toV] = verseRange.split("-");
+    while (fromV <= toV) {
+      ret.push(`${chapter}:${fromV}`);
+      fromV++;
+    }
+  } else {
+    ret.push(cv.replace(/^0+/g, ""));
+  }
+  return ret;
+};
+
+export const bcvNotes = async (notesPath, bookCode, excludeTags = []) => {
+  const notes = {};
+  const summary = await getJson(`/api/burrito/metadata/summary/${notesPath}`);
+
+  const fileWithBook = summary.json.book_codes.filter((p) =>
+    p.includes(bookCode),
+  );
+
+  if (!fileWithBook) {
+    throw new Error(`No notes for ${bookCode} found in bcvNotes`);
+  }
+  const notesRowsRaw = await getText(
+    `/api/burrito/ingredient/raw/${notesPath}?ipath=${fileWithBook}.tsv`,
+  );
+  const notesRows = notesRowsRaw.text.split("\n");
+  // Introspect type (question or note)
+  let noteType = "notes";
+  const headings = notesRows[0];
+  if (headings.indexOf("Question") > 0) {
+    noteType = "questions";
+  }
+
+  for (const notesRow of notesRows.slice(1)) {
+    const cells = notesRow.split("\t");
+    let toExclude = false;
+    for (const tag of (cells[2] || "").split(",")) {
+      if (excludeTags.includes(tag)) {
+        toExclude = true;
+        break;
+      }
+    }
+    if (toExclude) {
+      continue;
+    }
+    const rowKey = cells[0].replace(/^0+/g, "");
+    let content = (noteType === "questions" ? cells[5] : cells[6]) || "";
+    if (content.trim().length === 0) {
+      continue;
+    }
+    if (content.slice(0, 1) === '"') {
+      content = content.slice(1, content.length - 1).replace(/""/g, '"');
+    }
+    if (!(rowKey in notes)) {
+      notes[rowKey] = [];
+    }
+    notes[rowKey].push(content);
+  }
+  return notes;
+};
