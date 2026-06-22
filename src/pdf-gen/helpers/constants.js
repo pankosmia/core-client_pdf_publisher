@@ -1,7 +1,6 @@
 import pageSizes from "../Css/Ressources/pages.json";
 import fontSets from "../Css/Ressources/fonts.json";
 import fontSizes from "../Css/Ressources/sizes.json";
-import packageJson from "../../../../../../package.json";
 
 import Markdown from "../../components/icons/sectionIcons/markdown";
 import Pdf from "../../components/icons/sectionIcons/pdf";
@@ -17,7 +16,6 @@ import Obs from "../../components/icons/sectionIcons/obs";
 import ObsPlusNotes from "../../components/icons/sectionIcons/obsPlusNotes";
 
 export const constants = {
-  VERSION: packageJson.version,
   // DEFAULT_WORKING_DIR: path.resolve(path.join(os.homedir(), ".jxlpdf/working")),
   DEFAULT_PAGE_SIZE: "A4P",
   DEFAULT_FONT_SET: "allGentium",
