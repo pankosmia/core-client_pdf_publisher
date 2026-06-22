@@ -4,6 +4,7 @@ import {
   Card,
   CardContent,
   Divider,
+  IconButton,
   Typography,
 } from "@mui/material";
 import AddScriptureModal from "../AddScriptureModal";
@@ -13,7 +14,7 @@ import { doI18n, getJson } from "pithekos-lib";
 import { debugContext, i18nContext } from "pankosmia-rcl";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { iconBySection } from "../../../pdf-gen/helpers/constants";
-import { Done, DragIndicator } from "@mui/icons-material";
+import { Delete, Done, DragIndicator } from "@mui/icons-material";
 
 const allowedSelected = [
   "md",
@@ -48,11 +49,61 @@ export function RessourceSelection({
   const getInstanceCount = (sectionId, fieldId, defaultCount) =>
     instanceCounts[`${sectionId}-${fieldId}`] ?? defaultCount;
 
-  const incrementInstanceCount = (sectionId, fieldId) => {
-    console.log(sectionId, fieldId);
+  const removeInstanceAt = (sectionId, fieldId, index, minCount) => {
+    setCurrentSections((prev) => {
+      const copy = prev.map((s) => ({ ...s }));
+      if (!copy[sectionId]) return prev;
+      const fieldArr = [...(copy[sectionId][fieldId] || [])];
+      if (
+        minCount !== undefined &&
+        minCount !== null &&
+        fieldArr.length <= minCount
+      ) {
+        return prev; // already at the floor, do nothing
+      }
+      fieldArr.splice(index, 1);
+      copy[sectionId] = { ...copy[sectionId], [fieldId]: fieldArr };
+      return copy;
+    });
+
     setInstanceCounts((prev) => {
       const key = `${sectionId}-${fieldId}`;
-      const current = prev[key] ?? Math.min(sectionId, fieldId);
+      const current = prev[key] ?? 1;
+      if (minCount !== undefined && minCount !== null && current <= minCount) {
+        return prev;
+      }
+      return { ...prev, [key]: current - 1 };
+    });
+  };
+  // Seed instanceCounts with the real default count for every typeSpec field
+  // on first render (and whenever the signature changes), so increments
+  // always start from the correct base instead of an undefined/wrong value.
+  useEffect(() => {
+    setInstanceCounts((prev) => {
+      const next = { ...prev };
+      let changed = false;
+      currentSectionsSignature.forEach((section, sectionId) => {
+        section.fields
+          .filter((f) => allowedSelected.includes(f.id) && f.typeSpec)
+          .forEach((f) => {
+            const key = `${sectionId}-${f.id}`;
+            if (next[key] === undefined) {
+              next[key] = f?.nValues?.[0] ?? 1;
+              changed = true;
+            }
+          });
+      });
+      return changed ? next : prev;
+    });
+  }, [currentSectionsSignature]);
+
+  const incrementInstanceCount = (sectionId, fieldId, maxCount) => {
+    setInstanceCounts((prev) => {
+      const key = `${sectionId}-${fieldId}`;
+      const current = prev[key] ?? 1;
+      if (maxCount !== undefined && maxCount !== null && current >= maxCount) {
+        return prev; // already at the cap, do nothing
+      }
       return { ...prev, [key]: current + 1 };
     });
   };
@@ -135,6 +186,11 @@ export function RessourceSelection({
             if (f.typeSpec) {
               const defaultInstances = f?.nValues?.[0] ?? 1;
               const nInstances = getInstanceCount(id, f.id, defaultInstances);
+              const maxCount = f?.nValues?.[1];
+              const atMax =
+                maxCount !== undefined &&
+                maxCount !== null &&
+                nInstances >= maxCount;
 
               return (
                 <Box>
@@ -142,7 +198,9 @@ export function RessourceSelection({
                     // Read/write this instance's data from currentSections[id][f.id][i]
                     const instanceData =
                       currentSections?.[id]?.[f.id]?.[i] ?? {};
+                    const minCount = f?.nValues?.[0] ?? 0;
 
+                    const canRemove = i >= minCount;
                     const setInstanceData = (updater) => {
                       setCurrentSections((prev) => {
                         const copy = prev.map((s) => ({ ...s }));
@@ -168,6 +226,17 @@ export function RessourceSelection({
 
                     return (
                       <Box>
+                        {canRemove && (
+                          <IconButton
+                            size="small"
+                            onClick={() =>
+                              removeInstanceAt(id, f.id, i, minCount)
+                            }
+                            sx={{ mt: 1 }}
+                          >
+                            <Delete fontSize="small" />
+                          </IconButton>
+                        )}
                         <RessourceSelection
                           key={i}
                           sectionKey={i}
@@ -183,7 +252,10 @@ export function RessourceSelection({
                       </Box>
                     );
                   })}
-                  <Button onClick={() => incrementInstanceCount(id, f.id)}>
+                  <Button
+                    disabled={atMax}
+                    onClick={() => incrementInstanceCount(id, f.id, maxCount)}
+                  >
                     <Typography>
                       {doI18n(
                         `pages:core-client_pdf_publisher:Add`,
