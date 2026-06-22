@@ -27,6 +27,8 @@ const allowedSelected = [
   "lhs",
   "bcvNotes",
   "scriptureSrc",
+  "tNotes",
+  "glossNotes",
 ];
 
 export function RessourceSelection({
@@ -35,13 +37,26 @@ export function RessourceSelection({
   setCurrentSections,
   setIsRessourcesStepComplete,
   bRanges,
-  card = true,
   summary,
+  card = true,
+  sectionKey = null,
 }) {
   let { debugRef } = useContext(debugContext);
   let { i18nRef } = useContext(i18nContext);
-  const [lang, setlang] = useState("");
+  const [instanceCounts, setInstanceCounts] = useState({});
 
+  const getInstanceCount = (sectionId, fieldId, defaultCount) =>
+    instanceCounts[`${sectionId}-${fieldId}`] ?? defaultCount;
+
+  const incrementInstanceCount = (sectionId, fieldId) => {
+    console.log(sectionId, fieldId);
+    setInstanceCounts((prev) => {
+      const key = `${sectionId}-${fieldId}`;
+      const current = prev[key] ?? Math.min(sectionId, fieldId);
+      return { ...prev, [key]: current + 1 };
+    });
+  };
+  const [lang, setlang] = useState("");
   useEffect(() => {
     async function getLang() {
       let langs = await getJson(`/api/settings/languages`);
@@ -118,49 +133,66 @@ export function RessourceSelection({
           .map((f, ids) => {
             const isRequired = f?.nValues[0] >= 1;
             if (f.typeSpec) {
-              const nInstances = f?.nValues?.[0] ?? 1;
+              const defaultInstances = f?.nValues?.[0] ?? 1;
+              const nInstances = getInstanceCount(id, f.id, defaultInstances);
 
-              return Array.from({ length: nInstances }).map((_, i) => {
-                // Read/write this instance's data from currentSections[id][f.id][i]
-                const instanceData = currentSections?.[id]?.[f.id]?.[i] ?? {};
+              return (
+                <Box>
+                  {Array.from({ length: nInstances }).map((_, i) => {
+                    // Read/write this instance's data from currentSections[id][f.id][i]
+                    const instanceData =
+                      currentSections?.[id]?.[f.id]?.[i] ?? {};
 
-                const setInstanceData = (updater) => {
-                  setCurrentSections((prev) => {
-                    const copy = prev.map((s) => ({ ...s }));
-                    if (!copy[id]) copy[id] = {};
+                    const setInstanceData = (updater) => {
+                      setCurrentSections((prev) => {
+                        const copy = prev.map((s) => ({ ...s }));
+                        if (!copy[id]) copy[id] = {};
 
-                    const fieldArr = [...(copy[id][f.id] || [])];
-                    const prevInstance = fieldArr[i] ?? {};
+                        const fieldArr = [...(copy[id][f.id] || [])];
+                        const prevInstance = fieldArr[i] ?? {};
 
-                    // Child calls setCurrentSections(prev => { let copy = [...prev]; copy[0][f.id] = src; return copy })
-                    // So we simulate that: pass [prevInstance] as the "prev", get back the updated array, take index 0
-                    if (typeof updater === "function") {
-                      const fakeArr = [prevInstance];
-                      const result = updater(fakeArr);
-                      fieldArr[i] = result[0];
-                    } else {
-                      fieldArr[i] = updater[0] ?? updater;
-                    }
+                        // Child calls setCurrentSections(prev => { let copy = [...prev]; copy[0][f.id] = src; return copy })
+                        // So we simulate that: pass [prevInstance] as the "prev", get back the updated array, take index 0
+                        if (typeof updater === "function") {
+                          const fakeArr = [prevInstance];
+                          const result = updater(fakeArr);
+                          fieldArr[i] = result[0];
+                        } else {
+                          fieldArr[i] = updater[0] ?? updater;
+                        }
 
-                    copy[id] = { ...copy[id], [f.id]: fieldArr };
-                    return copy;
-                  });
-                };
+                        copy[id] = { ...copy[id], [f.id]: fieldArr };
+                        return copy;
+                      });
+                    };
 
-                return (
-                  <Box>
-                    <RessourceSelection
-                      key={i}
-                      currentSectionsSignature={[{ fields: f.typeSpec }]}
-                      currentSections={[instanceData]}
-                      setCurrentSections={setInstanceData}
-                      setIsRessourcesStepComplete={setIsRessourcesStepComplete}
-                      card={false}
-                      summary={summary}
-                    />
-                  </Box>
-                );
-              });
+                    return (
+                      <Box>
+                        <RessourceSelection
+                          key={i}
+                          sectionKey={i}
+                          currentSectionsSignature={[{ fields: f.typeSpec }]}
+                          currentSections={[instanceData]}
+                          setCurrentSections={setInstanceData}
+                          setIsRessourcesStepComplete={
+                            setIsRessourcesStepComplete
+                          }
+                          card={false}
+                          summary={summary}
+                        />
+                      </Box>
+                    );
+                  })}
+                  <Button onClick={() => incrementInstanceCount(id, f.id)}>
+                    <Typography>
+                      {doI18n(
+                        `pages:core-client_pdf_publisher:Add`,
+                        i18nRef.current,
+                      ) + ` ${f.label[lang]}`}
+                    </Typography>
+                  </Button>
+                </Box>
+              );
             } else {
               return (
                 <Box
@@ -173,7 +205,9 @@ export function RessourceSelection({
                   }}
                 >
                   <Typography sx={{ fontWeight: "bold" }}>
-                    {f.label[lang]}
+                    {f.label[lang]?.includes("#")
+                      ? f.label[lang].replace("#", sectionKey)
+                      : f.label[lang]}
                   </Typography>
                   <Box
                     sx={{

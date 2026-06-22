@@ -129,6 +129,14 @@
     "selectRessource": {
       "en": "Select resource",
       "fr": "Selectionner ressource"
+    },
+    "select": {
+      "en": "Select",
+      "fr": "Selectionner"
+    },
+    "Add": {
+      "en": "Add",
+      "fr": "Ajouter"
     }
   }
 }
