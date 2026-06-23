@@ -48,6 +48,7 @@ import Arrow from "../components/utils/arrow";
 import ArrowLeft from "../components/utils/arrow";
 import { sectionHandlerLookup } from "../pdf-gen/sectionHandlerLookup";
 import FloatingTextMenu from "../components/SpeedDial/FloatingTextMenu";
+import FirefoxInstaller from "../components/FirefoxInstaller";
 
 const allowedSelected = [
   "md",
@@ -569,6 +570,7 @@ export function PdfPublisher() {
               i18nRef.current,
             )}
           </Typography>
+          <FirefoxInstaller />
         </Box>
       </Box>
     </Box>
