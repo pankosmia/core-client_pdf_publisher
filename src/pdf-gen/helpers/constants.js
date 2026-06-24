@@ -16,7 +16,6 @@ import Obs from "../../components/icons/sectionIcons/obs";
 import ObsPlusNotes from "../../components/icons/sectionIcons/obsPlusNotes";
 
 export const constants = {
-  // VERSION: packageJson.version,
   // DEFAULT_WORKING_DIR: path.resolve(path.join(os.homedir(), ".jxlpdf/working")),
   DEFAULT_PAGE_SIZE: "A4P",
   DEFAULT_FONT_SET: "allGentium",
