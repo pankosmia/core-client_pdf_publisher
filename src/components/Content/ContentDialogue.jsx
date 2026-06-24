@@ -20,6 +20,7 @@ let orderOfField = [
   "md",
   "pdf",
   "jxl",
+  "translationText",
   "juxta",
   "notes",
   "obs",
