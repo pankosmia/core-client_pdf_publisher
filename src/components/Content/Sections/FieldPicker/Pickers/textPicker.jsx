@@ -1,11 +1,18 @@
 import { useState, useEffect } from "react";
-import { Box, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  FormHelperText,
+} from "@mui/material";
 
 export function TextPicker({
   currentFieldValue,
   setJsonSpec,
   fieldInfo,
   lang,
+  currentIndex,
   require,
 }) {
   const [text, setText] = useState(
@@ -16,9 +23,11 @@ export function TextPicker({
     setJsonSpec(text);
   }, [text]);
 
-  const resetField = () => {
-    setText(fieldInfo?.suggestedDefault || "");
-  };
+  const labelText = fieldInfo.label[lang]?.includes("#")
+    ? fieldInfo.label[lang].replace("#", currentIndex)
+    : fieldInfo.label[lang];
+
+  const inputId = `${fieldInfo.id}-input`;
 
   return (
     <Box
@@ -26,35 +35,20 @@ export function TextPicker({
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
-        marginTop: 2,
+        mt: 2,
         width: "100%",
       }}
     >
-      <Typography
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 6,
-        }}
-      >
-        {fieldInfo.label?.[lang]}
+      <FormControl sx={{ minWidth: 400 }}>
+        <InputLabel htmlFor={inputId}>{labelText}</InputLabel>
 
-        {require && (
-          <span
-            style={{ color: "red", fontWeight: 600 }}
-            title="Required field"
-          >
-            *
-          </span>
-        )}
-      </Typography>
-      <TextField
-        sx={{ marginLeft: "auto", minWidth: 200 }}
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        size="small"
-        variant="outlined"
-      />
+        <OutlinedInput
+          id={inputId}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          label={labelText}
+        />
+      </FormControl>
     </Box>
   );
 }

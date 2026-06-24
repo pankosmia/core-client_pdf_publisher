@@ -1,11 +1,11 @@
 import { BooleanPicker } from "./Pickers/booleanPicker";
 import { SelectPicker } from "./Pickers/SelectPicker";
-import { ListPicker } from "./Pickers/ListPicker";
 import { IntPicker } from "./Pickers/IntPicker";
 import { TextPicker } from "./Pickers/textPicker";
 
 export function FieldPicker({
   currentFieldValue,
+  currentIndex,
   fieldInfo,
   ChangeInSection,
   lang,
@@ -38,6 +38,7 @@ export function FieldPicker({
     if (fieldInfo.nValues[1] === 1) {
       return (
         <SelectPicker
+          currentIndex={currentIndex}
           setJsonSpec={ChangeInSection}
           fieldInfo={fieldInfo}
           require={require}
@@ -46,24 +47,10 @@ export function FieldPicker({
         />
       );
     }
-  } else if (
-    fieldInfo.id &&
-    fieldInfo.id === "lhs" &&
-    fieldInfo.nValues[1] &&
-    fieldInfo.nValues[1] > 1
-  ) {
-    return (
-      <ListPicker
-        setJsonSpec={ChangeInSection}
-        fieldInfo={fieldInfo}
-        require={require}
-        lang={lang}
-        currentFieldValue={currentFieldValue}
-      />
-    );
   } else if (fieldInfo.typeName && fieldInfo.typeName === "boolean") {
     return (
       <BooleanPicker
+        currentIndex={currentIndex}
         setJsonSpec={ChangeInSection}
         fieldInfo={fieldInfo}
         require={require}
@@ -77,6 +64,7 @@ export function FieldPicker({
   ) {
     return (
       <IntPicker
+        currentIndex={currentIndex}
         setJsonSpec={ChangeInSection}
         fieldInfo={fieldInfo}
         require={require}
@@ -87,6 +75,7 @@ export function FieldPicker({
   } else if (fieldInfo.typeName === "string") {
     return (
       <TextPicker
+        currentIndex={currentIndex}
         setJsonSpec={ChangeInSection}
         fieldInfo={fieldInfo}
         require={require}

@@ -87,16 +87,27 @@ export function RessourceSelection({
           .filter((f) => allowedSelected.includes(f.id) && f.typeSpec)
           .forEach((f) => {
             const key = `${sectionId}-${f.id}`;
-            if (next[key] === undefined) {
-              next[key] = f?.nValues?.[0] ?? 1;
-              changed = true;
-            }
+            // Only seed if we don't already have a tracked count for this
+            // key in this mount's lifetime. Never shrink/overwrite an
+            // existing local count — that's what was eating still-empty
+            // instances as soon as an earlier instance got filled in.
+            if (next[key] !== undefined) return;
+
+            const existingArr = currentSections?.[sectionId]?.[f.id];
+            const existingCount = Array.isArray(existingArr)
+              ? existingArr.length
+              : 0;
+            const defaultCount = f?.nValues?.[0] ?? 1;
+
+            // Restore at least as many slots as there's data for, but
+            // never fewer than the field's own default/minimum.
+            next[key] = Math.max(existingCount, defaultCount);
+            changed = true;
           });
       });
       return changed ? next : prev;
     });
-  }, [currentSectionsSignature]);
-
+  }, [currentSectionsSignature, currentSections]);
   const incrementInstanceCount = (sectionId, fieldId, maxCount) => {
     setInstanceCounts((prev) => {
       const key = `${sectionId}-${fieldId}`;
@@ -225,30 +236,48 @@ export function RessourceSelection({
                     };
 
                     return (
-                      <Box>
-                        {canRemove && (
-                          <IconButton
-                            size="small"
-                            onClick={() =>
-                              removeInstanceAt(id, f.id, i, minCount)
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "flex-start",
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            width: 40,
+                            display: "flex",
+                            justifyContent: "center",
+                            pt: 1,
+                            flexShrink: 0,
+                          }}
+                        >
+                          {canRemove && (
+                            <IconButton
+                              size="small"
+                              onClick={() =>
+                                removeInstanceAt(id, f.id, i, minCount)
+                              }
+                            >
+                              <Delete fontSize="small" />
+                            </IconButton>
+                          )}
+                        </Box>
+
+                        <Box sx={{ flex: 1, minWidth: 0 }}>
+                          <RessourceSelection
+                            key={i}
+                            sectionKey={i}
+                            currentSectionsSignature={[{ fields: f.typeSpec }]}
+                            currentSections={[instanceData]}
+                            setCurrentSections={setInstanceData}
+                            setIsRessourcesStepComplete={
+                              setIsRessourcesStepComplete
                             }
-                            sx={{ mt: 1 }}
-                          >
-                            <Delete fontSize="small" />
-                          </IconButton>
-                        )}
-                        <RessourceSelection
-                          key={i}
-                          sectionKey={i}
-                          currentSectionsSignature={[{ fields: f.typeSpec }]}
-                          currentSections={[instanceData]}
-                          setCurrentSections={setInstanceData}
-                          setIsRessourcesStepComplete={
-                            setIsRessourcesStepComplete
-                          }
-                          card={false}
-                          summary={summary}
-                        />
+                            card={false}
+                            summary={summary}
+                          />
+                        </Box>
                       </Box>
                     );
                   })}
@@ -278,7 +307,7 @@ export function RessourceSelection({
                 >
                   <Typography sx={{ fontWeight: "bold" }}>
                     {f.label[lang]?.includes("#")
-                      ? f.label[lang].replace("#", sectionKey)
+                      ? f.label[lang].replace("#", sectionKey + 1)
                       : f.label[lang]}
                   </Typography>
                   <Box

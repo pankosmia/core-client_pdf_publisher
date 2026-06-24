@@ -8,11 +8,11 @@ import {
   FormHelperText,
   Typography,
 } from "@mui/material";
-
 export function SelectPicker({
   currentFieldValue,
   fieldInfo,
   require,
+  currentIndex,
   setJsonSpec,
   lang,
 }) {
@@ -30,6 +30,10 @@ export function SelectPicker({
     setJsonSpec(value);
   };
 
+  const labelText = fieldInfo.label[lang]?.includes("#")
+    ? fieldInfo.label[lang].replace("#", currentIndex)
+    : fieldInfo.label[lang];
+
   return (
     <Box
       sx={{
@@ -40,24 +44,14 @@ export function SelectPicker({
         width: "100%",
       }}
     >
-      {/* LEFT: label */}
-      <Typography sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-        {fieldInfo.label?.[lang]}
-        {require && <span style={{ color: "red", fontWeight: 600 }}>*</span>}
-      </Typography>
-
       {/* RIGHT: select */}
-      <FormControl
-        size="small"
-        error={require && form === ""}
-        sx={{ marginLeft: "auto", minWidth: 220 }}
-      >
-        <InputLabel id={`${fieldInfo.id}-label`}>Please Choose...</InputLabel>
+      <FormControl error={require && form === ""} sx={{ minWidth: 400 }}>
+        <InputLabel id={`${fieldInfo.id}-label`}>{labelText}</InputLabel>
 
         <Select
           labelId={`${fieldInfo.id}-label`}
           value={form}
-          label="Please Choose..."
+          label={labelText}
           onChange={handleChange}
         >
           <MenuItem value="">

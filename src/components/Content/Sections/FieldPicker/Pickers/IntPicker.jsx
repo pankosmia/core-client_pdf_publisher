@@ -1,5 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { Box, TextField, Typography } from "@mui/material";
+import { useState, useEffect } from "react";
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  FormHelperText,
+} from "@mui/material";
 
 export function IntPicker({
   currentFieldValue,
@@ -7,9 +13,10 @@ export function IntPicker({
   setJsonSpec,
   lang,
   require,
+  currentIndex,
 }) {
   const [value, setValue] = useState(
-    currentFieldValue || fieldInfo.suggestedDefault || "",
+    currentFieldValue ?? fieldInfo?.suggestedDefault ?? "",
   );
 
   const handleChange = (event) => {
@@ -37,6 +44,18 @@ export function IntPicker({
     setValue(newValue);
   };
 
+  const labelText = fieldInfo.label[lang]?.includes("#")
+    ? fieldInfo.label[lang].replace("#", currentIndex)
+    : fieldInfo.label[lang];
+
+  const rangeText =
+    fieldInfo.minValue != null
+      ? ` (${fieldInfo.minValue}-${fieldInfo.maxValue})`
+      : "";
+
+  const inputId = `${fieldInfo.id}-input`;
+  const hasError = require && value === "";
+
   return (
     <Box
       sx={{
@@ -47,31 +66,28 @@ export function IntPicker({
         width: "100%",
       }}
     >
-      {/* LEFT: label */}
-      <Typography sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-        {fieldInfo.label?.[lang]}
-        {fieldInfo.minValue != null && (
-          <span>
-            ({fieldInfo.minValue}-{fieldInfo.maxValue})
-          </span>
-        )}
-        {require && <span style={{ color: "red", fontWeight: 600 }}>*</span>}
-      </Typography>
+      <FormControl error={hasError} sx={{ minWidth: 400 }}>
+        <InputLabel htmlFor={inputId}>
+          {labelText}
+          {rangeText}
+        </InputLabel>
 
-      {/* RIGHT: input */}
-      <TextField
-        sx={{ marginLeft: "auto", minWidth: 120 }}
-        value={value}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        type="number"
-        variant="standard"
-        inputProps={{
-          min: fieldInfo.minValue,
-          max: fieldInfo.maxValue,
-          step: 1,
-        }}
-      />
+        <OutlinedInput
+          id={inputId}
+          value={value}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          label={`${labelText}${rangeText}`}
+          type="number"
+          inputProps={{
+            min: fieldInfo.minValue,
+            max: fieldInfo.maxValue,
+            step: 1,
+          }}
+        />
+
+        {hasError && <FormHelperText>This field is required</FormHelperText>}
+      </FormControl>
     </Box>
   );
 }
