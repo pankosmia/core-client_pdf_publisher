@@ -258,7 +258,6 @@ export function TestPptrFirefox() {
     });
     options.cssLookUp = cssLookUp;
     let manifest = await originatePdfs(options, null);
-    console.log(manifest);
     await assemblePdfs(options, null, manifest);
   }
 

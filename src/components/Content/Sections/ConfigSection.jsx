@@ -164,7 +164,6 @@ export function ConfigSection({
 
             // Resource fields chosen in the previous step: read-only display only.
             if (allowedSelected.includes(f.id) && !f.typeSpec) {
-              console.log(summary);
               const isRequired = f?.nValues?.[0] >= 1;
               const value = currentSections?.[id]?.[f.id];
 

@@ -102,7 +102,6 @@ export function ContentDialogue({
         return true;
     }
   };
-  console.log(currentSections);
   useEffect(() => {
     const getProjectSummaries = async () => {
       let summariesResponse = await getJson(

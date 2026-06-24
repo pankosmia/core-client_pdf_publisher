@@ -73,7 +73,6 @@ export function PdfPublisher() {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const [wrappers, setWrappers] = useState([]);
-  // console.log(projectSummaries);
   const [lang, setlang] = useState("");
 
   // const jsonWithHeaderChoice = PdfGen.pageInfo();
@@ -214,7 +213,6 @@ export function PdfPublisher() {
 
     setWrappers(newOrder);
   };
-  console.log(wrappers);
   return (
     <Box>
       <Header

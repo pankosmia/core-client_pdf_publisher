@@ -334,12 +334,10 @@ export class biblePlusNotesSection extends Section {
     }
     const server = window.location.origin;
     let srcPolyfill = `${server}/api/app-resources/pdf/paged.polyfill.js`;
-    console.log(verses);
     let html =
       section?.content?.notesPosition === "columns"
         ? templates["bible_plus_notes_in_columns_page"]
         : templates["bible_plus_notes_in_rows_page"];
-    console.log(html);
     html = html
       .replace("%%POLYFY%%", srcPolyfill)
       .replace("%%TITLE%%", `${qualified_id} - ${section.type}`)
