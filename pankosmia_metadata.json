@@ -8,7 +8,7 @@
 
   "i18n": {
     "title": {
-      "en": "contenthandler-template"
+      "en": "PDF print"
     },
     "summary": {
       "en": "contenthandler-template"
@@ -129,6 +129,14 @@
     "selectRessource": {
       "en": "Select resource",
       "fr": "Selectionner ressource"
+    },
+    "select": {
+      "en": "Select",
+      "fr": "Selectionner"
+    },
+    "Add": {
+      "en": "Add",
+      "fr": "Ajouter"
     }
   }
 }

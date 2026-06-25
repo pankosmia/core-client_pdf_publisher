@@ -16,7 +16,6 @@ import {
   PanTable,
 } from "pankosmia-rcl";
 import { getJson } from "pithekos-lib";
-import LayoutIcon from "../icons/LayoutIcon";
 
 export default function AddScriptureModal({
   selectedResources,
@@ -136,13 +135,15 @@ export default function AddScriptureModal({
   return (
     <>
       <Button
-        variant="outlined"
         sx={{
           marginX: 1,
         }}
+        variant="contained"
         onClick={() => setOpenResourcesDialog(true)}
       >
-        <LayoutIcon />
+        <Typography variant="body">
+          {doI18n("pages:core-client_pdf_publisher:select", i18nRef.current)}
+        </Typography>
       </Button>
       <PanDialog
         isOpen={openResourcesDialog}

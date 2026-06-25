@@ -7,6 +7,7 @@ export function BooleanPicker({
   fieldInfo,
   lang,
   require,
+  currentIndex,
 }) {
   const [selected, setSelected] = useState(
     currentFieldValue ?? fieldInfo.suggestedDefault ?? false,
@@ -28,8 +29,9 @@ export function BooleanPicker({
     >
       {/* LEFT: label */}
       <Typography sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-        {fieldInfo.label?.[lang]}
-        {require && <span style={{ color: "red", fontWeight: 600 }}>*</span>}
+        {fieldInfo.label[lang]?.includes("#")
+          ? fieldInfo.label[lang].replace("#", currentIndex)
+          : fieldInfo.label[lang]}
       </Typography>
 
       {/* RIGHT: checkbox */}

@@ -20,9 +20,6 @@ export default function FloatingTextMenu({ i18nRef, setWrappers }) {
   const [selectedAction, setSelectedAction] = useState(null);
   const [openFromOutside, setOpenFromOustide] = useState(0);
   const open = Boolean(anchorEl);
-  console.log(open);
-  console.log(anchorEl);
-  console.log(selectedAction);
   return (
     <Box>
       <Fab

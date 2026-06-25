@@ -48,6 +48,7 @@ import Arrow from "../components/utils/arrow";
 import ArrowLeft from "../components/utils/arrow";
 import { sectionHandlerLookup } from "../pdf-gen/sectionHandlerLookup";
 import FloatingTextMenu from "../components/SpeedDial/FloatingTextMenu";
+import FirefoxInstaller from "../components/FirefoxInstaller";
 
 const allowedSelected = [
   "md",
@@ -72,7 +73,6 @@ export function PdfPublisher() {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const [wrappers, setWrappers] = useState([]);
-  // console.log(projectSummaries);
   const [lang, setlang] = useState("");
 
   // const jsonWithHeaderChoice = PdfGen.pageInfo();
@@ -213,7 +213,6 @@ export function PdfPublisher() {
 
     setWrappers(newOrder);
   };
-  console.log(wrappers);
   return (
     <Box>
       <Header
@@ -569,6 +568,7 @@ export function PdfPublisher() {
               i18nRef.current,
             )}
           </Typography>
+          <FirefoxInstaller />
         </Box>
       </Box>
     </Box>

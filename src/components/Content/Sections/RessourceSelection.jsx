@@ -4,6 +4,7 @@ import {
   Card,
   CardContent,
   Divider,
+  IconButton,
   Typography,
 } from "@mui/material";
 import AddScriptureModal from "../AddScriptureModal";
@@ -13,7 +14,7 @@ import { doI18n, getJson } from "pithekos-lib";
 import { debugContext, i18nContext } from "pankosmia-rcl";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { iconBySection } from "../../../pdf-gen/helpers/constants";
-import { Done, DragIndicator } from "@mui/icons-material";
+import { Delete, Done, DragIndicator } from "@mui/icons-material";
 
 const allowedSelected = [
   "md",
@@ -27,6 +28,8 @@ const allowedSelected = [
   "lhs",
   "bcvNotes",
   "scriptureSrc",
+  "tNotes",
+  "glossNotes",
 ];
 
 export function RessourceSelection({
@@ -35,13 +38,87 @@ export function RessourceSelection({
   setCurrentSections,
   setIsRessourcesStepComplete,
   bRanges,
-  card = true,
   summary,
+  card = true,
+  sectionKey = null,
 }) {
   let { debugRef } = useContext(debugContext);
   let { i18nRef } = useContext(i18nContext);
-  const [lang, setlang] = useState("");
+  const [instanceCounts, setInstanceCounts] = useState({});
 
+  const getInstanceCount = (sectionId, fieldId, defaultCount) =>
+    instanceCounts[`${sectionId}-${fieldId}`] ?? defaultCount;
+
+  const removeInstanceAt = (sectionId, fieldId, index, minCount) => {
+    setCurrentSections((prev) => {
+      const copy = prev.map((s) => ({ ...s }));
+      if (!copy[sectionId]) return prev;
+      const fieldArr = [...(copy[sectionId][fieldId] || [])];
+      if (
+        minCount !== undefined &&
+        minCount !== null &&
+        fieldArr.length <= minCount
+      ) {
+        return prev; // already at the floor, do nothing
+      }
+      fieldArr.splice(index, 1);
+      copy[sectionId] = { ...copy[sectionId], [fieldId]: fieldArr };
+      return copy;
+    });
+
+    setInstanceCounts((prev) => {
+      const key = `${sectionId}-${fieldId}`;
+      const current = prev[key] ?? 1;
+      if (minCount !== undefined && minCount !== null && current <= minCount) {
+        return prev;
+      }
+      return { ...prev, [key]: current - 1 };
+    });
+  };
+  // Seed instanceCounts with the real default count for every typeSpec field
+  // on first render (and whenever the signature changes), so increments
+  // always start from the correct base instead of an undefined/wrong value.
+  useEffect(() => {
+    setInstanceCounts((prev) => {
+      const next = { ...prev };
+      let changed = false;
+      currentSectionsSignature.forEach((section, sectionId) => {
+        section.fields
+          .filter((f) => allowedSelected.includes(f.id) && f.typeSpec)
+          .forEach((f) => {
+            const key = `${sectionId}-${f.id}`;
+            // Only seed if we don't already have a tracked count for this
+            // key in this mount's lifetime. Never shrink/overwrite an
+            // existing local count — that's what was eating still-empty
+            // instances as soon as an earlier instance got filled in.
+            if (next[key] !== undefined) return;
+
+            const existingArr = currentSections?.[sectionId]?.[f.id];
+            const existingCount = Array.isArray(existingArr)
+              ? existingArr.length
+              : 0;
+            const defaultCount = f?.nValues?.[0] ?? 1;
+
+            // Restore at least as many slots as there's data for, but
+            // never fewer than the field's own default/minimum.
+            next[key] = Math.max(existingCount, defaultCount);
+            changed = true;
+          });
+      });
+      return changed ? next : prev;
+    });
+  }, [currentSectionsSignature, currentSections]);
+  const incrementInstanceCount = (sectionId, fieldId, maxCount) => {
+    setInstanceCounts((prev) => {
+      const key = `${sectionId}-${fieldId}`;
+      const current = prev[key] ?? 1;
+      if (maxCount !== undefined && maxCount !== null && current >= maxCount) {
+        return prev; // already at the cap, do nothing
+      }
+      return { ...prev, [key]: current + 1 };
+    });
+  };
+  const [lang, setlang] = useState("");
   useEffect(() => {
     async function getLang() {
       let langs = await getJson(`/api/settings/languages`);
@@ -118,49 +195,105 @@ export function RessourceSelection({
           .map((f, ids) => {
             const isRequired = f?.nValues[0] >= 1;
             if (f.typeSpec) {
-              const nInstances = f?.nValues?.[0] ?? 1;
+              const defaultInstances = f?.nValues?.[0] ?? 1;
+              const nInstances = getInstanceCount(id, f.id, defaultInstances);
+              const maxCount = f?.nValues?.[1];
+              const atMax =
+                maxCount !== undefined &&
+                maxCount !== null &&
+                nInstances >= maxCount;
 
-              return Array.from({ length: nInstances }).map((_, i) => {
-                // Read/write this instance's data from currentSections[id][f.id][i]
-                const instanceData = currentSections?.[id]?.[f.id]?.[i] ?? {};
+              return (
+                <Box>
+                  {Array.from({ length: nInstances }).map((_, i) => {
+                    // Read/write this instance's data from currentSections[id][f.id][i]
+                    const instanceData =
+                      currentSections?.[id]?.[f.id]?.[i] ?? {};
+                    const minCount = f?.nValues?.[0] ?? 0;
 
-                const setInstanceData = (updater) => {
-                  setCurrentSections((prev) => {
-                    const copy = prev.map((s) => ({ ...s }));
-                    if (!copy[id]) copy[id] = {};
+                    const canRemove = i >= minCount;
+                    const setInstanceData = (updater) => {
+                      setCurrentSections((prev) => {
+                        const copy = prev.map((s) => ({ ...s }));
+                        if (!copy[id]) copy[id] = {};
 
-                    const fieldArr = [...(copy[id][f.id] || [])];
-                    const prevInstance = fieldArr[i] ?? {};
+                        const fieldArr = [...(copy[id][f.id] || [])];
+                        const prevInstance = fieldArr[i] ?? {};
 
-                    // Child calls setCurrentSections(prev => { let copy = [...prev]; copy[0][f.id] = src; return copy })
-                    // So we simulate that: pass [prevInstance] as the "prev", get back the updated array, take index 0
-                    if (typeof updater === "function") {
-                      const fakeArr = [prevInstance];
-                      const result = updater(fakeArr);
-                      fieldArr[i] = result[0];
-                    } else {
-                      fieldArr[i] = updater[0] ?? updater;
-                    }
+                        // Child calls setCurrentSections(prev => { let copy = [...prev]; copy[0][f.id] = src; return copy })
+                        // So we simulate that: pass [prevInstance] as the "prev", get back the updated array, take index 0
+                        if (typeof updater === "function") {
+                          const fakeArr = [prevInstance];
+                          const result = updater(fakeArr);
+                          fieldArr[i] = result[0];
+                        } else {
+                          fieldArr[i] = updater[0] ?? updater;
+                        }
 
-                    copy[id] = { ...copy[id], [f.id]: fieldArr };
-                    return copy;
-                  });
-                };
+                        copy[id] = { ...copy[id], [f.id]: fieldArr };
+                        return copy;
+                      });
+                    };
 
-                return (
-                  <Box>
-                    <RessourceSelection
-                      key={i}
-                      currentSectionsSignature={[{ fields: f.typeSpec }]}
-                      currentSections={[instanceData]}
-                      setCurrentSections={setInstanceData}
-                      setIsRessourcesStepComplete={setIsRessourcesStepComplete}
-                      card={false}
-                      summary={summary}
-                    />
-                  </Box>
-                );
-              });
+                    return (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "flex-start",
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            width: 40,
+                            display: "flex",
+                            justifyContent: "center",
+                            pt: 1,
+                            flexShrink: 0,
+                          }}
+                        >
+                          {canRemove && (
+                            <IconButton
+                              size="small"
+                              onClick={() =>
+                                removeInstanceAt(id, f.id, i, minCount)
+                              }
+                            >
+                              <Delete fontSize="small" />
+                            </IconButton>
+                          )}
+                        </Box>
+
+                        <Box sx={{ flex: 1, minWidth: 0 }}>
+                          <RessourceSelection
+                            key={i}
+                            sectionKey={i}
+                            currentSectionsSignature={[{ fields: f.typeSpec }]}
+                            currentSections={[instanceData]}
+                            setCurrentSections={setInstanceData}
+                            setIsRessourcesStepComplete={
+                              setIsRessourcesStepComplete
+                            }
+                            card={false}
+                            summary={summary}
+                          />
+                        </Box>
+                      </Box>
+                    );
+                  })}
+                  <Button
+                    disabled={atMax}
+                    onClick={() => incrementInstanceCount(id, f.id, maxCount)}
+                  >
+                    <Typography>
+                      {doI18n(
+                        `pages:core-client_pdf_publisher:Add`,
+                        i18nRef.current,
+                      ) + ` ${f.label[lang]}`}
+                    </Typography>
+                  </Button>
+                </Box>
+              );
             } else {
               return (
                 <Box
@@ -173,7 +306,9 @@ export function RessourceSelection({
                   }}
                 >
                   <Typography sx={{ fontWeight: "bold" }}>
-                    {f.label[lang]}
+                    {f.label[lang]?.includes("#")
+                      ? f.label[lang].replace("#", sectionKey + 1)
+                      : f.label[lang]}
                   </Typography>
                   <Box
                     sx={{

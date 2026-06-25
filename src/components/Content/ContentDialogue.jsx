@@ -15,6 +15,44 @@ import { RessourceSelection } from "./Sections/RessourceSelection";
 import { ConfigSection } from "./Sections/ConfigSection";
 import { BRangesPicker } from "./Sections/BRangesPicker";
 import { getJson } from "pithekos-lib";
+
+let orderOfField = [
+  "md",
+  "pdf",
+  "jxl",
+  "translationText",
+  "juxta",
+  "notes",
+  "obs",
+  "obsImg",
+  "bcvNotes",
+  "scriptureSrc",
+  "tNotes",
+  "string",
+  "typeEnum",
+  "int",
+  "number",
+  "typeSpec",
+  "boolean",
+];
+
+const getOrderIndex = (f) => {
+  let idx = orderOfField.indexOf(f.typeName);
+
+  // Config fields are matched by their typeName, or "typeEnum" if applicable
+  const key = f.typeEnum ? "typeEnum" : f.typeName;
+  idx = orderOfField.indexOf(key);
+  if (idx !== -1) return idx;
+
+  const key2 = f.typeSpec ? "typeSpec" : f.typeName;
+  idx = orderOfField.indexOf(key2);
+  if (idx !== -1) return idx;
+
+  if (idx !== -1) return idx;
+  // Anything not listed in orderOfField goes last, in original relative order
+  return orderOfField.length;
+};
+
 export function ContentDialogue({
   type,
   setWrapper,
@@ -64,7 +102,6 @@ export function ContentDialogue({
         return true;
     }
   };
-  console.log(currentSections);
   useEffect(() => {
     const getProjectSummaries = async () => {
       let summariesResponse = await getJson(
@@ -128,6 +165,7 @@ export function ContentDialogue({
       case 2:
         return (
           <ConfigSection
+            summary={summary}
             currentSections={currentSections}
             setCurrentSections={setCurrentSections}
             currentSectionsSignature={currentSectionsSignature}
@@ -138,20 +176,32 @@ export function ContentDialogue({
         return null;
     }
   };
-
+  const sortFields = (fields) => {
+    return fields
+      .map((f, originalIndex) => ({ f, originalIndex }))
+      .sort((a, b) => {
+        const diff = getOrderIndex(a.f) - getOrderIndex(b.f);
+        return diff !== 0 ? diff : a.originalIndex - b.originalIndex;
+      })
+      .map(({ f }) =>
+        f.typeSpec ? { ...f, typeSpec: sortFields(f.typeSpec) } : f,
+      );
+  };
   useEffect(() => {
     if (currentSections) {
       let signatures = [];
       currentSections.forEach((cs, id) => {
-        signatures.push(
-          sectionHandlerLookup[conversionSection[cs.type]].signature(),
-        );
+        const sig =
+          sectionHandlerLookup[conversionSection[cs.type]].signature();
+
+        const sortedFields = sortFields(sig.fields);
+
+        signatures.push({ ...sig, fields: sortedFields });
       });
 
       setCurrentSectionsSignature(signatures);
     }
   }, [currentSections]);
-
   return (
     <Box>
       <>

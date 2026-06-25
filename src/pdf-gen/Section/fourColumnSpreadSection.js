@@ -18,7 +18,7 @@ export class fourColumnSpreadSection extends Section {
 
   signature() {
     return {
-      sectionType: "FourColumnSpread",
+      sectionType: "fourColumnSpread",
       requiresWrapper: this.requiresWrapper(),
       fields: [
         {
@@ -123,7 +123,7 @@ export class fourColumnSpreadSection extends Section {
       });
       scriptureN++;
     }
-    const pk = pkWithDocs(section.bcvRange, docSpecs, options.verbose);
+    const pk = await pkWithDocs(section.bcvRange, docSpecs, options.verbose);
     const bookName = getBookName(pk, "xxx_yyy0", section.bcvRange);
     const cvTexts = getCVTexts(section.bcvRange, pk);
     let notes = section.content.notes
@@ -139,7 +139,7 @@ export class fourColumnSpreadSection extends Section {
     }
     const verses = [];
     verses.push(
-      templates["4_column_spread_title"].replace("%%BOOKNAME%%", bookName),
+      templates["four_column_spread_title"].replace("%%BOOKNAME%%", bookName),
     );
     const qualified_id = `${section.id}_${section.bcvRange}`;
     const server = window.location.origin;
@@ -158,7 +158,7 @@ export class fourColumnSpreadSection extends Section {
         "%%CSS%%",
         await getCssFromLookUp(
           options.cssLookUp,
-          "four_col _header_page_styles",
+          "four_col_header_page_styles",
         ),
       );
     let uuidHeader = await toTemp(headerHtml);
