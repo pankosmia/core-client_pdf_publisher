@@ -4,7 +4,6 @@ import { createHashRouter, Outlet, RouterProvider } from "react-router-dom";
 
 import "./index.css";
 
-import { TestPptrFirefox } from "./pages/TestPdfGen";
 import { PdfPublisher } from "./pages/PdfPublisher";
 import { createTheme, ThemeProvider } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -21,10 +20,7 @@ const router = createHashRouter([
   {
     path: "/",
     element: <AppLayout />,
-    children: [
-      // { path: "pptrTest", element: <TestPptrFirefox /> },
-      { path: "/", element: <PdfPublisher /> },
-    ],
+    children: [{ path: "/", element: <PdfPublisher /> }],
   },
 ]);
 
@@ -101,6 +97,7 @@ function AppLayout() {
       setFontFamilyCorrespondance(cores);
     });
   }, []);
+
   /* ---------------- BUILD THEME (NO STATE) ---------------- */
 
   const theme = useMemo(() => {
