@@ -74,9 +74,27 @@ export function PdfPublisher() {
   const params = new URLSearchParams(location.search);
   const [wrappers, setWrappers] = useState([]);
   const [lang, setlang] = useState("");
+  const [fontFamilyCorrespondance, setFontFamilyCorrespondance] =
+    useState(null);
 
   // const jsonWithHeaderChoice = PdfGen.pageInfo();
+  useEffect(() => {
+    let cores = {};
+    document.fonts.ready.then(() => {
+      document.fonts.forEach((f) => {
+        const cleanFamily = f.family
+          .replace(/['"]/g, "") // remove quotes " or '
+          .trim() // remove leading/trailing spaces
+          .replace(/\s+/g, " "); // normalize multiple spaces
 
+        //console.log(cleanFamily);
+
+        cores[cleanFamily.replaceAll(" ", "")] = cleanFamily;
+      });
+
+      setFontFamilyCorrespondance(cores);
+    });
+  }, []);
   const jsonWithHeaderChoice = {
     pages: Object.entries(pages).map(([key, value]) => ({
       value: key,
@@ -127,11 +145,15 @@ export function PdfPublisher() {
 
     let font = await getJson("/api/settings/typography/");
     let newFont = {};
-
-    let fontFam = Object.entries(fonts[header.fonts]).forEach(([k, v]) => {
-      newFont[k] = font.json.font_set;
+    let fontArray = font.json.font_set
+      .replace("fonts-", "")
+      .split("Pankosmia")
+      .slice(1)
+      .map((e) => "Pankosmia" + e)
+      .map((f) => fontFamilyCorrespondance[f]);
+    Object.entries(fonts[header.fonts]).forEach(([k, v]) => {
+      newFont[k] = fontArray;
     });
-
     const config = {
       global: {
         fonts: header.fonts,
@@ -147,6 +169,7 @@ export function PdfPublisher() {
       steps: ["originate", "assemble"],
       pageFormat: pages[config.global.pages],
       fonts: newFont,
+      fontFamily: fontArray,
       fontSizes: sizes[config.global.sizes],
       referencePunctuation: config.global.referencePunctuation || {
         bookChapter: " ",
