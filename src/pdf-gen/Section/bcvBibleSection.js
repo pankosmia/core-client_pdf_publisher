@@ -198,54 +198,13 @@ export class bcvBibleSection extends Section {
     const server = window.location.origin;
 
     let srcPolyfill = `${server}/api/app-resources/pdf/paged.polyfill.js`;
-    async function getArrayBuffer(url) {
-      const res = await fetch(url);
-      return await res.arrayBuffer();
-    }
-    function arrayBufferToBase64(buffer) {
-      let binary = "";
-      const bytes = new Uint8Array(buffer);
+    const fontLinks = options.fontFamily
+      .map((e) => {
+        const ebis = e.replace("Pankosmia", "pankosmia").replaceAll(" ", "_");
 
-      for (let i = 0; i < bytes.length; i++) {
-        binary += String.fromCharCode(bytes[i]);
-      }
-
-      return btoa(binary);
-    }
-    const fontLinksArray = await Promise.all(
-      options.fontFamily.map(async (e) => {
-        const eBis = e.replace("Pankosmia", "pankosmia").replaceAll(" ", "_");
-
-        let fontText = await getText(`${server}/api/webfonts/${eBis}.css`);
-
-        const matches = [...fontText.text.matchAll(/src:\s*url\(([^)]+)\)/g)];
-
-        let updatedCSS = fontText.text;
-
-        for (const m of matches) {
-          const relativePath = m[1].replace(/['"]/g, "");
-
-          // build full URL
-          const fontUrl = `${server}/api/webfonts/${relativePath}`;
-
-          // fetch font binary
-          const fontBuffer = await getArrayBuffer(fontUrl);
-
-          // convert to base64
-          const base64Font = arrayBufferToBase64(fontBuffer);
-
-          // replace original src line
-          updatedCSS = updatedCSS.replace(
-            m[0],
-            `src: url("data:font/woff2;base64,${base64Font}")`,
-          );
-        }
-
-        return `<style>${updatedCSS}</style>`;
-      }),
-    );
-
-    const fontLinks = fontLinksArray.join("\n");
+        return `<link rel="stylesheet" href="/api/webfonts/${ebis}.css">`;
+      })
+      .join("\n");
 
     let html = templates["bcv_bible_page"]
       .replace("%%POLYFY%%", srcPolyfill)

@@ -4,7 +4,8 @@ export const obs_plus_notes_page = `<!DOCTYPE html>
     <meta charset="UTF-8">
     <style>
     %%CSS%%
-    </style>    
+    </style>
+    %%FONTLINKS%%    
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <script src="%%POLYFY%%"></script>
     <title>%%TITLE%%</title>

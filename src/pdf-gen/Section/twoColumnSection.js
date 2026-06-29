@@ -163,7 +163,13 @@ export class twoColumnSection extends Section {
     const qualified_id = `${section.id}_${section.bcvRange}`;
     const server = window.location.origin;
     let srcPolyfill = `${server}/api/app-resources/pdf/paged.polyfill.js`;
+    const fontLinks = options.fontFamily
+      .map((e) => {
+        const ebis = e.replace("Pankosmia", "pankosmia").replaceAll(" ", "_");
 
+        return `<link rel="stylesheet" href="/api/webfonts/${ebis}.css">`;
+      })
+      .join("\n");
     const headerHtml = templates["two_column_header_page"]
       .replace(
         "%%TITLE%%",
@@ -175,7 +181,8 @@ export class twoColumnSection extends Section {
       .replace(
         "%%CSS%%",
         await getCssFromLookUp(options.cssLookUp, "two_col_header_page_styles"),
-      );
+      )
+      .replace("%%FONTLINKS%%", fontLinks);
     let uuidHeader = await toTemp(headerHtml);
     let pdfUuidHeader = await window.api.generatePdf(uuidHeader);
     manifest.push({
@@ -235,6 +242,7 @@ export class twoColumnSection extends Section {
         );
       verses.push(verseHtml);
     }
+
     let html = templates["two_column_page"]
       .replace(
         "%%TITLE%%",
@@ -246,7 +254,8 @@ export class twoColumnSection extends Section {
         "%%CSS%%",
         await getCssFromLookUp(options.cssLookUp, "two_col_page_styles"),
       )
-      .replace("%%POLYFY%%", srcPolyfill);
+      .replace("%%POLYFY%%", srcPolyfill)
+      .replace("%%FONTLINKS%%", fontLinks);
     let uuidHtml = await toTemp(html);
     let pdfUuid = await window.api.generatePdf(uuidHtml);
     manifest.push({

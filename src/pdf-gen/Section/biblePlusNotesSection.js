@@ -333,6 +333,14 @@ export class biblePlusNotesSection extends Section {
       }
     }
     const server = window.location.origin;
+    const fontLinks = options.fontFamily
+      .map((e) => {
+        const ebis = e.replace("Pankosmia", "pankosmia").replaceAll(" ", "_");
+
+        return `<link rel="stylesheet" href="/api/webfonts/${ebis}.css">`;
+      })
+      .join("\n");
+
     let srcPolyfill = `${server}/api/app-resources/pdf/paged.polyfill.js`;
     let html =
       section?.content?.notesPosition === "columns"
@@ -342,8 +350,8 @@ export class biblePlusNotesSection extends Section {
       .replace("%%POLYFY%%", srcPolyfill)
       .replace("%%TITLE%%", `${qualified_id} - ${section.type}`)
       .replace("%%BODY%%", verses.join("\n"))
-      .replace("%%BOOKNAME%%", bookName);
-
+      .replace("%%BOOKNAME%%", bookName)
+      .replace("%%FONTLINKS%%", fontLinks);
     let css = await getCssFromLookUp(
       options.cssLookUp,
       section.content.notesPosition === "columns"

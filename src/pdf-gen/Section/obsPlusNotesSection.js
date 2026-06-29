@@ -191,6 +191,11 @@ export class obsPlusNotesSection extends Section {
       }
       const qualified_id = `${section.id}_${section.bcvRange}`;
       const server = window.location.origin;
+      const fontLinks = options.fontFamily.map((e) => {
+        const ebis = e.replace("Pankosmia", "pankosmia").replaceAll(" ", "_");
+
+        return `<link rel="stylesheet" href="/api/webfonts/${ebis}.css">`;
+      });
       let srcPolyfill = `${server}/api/app-resources/pdf/paged.polyfill.js`;
       let html = templates["obs_page"]
         .replace("%%POLYFY%%", srcPolyfill)
@@ -198,8 +203,8 @@ export class obsPlusNotesSection extends Section {
           "%%TITLE%%",
           `${section.id.replace("%%bookCode%%", name)} - ${section.type}`,
         )
-        .replace("%%BODY%%", markdown);
-
+        .replace("%%BODY%%", markdown)
+        .replace("%%FONTLINKS%%", fontLinks);
       let css = await getCssFromLookUp(
         options.cssLookUp,
         "obs_plus_notes_page_styles",

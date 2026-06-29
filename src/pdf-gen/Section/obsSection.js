@@ -129,6 +129,11 @@ export class obsSection extends Section {
 
       const server = window.location.origin;
       let srcPolyfill = `${server}/api/app-resources/pdf/paged.polyfill.js`;
+      const fontLinks = options.fontFamily.map((e) => {
+        const ebis = e.replace("Pankosmia", "pankosmia").replaceAll(" ", "_");
+
+        return `<link rel="stylesheet" href="/api/webfonts/${ebis}.css">`;
+      });
       let html = templates["obs_page"]
         .replace("%%POLYFY%%", srcPolyfill)
         .replace(
@@ -139,7 +144,8 @@ export class obsSection extends Section {
         .replace(
           "%%CSS%%",
           await getCssFromLookUp(options.cssLookUp, "obs_page_styles"),
-        );
+        )
+        .replace("%%FONTLINKS%%", fontLinks);
 
       let uuidHtml = await toTemp(html);
       //   section.doPdfCallback &&

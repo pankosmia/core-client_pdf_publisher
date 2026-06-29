@@ -5,6 +5,7 @@ export const page_number_master = `<!DOCTYPE html>
     <style>
     %%CSS%%
     </style>
+    %%FONTLINKS%%
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <script src="%%POLYFY%%"></script>
     <title>page number master</title>

@@ -77,11 +77,18 @@ export class bookNoteSection extends Section {
     const qualified_id = `${section.id}_${section.bcvRange}`;
     const server = window.location.origin;
     let srcPolyfill = `${server}/api/app-resources/pdf/paged.polyfill.js`;
+    const fontLinks = options.fontFamily
+      .map((e) => {
+        const ebis = e.replace("Pankosmia", "pankosmia").replaceAll(" ", "_");
+
+        return `<link rel="stylesheet" href="/api/webfonts/${ebis}.css">`;
+      })
+      .join("\n");
     let html = templates["non_juxta_page"]
       .replace("%%POLYFY%%", srcPolyfill)
       .replace("%%TITLE%%", title)
-      .replace("%%BODY%%", `<h1>${title}</h1>\n\n${body}`);
-
+      .replace("%%BODY%%", `<h1>${title}</h1>\n\n${body}`)
+      .replace("%%FONTLINKS%%", fontLinks);
     let htmlUuid = await toTemp(html);
     let pdfUuid = await window.api.generatePdf(htmlUuid);
 

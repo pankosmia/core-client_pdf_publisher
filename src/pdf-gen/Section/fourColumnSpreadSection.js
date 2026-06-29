@@ -144,6 +144,13 @@ export class fourColumnSpreadSection extends Section {
     const qualified_id = `${section.id}_${section.bcvRange}`;
     const server = window.location.origin;
     let srcPolyfill = `${server}/api/app-resources/pdf/paged.polyfill.js`;
+    const fontLinks = options.fontFamily
+      .map((e) => {
+        const ebis = e.replace("Pankosmia", "pankosmia").replaceAll(" ", "_");
+
+        return `<link rel="stylesheet" href="/api/webfonts/${ebis}.css">`;
+      })
+      .join("\n");
     const headerHtml = templates["four_column_header_page"]
       .replace(
         "%%TITLE%%",
@@ -160,7 +167,8 @@ export class fourColumnSpreadSection extends Section {
           options.cssLookUp,
           "four_col_header_page_styles",
         ),
-      );
+      )
+      .replace("%%FONTLINKS%%", fontLinks);
     let uuidHeader = await toTemp(headerHtml);
     let pdfHeaderfUuid = await window.api.generatePdf(uuidHeader);
 
@@ -218,7 +226,8 @@ export class fourColumnSpreadSection extends Section {
       .replace(
         "%%CSS%%",
         await getCssFromLookUp(options.cssLookUp, "four_col_page_styles"),
-      );
+      )
+      .replace("%%FONTLINKS%%", fontLinks);
     let uuidBody = await toTemp(html);
     let pdfUuid = await window.api.generatePdf(uuidBody);
 
