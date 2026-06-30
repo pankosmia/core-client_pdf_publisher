@@ -11,7 +11,6 @@
     "deep-equal": "^2.2.3",
     "isomorphic-dompurify": "^2.36.0",
     "marked": "^18.0.2",
-    "md5": "^2.3.0",
     "pankosmia-lib": "^0.0.3",
     "pankosmia-rcl": "^0.2.5",
     "pdf-lib": "^1.17.1",

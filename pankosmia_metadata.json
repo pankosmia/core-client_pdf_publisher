@@ -147,6 +147,14 @@
     "Add": {
       "en": "Add",
       "fr": "Ajouter"
+    },
+    "save_success": {
+      "en": "Your project was successfully saved",
+      "fr": "Votre projet a été sauvegardé avec succès"
+    },
+    "save_error": {
+      "en": "An error occurred while saving:",
+      "fr": "Une erreur est survenue lors de la sauvegarde :"
     }
   }
 }

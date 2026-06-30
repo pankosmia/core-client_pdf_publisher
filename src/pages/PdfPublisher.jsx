@@ -40,6 +40,7 @@ import ArrowLeft from "../components/utils/arrow";
 import { sectionHandlerLookup } from "../pdf-gen/sectionHandlerLookup";
 import FloatingTextMenu from "../components/SpeedDial/FloatingTextMenu";
 import FirefoxInstaller from "../components/FirefoxInstaller";
+import { useSnackbar } from "notistack";
 
 const allowedSelected = [
   "md",
@@ -58,6 +59,7 @@ const allowedSelected = [
 export function PdfPublisher() {
   const { debugRef } = useContext(debugContext);
   const { i18nRef } = useContext(i18nContext);
+  const { enqueueSnackbar } = useSnackbar();
   const { currentProjectRef } = useContext(currentProjectContext);
   // fake selected project
   const [projectSummaries, setProjectSummaries] = useState({});
@@ -267,6 +269,21 @@ export function PdfPublisher() {
                 global: JSON.parse(headerInfo),
                 sections: wrappers,
               });
+              enqueueSnackbar(
+                doI18n(
+                  `pages:core-client_pdf_publisher:save_success`,
+                  i18nRef.current,
+                ),
+                { variant: "success" },
+              );
+            } else {
+              enqueueSnackbar(
+                doI18n(
+                  `pages:core-client_pdf_publisher:save_error`,
+                  i18nRef.current,
+                ) + response.error,
+                { variant: "error" },
+              );
             }
           }}
           sx={{
