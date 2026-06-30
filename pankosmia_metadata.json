@@ -1,6 +1,8 @@
 {
   "id": "core-client_pdf_publisher",
   "minServerVersion": "0.16.16",
+  "exclude_from_menu": true,
+  "exclude_from_dashboard": true,
   "require": {
     "net": false,
     "debug": false
