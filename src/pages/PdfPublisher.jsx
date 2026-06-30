@@ -55,7 +55,35 @@ const allowedSelected = [
   "bcvNotes",
   "scriptureSrc",
 ];
+function checkPathsSections(manifest, sections) {
+  let val = true;
+  sections.forEach((s) => {
+    if (s.content) {
+      Object.entries(s.content).forEach(([k, v]) => {
+        if (allowedSelected.includes(k)) {
+          console.log([k, v]);
+          if (typeof v === typeof "string") {
+            val = val && manifest[v] != null;
+          } else if (typeof v === typeof {}) {
+            val = val && checkPathsSections(manifest, v);
+          }
+        }
+      });
+    } else {
+      Object.entries(s).forEach(([k, v]) => {
+        if (allowedSelected.includes(k)) {
+          console.log([k, v]);
 
+          if (typeof v === typeof "string") {
+            val = val && manifest[v] != null;
+          }
+        }
+      });
+    }
+  });
+
+  return val;
+}
 export function PdfPublisher() {
   const { debugRef } = useContext(debugContext);
   const { i18nRef } = useContext(i18nContext);
@@ -180,6 +208,11 @@ export function PdfPublisher() {
     let manifest = await originatePdfs(options, null);
     await assemblePdfs(options, null, manifest);
   }
+  console.log(
+    wrappers.forEach((w) =>
+      console.log(w, checkPathsSections(projectSummaries, w.sections)),
+    ),
+  );
   useEffect(() => {
     const getProjectSummaries = async () => {
       const summariesResponse = await getJson(
@@ -579,18 +612,60 @@ export function PdfPublisher() {
                                                                             1,
                                                                         )}{" "}
                                                                       :
-                                                                      {
+                                                                      {projectSummaries[
+                                                                        v
+                                                                      ]
+                                                                        ?.name ? (
                                                                         projectSummaries[
                                                                           v
                                                                         ]?.name
-                                                                      }
+                                                                      ) : (
+                                                                        <Typography
+                                                                          variant="body2"
+                                                                          color="text.primary"
+                                                                        >{`${doI18n(
+                                                                          `pages:core-client_pdf_publisher:missing_ressources`,
+                                                                          i18nRef.current,
+                                                                        )} : ${v}`}</Typography>
+                                                                      )}
                                                                     </Typography>
                                                                   ),
                                                                 ),
                                                           )}
                                                         </Box>
-                                                      ) : (
+                                                      ) : projectSummaries[
+                                                          value
+                                                        ]?.name ? (
                                                         `${field?.label?.[lang]}: ${projectSummaries[value]?.name}`
+                                                      ) : (
+                                                        <Box
+                                                          sx={{
+                                                            display: "flex",
+                                                            flexDirection:
+                                                              "row",
+                                                          }}
+                                                        >
+                                                          <Typography
+                                                            variant="body2"
+                                                            color="text.secondary"
+                                                          >
+                                                            {`${
+                                                              field?.label?.[
+                                                                lang
+                                                              ]
+                                                            } : `}
+                                                          </Typography>
+
+                                                          <Typography
+                                                            variant="body2"
+                                                            color="text.primary"
+                                                          >
+                                                            {`${doI18n(
+                                                              `pages:core-client_pdf_publisher:missing_ressources`,
+                                                              i18nRef.current,
+                                                            )} : ${value}`}
+                                                          </Typography>
+                                                        </Box>
                                                       )}
                                                     </Typography>
                                                   );
@@ -664,6 +739,11 @@ export function PdfPublisher() {
           }}
         >
           <Button
+            disabled={
+              !wrappers.every((w) =>
+                checkPathsSections(projectSummaries, w.sections),
+              )
+            }
             variant="contained"
             onClick={async () => {
               await PrintPdf();

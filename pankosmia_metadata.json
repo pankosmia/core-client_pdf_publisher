@@ -155,6 +155,10 @@
     "save_error": {
       "en": "An error occurred while saving:",
       "fr": "Une erreur est survenue lors de la sauvegarde :"
+    },
+    "missing_ressources": {
+      "en": "You are missing ressources at",
+      "fr": "Il vous manques des ressources à"
     }
   }
 }
