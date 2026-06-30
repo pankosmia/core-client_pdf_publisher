@@ -401,6 +401,14 @@ export class jxlSpreadSection extends Section {
     }
     const server = window.location.origin;
     let srcPolyfill = `${server}/api/app-resources/pdf/paged.polyfill.js`;
+    const fontLinks = options.fontFamily
+      .map((e) => {
+        const ebis = e.replace("Pankosmia", "pankosmia").replaceAll(" ", "_");
+
+        return `<link rel="stylesheet" href="/api/webfonts/${ebis}.css">`;
+      })
+      .join("\n");
+
     let html = templates["juxta_page"]
       .replace(
         "%%TITLE%%",
@@ -411,7 +419,8 @@ export class jxlSpreadSection extends Section {
       .replace(
         "%%CSS%%",
         await getCssFromLookUp(options.cssLookUp, "juxta_page_styles"),
-      );
+      )
+      .replace("%%FONTLINKS%%", fontLinks);
     let htmlUuid = await toTemp(html);
     let pdfUuid = await window.api.generatePdf(htmlUuid);
     manifest.push({

@@ -436,6 +436,15 @@ export class jxlSimpleSection extends Section {
       if (sentenceN % 25 === 24) {
         const server = window.location.origin;
         let srcPolyfill = `${server}/api/app-resources/pdf/paged.polyfill.js`;
+        const fontLinks = options.fontFamily
+          .map((e) => {
+            const ebis = e
+              .replace("Pankosmia", "pankosmia")
+              .replaceAll(" ", "_");
+
+            return `<link rel="stylesheet" href="/api/webfonts/${ebis}.css">`;
+          })
+          .join("\n");
 
         let htmlContent = templates["simple_juxta_page"]
           .replace("%%SENTENCES%%", sentences.join(""))
@@ -446,8 +455,8 @@ export class jxlSimpleSection extends Section {
               "simple_juxta_page_styles",
             ),
           )
-          .replace("%%POLYFY%%", srcPolyfill);
-
+          .replace("%%POLYFY%%", srcPolyfill)
+          .replace("%%FONTLINKS%%", fontLinks);
         let uuidHtml = await toTemp(htmlContent);
         let pdfPathUuid = await window.api.generatePdf(uuidHtml);
         sentences = [];
@@ -463,14 +472,21 @@ export class jxlSimpleSection extends Section {
     if (sentences.length > 0) {
       const server = window.location.origin;
       let srcPolyfill = `${server}/api/app-resources/pdf/paged.polyfill.js`;
+      const fontLinks = options.fontFamily
+        .map((e) => {
+          const ebis = e.replace("Pankosmia", "pankosmia").replaceAll(" ", "_");
 
+          return `<link rel="stylesheet" href="/api/webfonts/${ebis}.css">`;
+        })
+        .join("\n");
       let htmlContent = templates["simple_juxta_page"]
         .replace("%%SENTENCES%%", sentences.join(""))
         .replace(
           "%%CSS%%",
           await getCssFromLookUp(options.cssLookUp, "simple_juxta_page_styles"),
         )
-        .replace("%%POLYFY%%", srcPolyfill);
+        .replace("%%POLYFY%%", srcPolyfill)
+        .replace("%%FONTLINKS%%", fontLinks);
 
       let uuidHtml = await toTemp(htmlContent);
       let pdfPathUuid = await window.api.generatePdf(uuidHtml);

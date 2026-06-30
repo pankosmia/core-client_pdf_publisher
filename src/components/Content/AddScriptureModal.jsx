@@ -146,9 +146,9 @@ export default function AddScriptureModal({
         </Typography>
       </Button>
       <PanDialog
+        size="lg"
         isOpen={openResourcesDialog}
         closeFn={() => setOpenResourcesDialog(false)}
-        size="md"
         titleLabel={``}
       >
         <DialogContent>

@@ -5,6 +5,7 @@ export const bible_plus_notes_in_columns_page = `<!DOCTYPE html>
     <style>
     %%CSS%%
     </style>
+    %%FONTLINKS%%
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <script src="%%POLYFY%%"></script>
     <title>%%TITLE%%</title>

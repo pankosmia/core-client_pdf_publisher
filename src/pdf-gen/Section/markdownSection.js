@@ -85,6 +85,13 @@ export class markdownSection extends Section {
     );
     const server = window.location.origin;
     let srcPolyfill = `${server}/api/app-resources/pdf/paged.polyfill.js`;
+    const fontLinks = options.fontFamily
+      .map((e) => {
+        const ebis = e.replace("Pankosmia", "pankosmia").replaceAll(" ", "_");
+
+        return `<link rel="stylesheet" href="/api/webfonts/${ebis}.css">`;
+      })
+      .join("\n");
     let htmlContent = templates[
       section.content.forceMono ? "markdown_mono_page" : "markdown_page"
     ]
@@ -102,7 +109,8 @@ export class markdownSection extends Section {
             : "markdown_page_styles",
         ),
       )
-      .replace("%%POLYFY%%", srcPolyfill);
+      .replace("%%POLYFY%%", srcPolyfill)
+      .replace("%%FONTLINKS%%", fontLinks);
 
     let uuid = await toTemp(htmlContent);
     pdfPath = await window.api.generatePdf(uuid);

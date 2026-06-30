@@ -5,6 +5,7 @@ export const simple_juxta_page = `<!DOCTYPE html>
     <style>
     %%CSS%%
     </style>
+    %%FONTLINKS%%
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <script src="%%POLYFY%%"></script>
     <title>%%TITLE%%</title>

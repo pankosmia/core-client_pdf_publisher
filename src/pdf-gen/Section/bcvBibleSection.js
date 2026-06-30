@@ -1,3 +1,4 @@
+import { getText } from "pithekos-lib";
 import {
   unpackCellRange,
   pkWithDocs,
@@ -192,14 +193,26 @@ export class bcvBibleSection extends Section {
         );
       verses.push(verseHtml);
     }
+
     const qualified_id = `${section.id}_${section.bcvRange}`;
     const server = window.location.origin;
+
     let srcPolyfill = `${server}/api/app-resources/pdf/paged.polyfill.js`;
+    const fontLinks = options.fontFamily
+      .map((e) => {
+        const ebis = e.replace("Pankosmia", "pankosmia").replaceAll(" ", "_");
+
+        return `<link rel="stylesheet" href="/api/webfonts/${ebis}.css">`;
+      })
+      .join("\n");
+
     let html = templates["bcv_bible_page"]
       .replace("%%POLYFY%%", srcPolyfill)
       .replace("%%TITLE%%", `${qualified_id} - ${section.type}`)
       .replace("%%BODY%%", verses.join("\n"))
-      .replace("%%BOOKNAME%%", bookName);
+      .replace("%%BOOKNAME%%", bookName)
+      .replace("%%FONTLINKS%%", fontLinks);
+
     let css = await getCssFromLookUp(
       options.cssLookUp,
       "bcv_bible_page_styles",

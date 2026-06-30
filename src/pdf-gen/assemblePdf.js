@@ -20,6 +20,13 @@ const doPageNumber = async ({ options, numPages, Css }) => {
   let pageNumbersHtmls = [...Array(numPages).keys()].map((pageNum) =>
     pageNumTemplate.replace("%%PAGENUM%%", pageNum + 1),
   );
+  const fontLinks = options.fontFamily
+    .map((e) => {
+      const ebis = e.replace("Pankosmia", "pankosmia").replaceAll(" ", "_");
+
+      return `<link rel="stylesheet" href="/api/webfonts/${ebis}.css">`;
+    })
+    .join("\n");
   const pageNumbersPaths = [];
   // Make PDFs of slices of page numbers
   while (pageNumbersHtmls.length > 0) {
@@ -29,7 +36,9 @@ const doPageNumber = async ({ options, numPages, Css }) => {
         await getCssFromLookUp(options.cssLookUp, "page_number_master_styles"),
       )
       .replace("%%CONTENT%%", pageNumbersHtmls.slice(0, 100).join(""))
-      .replace("%%POLYFY%%", srcPolyfill);
+      .replace("%%POLYFY%%", srcPolyfill)
+      .replace("%%FONTLINKS%%", fontLinks);
+
     let uuid = await toTemp(html);
     const pdfPath = await window.api.generatePdf(uuid);
     pageNumbersPaths.push(pdfPath);

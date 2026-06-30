@@ -314,6 +314,14 @@ export class paraBibleSection extends Section {
     };
     const server = window.location.origin;
     let srcPolyfill = `${server}/api/app-resources/pdf/paged.polyfill.js`;
+    const fontLinks = options.fontFamily
+      .map((e) => {
+        const ebis = e.replace("Pankosmia", "pankosmia").replaceAll(" ", "_");
+
+        return `<link rel="stylesheet" href="/api/webfonts/${ebis}.css">`;
+      })
+      .join("\n");
+
     const qualified_id = `${section.id}_${section.bcvRange}`;
     cl.renderDocument({ docId, config: sectionConfig, output });
 
@@ -325,7 +333,8 @@ export class paraBibleSection extends Section {
       .replace(
         "%%CSS%%",
         await getCssFromLookUp(options.cssLookUp, "para_bible_page_styles"),
-      );
+      )
+      .replace("%%FONTLINKS%%", fontLinks);
     let htmlUuid = await toTemp(html);
     let pdfUuid = await window.api.generatePdf(htmlUuid);
     manifest.push({
