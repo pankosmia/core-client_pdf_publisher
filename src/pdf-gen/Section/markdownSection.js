@@ -2,7 +2,7 @@ import DOMPurify from "isomorphic-dompurify";
 import { marked } from "marked";
 import { Section } from "./section";
 import { getCssFromLookUp, toTemp } from "../helpers/PankosmiaUtils";
-import { getText } from "pithekos-lib";
+import { getText } from "pankosmia-lib/http";
 export class markdownSection extends Section {
   requiresWrapper() {
     return [];

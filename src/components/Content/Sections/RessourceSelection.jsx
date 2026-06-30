@@ -10,7 +10,8 @@ import {
 import AddScriptureModal from "../AddScriptureModal";
 import { convertionTypes } from "../../../pdf-gen/helpers/constants";
 import { useState, useEffect, useContext } from "react";
-import { doI18n, getJson } from "pithekos-lib";
+import { getJson } from "pankosmia-lib/http";
+import { doI18n } from "pankosmia-lib/i18n";
 import { debugContext, i18nContext } from "pankosmia-rcl";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { iconBySection } from "../../../pdf-gen/helpers/constants";
@@ -31,6 +32,29 @@ const allowedSelected = [
   "tNotes",
   "glossNotes",
 ];
+const isFieldsValid = (fields, sectionData, isCard) => {
+  return fields
+    .filter((f) => allowedSelected.includes(f.id))
+    .every((f) => {
+      if (f.typeSpec) {
+        // typeSpec instance arrays always live under .content
+        const instances = sectionData?.content?.[f.id];
+        const minCount = f?.nValues?.[0] ?? 0;
+        if (!Array.isArray(instances) || instances.length < minCount)
+          return false;
+        // each instance is itself a non-card section: recurse with isCard=false
+        return instances.every((inst) =>
+          isFieldsValid(f.typeSpec, inst, false),
+        );
+      }
+
+      const isRequired = f?.nValues?.[0] >= 1;
+      if (!isRequired) return true;
+
+      const value = isCard ? sectionData?.content?.[f.id] : sectionData?.[f.id];
+      return value !== undefined && value !== null && value !== "";
+    });
+};
 
 export function RessourceSelection({
   currentSectionsSignature,
@@ -126,20 +150,20 @@ export function RessourceSelection({
     }
     getLang();
   }, []);
-  useEffect(() => {
-    const allValid = currentSectionsSignature.every((section, sectionIndex) => {
-      return section.fields
-        .filter((f) => allowedSelected.includes(f.id))
-        .every((f) => {
-          const isRequired = f?.nValues?.[0] >= 1;
-          if (!isRequired) return true;
-          const value = currentSections?.[sectionIndex]?.[f.id];
-          return value !== undefined && value !== null && value !== "";
-        });
-    });
 
-    setIsRessourcesStepComplete(allValid);
-  }, [currentSectionsSignature, setIsRessourcesStepComplete]);
+  useEffect(() => {
+    if (card) {
+      const allValid = currentSectionsSignature.every((section, sectionIndex) =>
+        isFieldsValid(section.fields, currentSections?.[sectionIndex], true),
+      );
+      setIsRessourcesStepComplete(allValid);
+    }
+  }, [
+    currentSections,
+    currentSectionsSignature,
+    card,
+    setIsRessourcesStepComplete,
+  ]);
 
   useEffect(() => {
     if (currentSections && summary) {
@@ -189,7 +213,7 @@ export function RessourceSelection({
 
   const renderSection = (e, id) => {
     return (
-      <Box>
+      <Box key={id}>
         {e.fields
           .filter((f) => allowedSelected.includes(f.id))
           .map((f, ids) => {
@@ -204,11 +228,11 @@ export function RessourceSelection({
                 nInstances >= maxCount;
 
               return (
-                <Box>
+                <Box key={ids}>
                   {Array.from({ length: nInstances }).map((_, i) => {
                     // Read/write this instance's data from currentSections[id][f.id][i]
                     const instanceData =
-                      currentSections?.[id]?.[f.id]?.[i] ?? {};
+                      currentSections?.[id]?.content?.[f.id]?.[i] ?? {};
                     const minCount = f?.nValues?.[0] ?? 0;
 
                     const canRemove = i >= minCount;
@@ -217,11 +241,9 @@ export function RessourceSelection({
                         const copy = prev.map((s) => ({ ...s }));
                         if (!copy[id]) copy[id] = {};
 
-                        const fieldArr = [...(copy[id][f.id] || [])];
+                        const fieldArr = [...(copy[id].content?.[f.id] || [])]; // <-- read from .content
                         const prevInstance = fieldArr[i] ?? {};
 
-                        // Child calls setCurrentSections(prev => { let copy = [...prev]; copy[0][f.id] = src; return copy })
-                        // So we simulate that: pass [prevInstance] as the "prev", get back the updated array, take index 0
                         if (typeof updater === "function") {
                           const fakeArr = [prevInstance];
                           const result = updater(fakeArr);
@@ -230,13 +252,17 @@ export function RessourceSelection({
                           fieldArr[i] = updater[0] ?? updater;
                         }
 
-                        copy[id] = { ...copy[id], [f.id]: fieldArr };
+                        copy[id].content = {
+                          ...copy[id].content,
+                          [f.id]: fieldArr,
+                        };
                         return copy;
                       });
                     };
 
                     return (
                       <Box
+                        key={i}
                         sx={{
                           display: "flex",
                           flexDirection: "row",
@@ -326,44 +352,59 @@ export function RessourceSelection({
                         gap: 2,
                       }}
                     >
-                      {currentSections?.[id]?.[f.id] ? (
-                        <Typography
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 0.5,
-                          }}
-                        >
-                          <Done fontSize="small" />
-                          {summary?.[currentSections[id][f.id]]?.name}
-                          {isRequired && (
-                            <span style={{ color: "black", marginLeft: 4 }}>
-                              *
-                            </span>
-                          )}
-                        </Typography>
-                      ) : (
-                        <Typography>
-                          {doI18n(
-                            `pages:core-client_pdf_publisher:selectRessource`,
-                            i18nRef.current,
-                          )}
-                          {isRequired && (
-                            <span style={{ color: "black", marginLeft: 4 }}>
-                              *
-                            </span>
-                          )}
-                        </Typography>
-                      )}
+                      {(() => {
+                        const selectedId = card
+                          ? currentSections?.[id]?.["content"]?.[f.id]
+                          : currentSections?.[id]?.[f.id];
+
+                        return selectedId ? (
+                          <Typography
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 0.5,
+                            }}
+                          >
+                            <Done fontSize="small" />
+                            {summary?.[selectedId]?.name}
+                            {isRequired && (
+                              <span style={{ color: "black", marginLeft: 4 }}>
+                                *
+                              </span>
+                            )}
+                          </Typography>
+                        ) : (
+                          <Typography>
+                            {doI18n(
+                              `pages:core-client_pdf_publisher:selectRessource`,
+                              i18nRef.current,
+                            )}
+                            {isRequired && (
+                              <span style={{ color: "black", marginLeft: 4 }}>
+                                *
+                              </span>
+                            )}
+                          </Typography>
+                        );
+                      })()}
                     </Box>
 
                     <Box sx={{ ml: "auto" }}>
                       <AddScriptureModal
                         ChangeInSection={(src) =>
                           setCurrentSections((prev) => {
-                            let copy = [...prev];
-                            copy[id][f.id] = src;
-                            return copy;
+                            if (card) {
+                              let copy = [...prev];
+                              copy[id].content = {
+                                ...copy[id].content,
+                                [f.id]: src,
+                              };
+                              return copy;
+                            } else {
+                              let copy = [...prev];
+                              copy[id] = { ...copy[id], [f.id]: src };
+                              return copy;
+                            }
                           })
                         }
                         type={convertionTypes[f.id]}

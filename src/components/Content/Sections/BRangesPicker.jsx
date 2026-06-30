@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { getJson, doI18n } from "pithekos-lib";
 
 import { Box, Card, Chip, CardContent, Typography } from "@mui/material";
 import { BIBLE_BOOKS } from "../../utils/booksOfTheBible";

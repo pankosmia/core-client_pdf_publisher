@@ -7,7 +7,7 @@ import {
   cvForSentence,
   pkWithDocs,
 } from "../helpers";
-import { getJson, getText } from "pithekos-lib";
+import { getJson, getText } from "pankosmia-lib/http";
 import books from "../Css/Ressources/books.json";
 import { Section } from "./section";
 import { getCssFromLookUp, toTemp } from "../helpers/PankosmiaUtils";

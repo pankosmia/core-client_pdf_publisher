@@ -1,8 +1,8 @@
 import { Box, Card, CardContent, Divider, Typography } from "@mui/material";
 import { FieldPicker } from "./FieldPicker/FieldPicker";
 import { useContext, useEffect, useState } from "react";
-import { getJson } from "pithekos-lib";
-import { doI18n } from "pithekos-lib";
+import { getJson } from "pankosmia-lib/http";
+import { doI18n } from "pankosmia-lib/i18n";
 import { i18nContext } from "pankosmia-rcl";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { iconBySection } from "../../../pdf-gen/helpers/constants";
@@ -26,6 +26,36 @@ const allowedSelected = [
   "glossNotes",
 ];
 
+const isFieldsValid = (fields, sectionData, isCard) => {
+  return fields
+    .filter(
+      (f) =>
+        allowedConfig.includes(f.typeName) ||
+        f.typeEnum ||
+        f.typeSpec ||
+        allowedSelected.includes(f.id),
+    )
+    .every((f) => {
+      if (f.typeSpec) {
+        // typeSpec instance arrays always live under .content
+        const instances = sectionData?.content?.[f.id];
+        const minCount = f?.nValues?.[0] ?? 0;
+        if (!Array.isArray(instances) || instances.length < minCount)
+          return false;
+        // each instance is itself a non-card section: recurse with isCard=false
+        return instances.every((inst) =>
+          isFieldsValid(f.typeSpec, inst, false),
+        );
+      }
+
+      const isRequired = f?.nValues?.[0] >= 1;
+      if (!isRequired) return true;
+
+      const value = isCard ? sectionData?.content?.[f.id] : sectionData?.[f.id];
+      return value !== undefined && value !== null && value !== "";
+    });
+};
+
 export function ConfigSection({
   currentSectionsSignature,
   currentSections,
@@ -47,25 +77,18 @@ export function ConfigSection({
   }, []);
 
   useEffect(() => {
-    const allValid = currentSectionsSignature.every((section, sectionIndex) => {
-      return section.fields
-        .filter(
-          (f) =>
-            allowedConfig.includes(f.typeName) ||
-            f.typeEnum ||
-            f.typeSpec ||
-            allowedSelected.includes(f.id),
-        )
-        .every((f) => {
-          const isRequired = f?.nValues?.[0] >= 1;
-          if (!isRequired) return true;
-          const value = currentSections?.[sectionIndex]?.[f.id];
-          return value !== undefined && value !== null && value !== "";
-        });
-    });
-    setIsRessourcesStepComplete(allValid);
-  }, [currentSections, currentSectionsSignature, setIsRessourcesStepComplete]);
-
+    if (card) {
+      const allValid = currentSectionsSignature.every((section, sectionIndex) =>
+        isFieldsValid(section.fields, currentSections?.[sectionIndex], true),
+      );
+      setIsRessourcesStepComplete(allValid);
+    }
+  }, [
+    currentSections,
+    currentSectionsSignature,
+    card,
+    setIsRessourcesStepComplete,
+  ]);
   const onDragEnd = (result) => {
     if (!result.destination) return;
 
@@ -95,30 +118,31 @@ export function ConfigSection({
           )
           .map((f, ids) => {
             if (f.typeSpec) {
-              const nInstances = currentSections?.[id]?.[f.id]?.length || 0;
+              const nInstances =
+                currentSections?.[id]?.content?.[f.id]?.length || 0;
               return Array.from({ length: nInstances }).map((_, i) => {
-                const instanceData = currentSections?.[id]?.[f.id]?.[i] ?? {};
-
+                const instanceData =
+                  currentSections?.[id]?.content?.[f.id]?.[i] ?? {};
                 const setInstanceData = (updater) => {
                   setCurrentSections((prev) => {
                     const copy = prev.map((s) => ({ ...s }));
                     if (!copy[id]) copy[id] = {};
 
-                    const fieldArr = [...(copy[id][f.id] || [])];
+                    const fieldArr = [...(copy[id].content?.[f.id] || [])]; // <-- read from .content
                     const prevInstance = fieldArr[i] ?? {};
 
                     if (typeof updater === "function") {
-                      const fakeArr = [{ ...prevInstance }];
+                      const fakeArr = [prevInstance];
                       const result = updater(fakeArr);
-                      fieldArr[i] = { ...prevInstance, ...result[0] };
+                      fieldArr[i] = result[0];
                     } else {
-                      fieldArr[i] = {
-                        ...prevInstance,
-                        ...(updater[0] ?? updater),
-                      };
+                      fieldArr[i] = updater[0] ?? updater;
                     }
 
-                    copy[id] = { ...copy[id], [f.id]: fieldArr };
+                    copy[id].content = {
+                      ...copy[id].content,
+                      [f.id]: fieldArr,
+                    };
                     return copy;
                   });
                 };
@@ -141,7 +165,7 @@ export function ConfigSection({
                         {
                           summary?.[
                             Object.entries(
-                              currentSections?.[id]?.[f.id][i],
+                              currentSections?.[id]?.content?.[f.id][i],
                             ).find(([k, v]) => allowedSelected.includes(k))[1]
                           ]?.name
                         }
@@ -165,8 +189,7 @@ export function ConfigSection({
             // Resource fields chosen in the previous step: read-only display only.
             if (allowedSelected.includes(f.id) && !f.typeSpec) {
               const isRequired = f?.nValues?.[0] >= 1;
-              const value = currentSections?.[id]?.[f.id];
-
+              const value = currentSections?.[id]?.content?.[f.id];
               return (
                 !sectionKey && (
                   <Box
@@ -201,9 +224,18 @@ export function ConfigSection({
                 currentFieldValue={currentSections?.[id]?.[f.id]}
                 ChangeInSection={(src) =>
                   setCurrentSections((prev) => {
-                    const copy = [...prev];
-                    copy[id] = { ...copy[id], [f.id]: src };
-                    return copy;
+                    if (card) {
+                      let copy = [...prev];
+                      copy[id].content = {
+                        ...copy[id].content,
+                        [f.id]: src,
+                      };
+                      return copy;
+                    } else {
+                      let copy = [...prev];
+                      copy[id] = { ...copy[id], [f.id]: src };
+                      return copy;
+                    }
                   })
                 }
               />

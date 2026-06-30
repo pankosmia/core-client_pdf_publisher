@@ -42,8 +42,10 @@ function FirefoxInstaller() {
     );
 
     return () => {
-      removeProgress();
-      removeComplete();
+      if (window?.electronAPI) {
+        removeProgress();
+        removeComplete();
+      }
     };
   }, []);
 

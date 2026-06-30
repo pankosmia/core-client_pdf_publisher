@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -8,9 +8,12 @@ import {
   InputLabel,
 } from "@mui/material";
 
-export function SelectOption({ title, type, option, handleChange }) {
-  const [selectedValue, setSelectedValue] = useState(option[0] || "");
+export function SelectOption({ title, type, option, handleChange, selected }) {
+  const [selectedValue, setSelectedValue] = useState(selected || option[0]);
 
+  useEffect(() => {
+    setSelectedValue(selected);
+  }, [selected]);
   const handleSelectChange = (e) => {
     const value = e.target.value;
     setSelectedValue(value);

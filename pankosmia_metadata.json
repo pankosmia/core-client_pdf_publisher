@@ -5,6 +5,15 @@
     "net": false,
     "debug": false
   },
+  "endpoints": {
+    "x-printspec": {
+      "edit": {
+        "doc": "main page for pdf print",
+        "label": "pages:core-client-workspace:main",
+        "url": ""
+      }
+    }
+  },
   "i18n": {
     "title": {
       "en": "PDF print"

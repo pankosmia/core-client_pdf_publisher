@@ -1,7 +1,7 @@
 import { marked } from "marked";
 import DOMPurify from "isomorphic-dompurify";
 import { Section } from "./section";
-import { getJson } from "pithekos-lib";
+import { getJson } from "pankosmia-lib/http";
 import { getCssFromLookUp, toTemp } from "../helpers/PankosmiaUtils";
 
 export class obsSection extends Section {
