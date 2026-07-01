@@ -30,7 +30,7 @@ export class obsPlusNotesSection extends Section {
         {
           id: "startOn",
           label: {
-            en: "Start Page Side",
+            en: "First page on",
             fr: "Côté pour première page",
           },
           typeEnum: [
@@ -51,7 +51,7 @@ export class obsPlusNotesSection extends Section {
             {
               id: "either",
               label: {
-                en: "Next Page",
+                en: "Next page",
                 fr: "Page suivante",
               },
             },
@@ -62,7 +62,7 @@ export class obsPlusNotesSection extends Section {
         {
           id: "showPageNumber",
           label: {
-            en: "Show Page Number",
+            en: "Show page numbers",
             fr: "Afficher numéro de page",
           },
           typeName: "boolean",
@@ -72,7 +72,7 @@ export class obsPlusNotesSection extends Section {
         {
           id: "obs",
           label: {
-            en: "OBS Source",
+            en: "OBS source",
             fr: "Source pour OBS",
           },
           typeName: "obs",
@@ -81,7 +81,7 @@ export class obsPlusNotesSection extends Section {
         {
           id: "obsImg",
           label: {
-            en: "OBS Source Images",
+            en: "OBS source images",
             fr: "Source pour images OBS",
           },
           typeName: "obsImg",
@@ -90,7 +90,7 @@ export class obsPlusNotesSection extends Section {
         {
           id: "notes",
           label: {
-            en: "Notes Source",
+            en: "Notes source",
             setupOneCSS,
 
             fr: "Source pour notes",

@@ -16,7 +16,7 @@ export class paraBibleSection extends Section {
         {
           id: "startOn",
           label: {
-            en: "Start Page Side",
+            en: "First page on",
             fr: "Côté pour première page",
           },
           nValues: [1, 1],
@@ -39,7 +39,7 @@ export class paraBibleSection extends Section {
             {
               id: "either",
               label: {
-                en: "Next Page",
+                en: "Next page",
                 fr: "Page suivante",
               },
             },
@@ -48,7 +48,7 @@ export class paraBibleSection extends Section {
         {
           id: "showPageNumber",
           label: {
-            en: "Show Page Number",
+            en: "Show page numbers",
             fr: "Afficher numéro de page",
           },
           typeName: "boolean",
@@ -58,7 +58,7 @@ export class paraBibleSection extends Section {
         {
           id: "scriptureSrc",
           label: {
-            en: "Scripture Text Source",
+            en: "Scripture text source",
             fr: "Source pour texte biblique",
           },
           typeName: "translationText",
@@ -67,7 +67,7 @@ export class paraBibleSection extends Section {
         {
           id: "scriptureType",
           label: {
-            en: "Scripture Text Type",
+            en: "Scripture text type",
             fr: "Type de texte biblique",
           },
           typeEnum: [
@@ -112,7 +112,7 @@ export class paraBibleSection extends Section {
           id: "showWordAtts",
           typeLiteral: false,
           label: {
-            en: "Show Word Atts",
+            en: "Show word atts",
             fr: "Afficher attributs des mots",
           },
           nValues: [1, 1],
@@ -122,7 +122,7 @@ export class paraBibleSection extends Section {
           id: "showTitles",
           typeName: "boolean",
           label: {
-            en: "Show Titles",
+            en: "Show titles",
             fr: "Afficher titres de livre",
           },
           nValues: [1, 1],
@@ -132,7 +132,7 @@ export class paraBibleSection extends Section {
           id: "showHeadings",
           typeName: "boolean",
           label: {
-            en: "Show Headings",
+            en: "Show headings",
             fr: "Afficher titres de section",
           },
           nValues: [1, 1],
@@ -142,7 +142,7 @@ export class paraBibleSection extends Section {
           id: "showIntroductions",
           typeName: "boolean",
           label: {
-            en: "Show Introductions",
+            en: "Show introductions",
             fr: "Afficher introductions",
           },
           nValues: [1, 1],
@@ -152,7 +152,7 @@ export class paraBibleSection extends Section {
           id: "showFootnotes",
           typeName: "boolean",
           label: {
-            en: "Show Footnotes",
+            en: "Show footnotes",
             fr: "Afficher notes de bas de page",
           },
           nValues: [1, 1],
@@ -162,17 +162,7 @@ export class paraBibleSection extends Section {
           id: "showXrefs",
           typeName: "boolean",
           label: {
-            en: "Show Cross-references",
-            fr: "Afficher références croisées",
-          },
-          nValues: [1, 1],
-          suggestedDefault: true,
-        },
-        {
-          id: "showXrefs",
-          typeName: "boolean",
-          label: {
-            en: "Show Cross-references",
+            en: "Show cross-references",
             fr: "Afficher références croisées",
           },
           nValues: [1, 1],
@@ -182,7 +172,7 @@ export class paraBibleSection extends Section {
           id: "showParaStyles",
           typeName: "boolean",
           label: {
-            en: "Show Paragraph Styles",
+            en: "Show paragraph styles",
             fr: "Afficher styles de paragraphes",
           },
           nValues: [1, 1],
@@ -192,7 +182,7 @@ export class paraBibleSection extends Section {
           id: "showCharacterMarkup",
           typeName: "boolean",
           label: {
-            en: "Show Character Markup",
+            en: "Show character-level formatting",
             fr: "Afficher styles de caractère",
           },
           nValues: [1, 1],
@@ -202,7 +192,7 @@ export class paraBibleSection extends Section {
           id: "showChapterLabels",
           typeName: "boolean",
           label: {
-            en: "Show Chapter Numbers",
+            en: "Show chapter numbers",
             fr: "Afficher numéros de chapitre",
           },
           nValues: [1, 1],
@@ -212,7 +202,7 @@ export class paraBibleSection extends Section {
           id: "showVersesLabels",
           typeName: "boolean",
           label: {
-            en: "Show Verse Numbers",
+            en: "Show verse numbers",
             fr: "Afficher numéros de versets",
           },
           nValues: [1, 1],
@@ -222,7 +212,7 @@ export class paraBibleSection extends Section {
           id: "showFirstVerseLabel",
           typeName: "boolean",
           label: {
-            en: "Show Verse Number for v1",
+            en: "Show verse number for verse one",
             fr: "Afficher numéro de verset pour v1",
           },
           nValues: [1, 1],

@@ -26,7 +26,7 @@ export class bcvBibleSection extends Section {
         {
           id: "startOn",
           label: {
-            en: "Start Page Side",
+            en: "First page on",
             fr: "Côté pour première page",
           },
           typeEnum: [
@@ -47,7 +47,7 @@ export class bcvBibleSection extends Section {
             {
               id: "either",
               label: {
-                en: "Next Page",
+                en: "Next page",
                 fr: "Page suivante",
               },
             },
@@ -58,7 +58,7 @@ export class bcvBibleSection extends Section {
         {
           id: "showPageNumber",
           label: {
-            en: "Show Page Number",
+            en: "Show page numbers",
             fr: "Afficher numéro de page",
           },
           typeName: "boolean",
@@ -68,7 +68,7 @@ export class bcvBibleSection extends Section {
         {
           id: "notes",
           label: {
-            en: "Notes Source",
+            en: "Notes source",
             fr: "Source pour notes",
           },
           typeName: "tNotes",
@@ -77,7 +77,7 @@ export class bcvBibleSection extends Section {
         {
           id: "scriptureSrc",
           label: {
-            en: "Scripture Text Source",
+            en: "Scripture text source",
             fr: "Source pour texte biblique",
           },
           typeName: "translationText",
@@ -86,7 +86,7 @@ export class bcvBibleSection extends Section {
         {
           id: "scriptureType",
           label: {
-            en: "Scripture Text Type",
+            en: "Scripture text type",
             fr: "Type de texte biblique",
           },
           typeEnum: [
