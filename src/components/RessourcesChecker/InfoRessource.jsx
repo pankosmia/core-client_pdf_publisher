@@ -43,7 +43,7 @@ export const InfoRessource = ({
         `pages:core-client_pdf_publisher:missing_book`,
         i18nRef.current,
       ).replace(
-        "%%RESSOURCE%%",
+        "%%RESOURCE%%",
         summary?.[pathElem]?.name,
       )} ${toolTipErrors.bookCode}`,
     );
@@ -53,6 +53,9 @@ export const InfoRessource = ({
       `${doI18n(
         `pages:core-client_pdf_publisher:flavor_miss_match`,
         i18nRef.current,
+      ).replace(
+        "%%RESOURCE%%",
+        summary?.[pathElem]?.name,
       )} ${toolTipErrors.flavor}`,
     );
   }
@@ -74,7 +77,7 @@ export const InfoRessource = ({
             {doI18n(
               `pages:core-client_pdf_publisher:ressource_errors`,
               i18nRef.current,
-            )}
+            ).replace("%%RESOURCE%%", summary?.[pathElem]?.name)}
           </Typography>
         </Box>
       </Tooltip>
