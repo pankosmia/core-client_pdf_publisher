@@ -5,6 +5,7 @@ import {
   CardContent,
   Divider,
   IconButton,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import AddScriptureModal from "../AddScriptureModal";
@@ -15,8 +16,12 @@ import { doI18n } from "pankosmia-lib/i18n";
 import { debugContext, i18nContext } from "pankosmia-rcl";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { iconBySection } from "../../../pdf-gen/helpers/constants";
-import { Delete, Done, DragIndicator } from "@mui/icons-material";
-
+import { Delete, DragIndicator } from "@mui/icons-material";
+import {
+  checkPathBooks,
+  checkPathsSections,
+} from "../../RessourcesChecker/checkSpecs";
+import { InfoRessource } from "../../RessourcesChecker/InfoRessource";
 const allowedSelected = [
   "md",
   "pdf",
@@ -153,9 +158,14 @@ export function RessourceSelection({
 
   useEffect(() => {
     if (card) {
-      const allValid = currentSectionsSignature.every((section, sectionIndex) =>
+      let allValid = currentSectionsSignature.every((section, sectionIndex) =>
         isFieldsValid(section.fields, currentSections?.[sectionIndex], true),
       );
+      allValid =
+        allValid &&
+        checkPathsSections(summary, currentSections, allowedSelected) &&
+        checkPathBooks(summary, currentSections, bRanges, allowedSelected);
+
       setIsRessourcesStepComplete(allValid);
     }
   }, [
@@ -163,6 +173,7 @@ export function RessourceSelection({
     currentSectionsSignature,
     card,
     setIsRessourcesStepComplete,
+    bRanges,
   ]);
 
   useEffect(() => {
@@ -293,6 +304,7 @@ export function RessourceSelection({
                         <Box sx={{ flex: 1, minWidth: 0 }}>
                           <RessourceSelection
                             key={i}
+                            bRanges={bRanges}
                             sectionKey={i}
                             currentSectionsSignature={[{ fields: f.typeSpec }]}
                             currentSections={[instanceData]}
@@ -335,6 +347,9 @@ export function RessourceSelection({
                     {f.label[lang]?.includes("#")
                       ? f.label[lang].replace("#", sectionKey + 1)
                       : f.label[lang]}
+                    {isRequired && (
+                      <span style={{ color: "black", marginLeft: 4 }}>*</span>
+                    )}
                   </Typography>
                   <Box
                     sx={{
@@ -365,13 +380,14 @@ export function RessourceSelection({
                               gap: 0.5,
                             }}
                           >
-                            <Done fontSize="small" />
-                            {summary?.[selectedId]?.name}
-                            {isRequired && (
-                              <span style={{ color: "black", marginLeft: 4 }}>
-                                *
-                              </span>
-                            )}
+                            {/* {summary?.[selectedId]?.name} */}
+                            <InfoRessource
+                              summary={summary}
+                              pathElem={selectedId}
+                              flavors={convertionTypes[f.id]}
+                              bRanges={bRanges}
+                              i18nRef={i18nRef}
+                            />
                           </Typography>
                         ) : (
                           <Typography>

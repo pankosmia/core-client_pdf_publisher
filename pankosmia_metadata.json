@@ -159,6 +159,18 @@
     "missing_ressources": {
       "en": "You are missing ressources at",
       "fr": "Il vous manques des ressources à"
+    },
+    "missing_book": {
+      "en": "%%RESSOURCE%% is missing book(s) :",
+      "fr": "%%RESSOURCE%% manque les livres ::"
+    },
+    "flavor_miss_match": {
+      "en": "The selected ressources is not of the right type : ",
+      "fr": "La ressource selectionner n'est pas du bon type:"
+    },
+    "ressource_errors": {
+      "en": "This ressource have multiple errors",
+      "fr": "Cette ressource a plusieurs erreurs"
     }
   }
 }

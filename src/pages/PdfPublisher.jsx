@@ -25,7 +25,7 @@ import {
 } from "@mui/material";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import "react-pdf/dist/Page/AnnotationLayer.css";
-import { iconBySection } from "../pdf-gen/helpers/constants";
+import { convertionTypes, iconBySection } from "../pdf-gen/helpers/constants";
 import { SelectOption } from "../components/SelectOptions";
 import EditIcon from "@mui/icons-material/Edit";
 import {
@@ -41,6 +41,11 @@ import { sectionHandlerLookup } from "../pdf-gen/sectionHandlerLookup";
 import FloatingTextMenu from "../components/SpeedDial/FloatingTextMenu";
 import FirefoxInstaller from "../components/FirefoxInstaller";
 import { useSnackbar } from "notistack";
+import {
+  checkPathBooks,
+  checkPathsSections,
+} from "../components/RessourcesChecker/checkSpecs";
+import { InfoRessource } from "../components/RessourcesChecker/InfoRessource";
 
 const allowedSelected = [
   "md",
@@ -55,35 +60,7 @@ const allowedSelected = [
   "bcvNotes",
   "scriptureSrc",
 ];
-function checkPathsSections(manifest, sections) {
-  let val = true;
-  sections.forEach((s) => {
-    if (s.content) {
-      Object.entries(s.content).forEach(([k, v]) => {
-        if (allowedSelected.includes(k)) {
-          console.log([k, v]);
-          if (typeof v === typeof "string") {
-            val = val && manifest[v] != null;
-          } else if (typeof v === typeof {}) {
-            val = val && checkPathsSections(manifest, v);
-          }
-        }
-      });
-    } else {
-      Object.entries(s).forEach(([k, v]) => {
-        if (allowedSelected.includes(k)) {
-          console.log([k, v]);
 
-          if (typeof v === typeof "string") {
-            val = val && manifest[v] != null;
-          }
-        }
-      });
-    }
-  });
-
-  return val;
-}
 export function PdfPublisher() {
   const { debugRef } = useContext(debugContext);
   const { i18nRef } = useContext(i18nContext);
@@ -208,11 +185,7 @@ export function PdfPublisher() {
     let manifest = await originatePdfs(options, null);
     await assemblePdfs(options, null, manifest);
   }
-  console.log(
-    wrappers.forEach((w) =>
-      console.log(w, checkPathsSections(projectSummaries, w.sections)),
-    ),
-  );
+
   useEffect(() => {
     const getProjectSummaries = async () => {
       const summariesResponse = await getJson(
@@ -612,60 +585,70 @@ export function PdfPublisher() {
                                                                             1,
                                                                         )}{" "}
                                                                       :
-                                                                      {projectSummaries[
-                                                                        v
-                                                                      ]
-                                                                        ?.name ? (
-                                                                        projectSummaries[
-                                                                          v
-                                                                        ]?.name
-                                                                      ) : (
-                                                                        <Typography
-                                                                          variant="body2"
-                                                                          color="text.primary"
-                                                                        >{`${doI18n(
-                                                                          `pages:core-client_pdf_publisher:missing_ressources`,
-                                                                          i18nRef.current,
-                                                                        )} : ${v}`}</Typography>
-                                                                      )}
+                                                                      {
+                                                                        <>
+                                                                          {
+                                                                            field
+                                                                              ?.label?.[
+                                                                              lang
+                                                                            ]
+                                                                          }
+                                                                          :
+                                                                          <InfoRessource
+                                                                            summary={
+                                                                              projectSummaries
+                                                                            }
+                                                                            pathElem={
+                                                                              v
+                                                                            }
+                                                                            flavors={
+                                                                              convertionTypes[
+                                                                                field
+                                                                                  .id
+                                                                              ]
+                                                                            }
+                                                                            bRanges={
+                                                                              w.ranges
+                                                                            }
+                                                                            i18nRef={
+                                                                              i18nRef
+                                                                            }
+                                                                            icons={
+                                                                              false
+                                                                            }
+                                                                            typographyVariant={
+                                                                              "body2"
+                                                                            }
+                                                                          />
+                                                                        </>
+                                                                      }
                                                                     </Typography>
                                                                   ),
                                                                 ),
                                                           )}
                                                         </Box>
-                                                      ) : projectSummaries[
-                                                          value
-                                                        ]?.name ? (
-                                                        `${field?.label?.[lang]}: ${projectSummaries[value]?.name}`
                                                       ) : (
-                                                        <Box
-                                                          sx={{
-                                                            display: "flex",
-                                                            flexDirection:
-                                                              "row",
-                                                          }}
-                                                        >
-                                                          <Typography
-                                                            variant="body2"
-                                                            color="text.secondary"
-                                                          >
-                                                            {`${
-                                                              field?.label?.[
-                                                                lang
+                                                        <>
+                                                          {field?.label?.[lang]}{" "}
+                                                          :
+                                                          <InfoRessource
+                                                            summary={
+                                                              projectSummaries
+                                                            }
+                                                            pathElem={value}
+                                                            flavors={
+                                                              convertionTypes[
+                                                                field.id
                                                               ]
-                                                            } : `}
-                                                          </Typography>
-
-                                                          <Typography
-                                                            variant="body2"
-                                                            color="text.primary"
-                                                          >
-                                                            {`${doI18n(
-                                                              `pages:core-client_pdf_publisher:missing_ressources`,
-                                                              i18nRef.current,
-                                                            )} : ${value}`}
-                                                          </Typography>
-                                                        </Box>
+                                                            }
+                                                            bRanges={w.ranges}
+                                                            i18nRef={i18nRef}
+                                                            icons={false}
+                                                            typographyVariant={
+                                                              "body2"
+                                                            }
+                                                          />
+                                                        </>
                                                       )}
                                                     </Typography>
                                                   );
@@ -740,8 +723,19 @@ export function PdfPublisher() {
         >
           <Button
             disabled={
-              !wrappers.every((w) =>
-                checkPathsSections(projectSummaries, w.sections),
+              !wrappers.every(
+                (w) =>
+                  checkPathsSections(
+                    projectSummaries,
+                    w.sections,
+                    allowedSelected,
+                  ) &&
+                  checkPathBooks(
+                    projectSummaries,
+                    w.sections,
+                    w.ranges,
+                    allowedSelected,
+                  ),
               )
             }
             variant="contained"
