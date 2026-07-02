@@ -2,7 +2,7 @@ import { setupOneCSS, checkCssSubstitution } from "../helpers";
 import { marked } from "marked";
 import DOMPurify from "isomorphic-dompurify";
 import { Section } from "./section";
-import { getJson, getText } from "pithekos-lib";
+import { getJson, getText } from "pankosmia-lib/http";
 import { getCssFromLookUp, toTemp } from "../helpers/PankosmiaUtils";
 
 const getObsNotes = async (notesPath, notesRef) => {

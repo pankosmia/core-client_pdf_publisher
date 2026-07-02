@@ -11,7 +11,7 @@ import {
 } from "../helpers";
 import books from "../Css/Ressources/books.json";
 import { Section } from "./section";
-import { getJson, getText } from "pithekos-lib";
+import { getJson, getText } from "pankosmia-lib/http";
 import { getCssFromLookUp } from "../helpers/PankosmiaUtils";
 
 export class jxlSpreadSection extends Section {

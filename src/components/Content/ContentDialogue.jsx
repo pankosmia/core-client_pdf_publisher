@@ -7,14 +7,14 @@ import {
 
 import { DialogContent, Box } from "@mui/material";
 import { useState, useContext, useEffect, cloneElement } from "react";
-import { doI18n } from "pithekos-lib";
+import { doI18n } from "pankosmia-lib/i18n";
 import { SelectSection } from "./Sections/SelectSection";
 import { sectionHandlerLookup } from "../../pdf-gen/sectionHandlerLookup";
 import { conversionSection } from "../../pdf-gen/helpers/constants";
 import { RessourceSelection } from "./Sections/RessourceSelection";
 import { ConfigSection } from "./Sections/ConfigSection";
 import { BRangesPicker } from "./Sections/BRangesPicker";
-import { getJson } from "pithekos-lib";
+import { getJson } from "pankosmia-lib/http";
 
 let orderOfField = [
   "md",

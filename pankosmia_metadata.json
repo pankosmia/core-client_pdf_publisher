@@ -1,9 +1,20 @@
 {
   "id": "core-client_pdf_publisher",
   "minServerVersion": "0.16.16",
+  "exclude_from_menu": true,
+  "exclude_from_dashboard": true,
   "require": {
     "net": false,
     "debug": false
+  },
+  "endpoints": {
+    "x-printspec": {
+      "edit": {
+        "doc": "main page for pdf print",
+        "label": "pages:core-client-workspace:main",
+        "url": ""
+      }
+    }
   },
   "i18n": {
     "title": {
@@ -136,6 +147,30 @@
     "Add": {
       "en": "Add",
       "fr": "Ajouter"
+    },
+    "save_success": {
+      "en": "Your project was successfully saved",
+      "fr": "Votre projet a été sauvegardé avec succès"
+    },
+    "save_error": {
+      "en": "An error occurred while saving:",
+      "fr": "Une erreur est survenue lors de la sauvegarde :"
+    },
+    "missing_ressources": {
+      "en": "You are missing ressources at",
+      "fr": "Il vous manques des ressources à"
+    },
+    "missing_book": {
+      "en": "%%RESOURCE%% is missing book(s) :",
+      "fr": "%%RESOURCE%% manque les livres :"
+    },
+    "flavor_miss_match": {
+      "en": "%%RESOURCE%% is not of the right type : ",
+      "fr": "%%RESOURCE%%  n'est du bon type :"
+    },
+    "ressource_errors": {
+      "en": "%%RESOURCE%% has multiple errors",
+      "fr": "%%RESOURCE%% a plusieurs erreurs"
     }
   }
 }

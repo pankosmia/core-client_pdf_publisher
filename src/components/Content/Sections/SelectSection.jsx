@@ -2,7 +2,7 @@ import {
   sectionsTypes,
   iconBySection,
 } from "../../../pdf-gen/helpers/constants";
-import { doI18n } from "pithekos-lib";
+import { doI18n } from "pankosmia-lib/i18n";
 import { i18nContext } from "pankosmia-rcl";
 import { useContext, useState } from "react";
 import { v4 as uuidv4 } from "uuid";

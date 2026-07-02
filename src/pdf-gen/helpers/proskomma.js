@@ -1,4 +1,4 @@
-import { getJson, getText } from "pithekos-lib";
+import { getJson, getText } from "pankosmia-lib/http";
 import { Proskomma } from "proskomma-core";
 export const getBookName = (pk, docSetId, bookCode) => {
   const headers = pk.gqlQuerySync(

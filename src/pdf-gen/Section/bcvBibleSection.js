@@ -1,4 +1,3 @@
-import { getText } from "pithekos-lib";
 import {
   unpackCellRange,
   pkWithDocs,

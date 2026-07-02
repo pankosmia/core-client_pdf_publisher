@@ -6,7 +6,7 @@ import AddIcon from "@mui/icons-material/Add";
 import Box from "@mui/material/Box";
 import { Button } from "@mui/material";
 import { ContentDialogue } from "../Content/ContentDialogue";
-import { doI18n } from "pithekos-lib";
+import { doI18n } from "pankosmia-lib/i18n";
 import { useState } from "react";
 const actions = [
   { name: "bcvWrapper" },

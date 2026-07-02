@@ -1,7 +1,8 @@
 import { useState, useEffect, useContext } from "react";
 // import {PdfGen} from "jxl-pdf"
-import { getJson, doI18n, getAndSetJson } from "pithekos-lib";
-import { debugContext } from "pankosmia-rcl";
+import { getJson, postJson } from "pankosmia-lib/http";
+import { doI18n } from "pankosmia-lib/i18n";
+import deepEqual from "deep-equal";
 import "react-pdf/dist/Page/TextLayer.css";
 import { originatePdfs } from "../pdf-gen/originatePdfs";
 import { assemblePdfs } from "../pdf-gen/assemblePdf";
@@ -14,41 +15,37 @@ import {
   Box,
   Grid2,
   AppBar,
-  Toolbar,
   Typography,
-  Card,
-  CardContent,
   Divider,
   IconButton,
   AccordionSummary,
   Accordion,
   AccordionDetails,
   Chip,
-  SpeedDial,
-  SpeedDialAction,
 } from "@mui/material";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import "react-pdf/dist/Page/AnnotationLayer.css";
-import { useLocation } from "react-router-dom";
-import { iconBySection } from "../pdf-gen/helpers/constants";
+import { convertionTypes, iconBySection } from "../pdf-gen/helpers/constants";
 import { SelectOption } from "../components/SelectOptions";
 import EditIcon from "@mui/icons-material/Edit";
-import { i18nContext, Header } from "pankosmia-rcl";
-import Bcv from "../components/icons/sectionIcons/bcv";
-import fontsJson from "../components/fieldPicker/fonts.json";
-import { ContentDialogue } from "../components/Content/ContentDialogue";
 import {
-  Add,
-  Delete,
-  DragIndicator,
-  ExpandMore,
-  Save,
-} from "@mui/icons-material";
-import Arrow from "../components/utils/arrow";
+  i18nContext,
+  Header,
+  currentProjectContext,
+  debugContext,
+} from "pankosmia-rcl";
+import { ContentDialogue } from "../components/Content/ContentDialogue";
+import { Delete, DragIndicator, ExpandMore, Save } from "@mui/icons-material";
 import ArrowLeft from "../components/utils/arrow";
 import { sectionHandlerLookup } from "../pdf-gen/sectionHandlerLookup";
 import FloatingTextMenu from "../components/SpeedDial/FloatingTextMenu";
 import FirefoxInstaller from "../components/FirefoxInstaller";
+import { useSnackbar } from "notistack";
+import {
+  checkPathBooks,
+  checkPathsSections,
+} from "../components/RessourcesChecker/checkSpecs";
+import { InfoRessource } from "../components/RessourcesChecker/InfoRessource";
 
 const allowedSelected = [
   "md",
@@ -67,17 +64,51 @@ const allowedSelected = [
 export function PdfPublisher() {
   const { debugRef } = useContext(debugContext);
   const { i18nRef } = useContext(i18nContext);
+  const { enqueueSnackbar } = useSnackbar();
+  const { currentProjectRef } = useContext(currentProjectContext);
   // fake selected project
   const [projectSummaries, setProjectSummaries] = useState({});
-
-  const location = useLocation();
-  const params = new URLSearchParams(location.search);
+  const [headerInfo, setHeaderInfo] = useState(null);
   const [wrappers, setWrappers] = useState([]);
   const [lang, setlang] = useState("");
+
   const [fontFamilyCorrespondance, setFontFamilyCorrespondance] =
     useState(null);
-
+  const [projectSpecs, setProjectSpecs] = useState(null);
   // const jsonWithHeaderChoice = PdfGen.pageInfo();
+  useEffect(() => {
+    async function getSpecs() {
+      if (currentProjectRef.current) {
+        let response = await getJson(
+          `/api/burrito/ingredient/raw/${currentProjectRef.current.organization}/${currentProjectRef.current.source}/${currentProjectRef.current.project}?ipath=specs.json`,
+        );
+        if (response.ok) {
+          let sections = response.json.sections.map((wrapper) => ({
+            ...wrapper,
+            sections: wrapper.sections.map((section) => ({
+              ...section,
+              type: `${section.type}Section`,
+            })),
+          }));
+
+          setProjectSpecs({ ...response.json, sections: sections });
+        }
+      }
+    }
+    getSpecs();
+  }, [currentProjectRef.current]);
+
+  useEffect(() => {
+    if (projectSpecs) {
+      setWrappers(projectSpecs.sections);
+      setHeaderInfo(JSON.stringify(projectSpecs.global));
+    } else {
+      setHeaderInfo(
+        '{"sizes":"9on11","fonts":"allGentium","pages":"EXECUTIVE", "verbose":false}',
+      );
+    }
+  }, [projectSpecs]);
+
   useEffect(() => {
     let cores = {};
     document.fonts.ready.then(() => {
@@ -86,9 +117,6 @@ export function PdfPublisher() {
           .replace(/['"]/g, "") // remove quotes " or '
           .trim() // remove leading/trailing spaces
           .replace(/\s+/g, " "); // normalize multiple spaces
-
-        //console.log(cleanFamily);
-
         cores[cleanFamily.replaceAll(" ", "")] = cleanFamily;
       });
 
@@ -100,14 +128,6 @@ export function PdfPublisher() {
       value: key,
       label: value.label.en,
     })),
-    fonts: Object.entries(fontsJson).map(([key, value]) => ({
-      value: key,
-      label: value.label.en,
-    })),
-    label_fonts: Object.entries(fontsJson).map(([key, value]) => ({
-      value: key,
-      label: value.label.en,
-    })),
     sizes: Object.entries(sizes).map(([key, value]) => ({
       value: key,
       label: value.label.en,
@@ -115,33 +135,15 @@ export function PdfPublisher() {
     verbose: [true, false],
   };
 
-  const actionsSpeedDial = [
-    { name: "Bcv", onClick: () => console.log("Edit") },
-    { name: "Simple", onClick: () => console.log("Duplicate") },
-    { name: "Obs", onClick: () => console.log("Delete") },
-  ];
-  // the selected headerInfo
-  const [headerInfo, setHeaderInfo] = useState(
-    '{"sizes":"9on11","fonts":"allGentium","pages":"EXECUTIVE", "verbose":false}',
-  );
-  let parseHeaderInfo = JSON.parse(headerInfo);
-
   async function PrintPdf() {
     let header = JSON.parse(headerInfo);
-    let wrapperToPrint = JSON.parse(JSON.stringify(wrappers));
-    let newWrapper = wrapperToPrint.map((w) => {
-      let new_section = [];
-      w.sections.forEach((n) => {
-        const { type, id, ...content } = n;
-        new_section.push({
-          type: type.replace("Section", ""),
-          id,
-          content,
-        });
-      });
-      w.sections = new_section;
-      return w;
-    });
+    let wrapperToPrint = wrappers.map((wrapper) => ({
+      ...wrapper,
+      sections: wrapper.sections.map((section) => ({
+        ...section,
+        type: `${section.type}`.replace("Section", ""),
+      })),
+    }));
 
     let font = await getJson("/api/settings/typography/");
     let newFont = {};
@@ -155,15 +157,9 @@ export function PdfPublisher() {
       newFont[k] = fontArray;
     });
     const config = {
-      global: {
-        fonts: header.fonts,
-        pages: header.pages,
-        sizes: header.sizes,
-        verbose: header.verbose,
-      },
-      sections: newWrapper,
+      global: header,
+      sections: wrapperToPrint,
     };
-
     const options = {
       verbose: config.global.verbose,
       steps: ["originate", "assemble"],
@@ -249,6 +245,53 @@ export function PdfPublisher() {
       ></AppBar>
       <Box sx={{ height: 48 }}>
         <IconButton
+          disabled={
+            !projectSpecs ||
+            deepEqual(projectSpecs, {
+              global: JSON.parse(headerInfo),
+              sections: wrappers,
+            })
+          }
+          onClick={async () => {
+            let newWrappers = wrappers.map((wrapper) => ({
+              ...wrapper,
+              sections: wrapper.sections.map((section) => ({
+                ...section,
+                type: `${section.type}`.replace("Section", ""),
+              })),
+            }));
+            const body = {
+              payload: JSON.stringify({
+                global: JSON.parse(headerInfo),
+                sections: newWrappers,
+              }),
+            };
+            let response = await postJson(
+              `/api/burrito/ingredient/raw/${currentProjectRef.current.organization}/${currentProjectRef.current.source}/${currentProjectRef.current.project}?ipath=specs.json`,
+              JSON.stringify(body),
+            );
+            if (response.ok) {
+              setProjectSpecs({
+                global: JSON.parse(headerInfo),
+                sections: wrappers,
+              });
+              enqueueSnackbar(
+                doI18n(
+                  `pages:core-client_pdf_publisher:save_success`,
+                  i18nRef.current,
+                ),
+                { variant: "success" },
+              );
+            } else {
+              enqueueSnackbar(
+                doI18n(
+                  `pages:core-client_pdf_publisher:save_error`,
+                  i18nRef.current,
+                ) + response.error,
+                { variant: "error" },
+              );
+            }
+          }}
           sx={{
             pl: 2,
             alignSelf: "center",
@@ -278,46 +321,32 @@ export function PdfPublisher() {
             )}
           </Typography>
 
-          <Box container spacing={2} sx={{ marginBottom: 2 }}>
+          <Box sx={{ marginBottom: 2 }}>
             <Box
-              size={8}
               sx={{
                 display: "flex",
                 flexDirection: "column",
                 gap: 2, // adjust spacing here
               }}
             >
-              <SelectOption
-                title="Paper size"
-                type="pages"
-                option={jsonWithHeaderChoice.pages}
-                handleChange={handleChangeHeaderInfo}
-              />
-              <SelectOption
-                title="Font family"
-                type="fonts"
-                option={jsonWithHeaderChoice.label_fonts}
-                handleChange={handleChangeHeaderInfo}
-              />
-              <SelectOption
-                title="Font size"
-                type="sizes"
-                option={jsonWithHeaderChoice.sizes}
-                handleChange={handleChangeHeaderInfo}
-              />
-            </Box>
-            <Box>
-              {Object.entries(fontsJson[parseHeaderInfo.fonts])
-                .filter(([key]) =>
-                  ["heading", "body", "body2", "greek", "footnote"].includes(
-                    key,
-                  ),
-                )
-                .map(([key, value], id) => (
-                  <Typography key={id} sx={{ fontFamily: value }}>
-                    {key}: preview
-                  </Typography>
-                ))}
+              {headerInfo && (
+                <SelectOption
+                  title="Paper size"
+                  type="pages"
+                  selected={JSON.parse(headerInfo).pages}
+                  option={jsonWithHeaderChoice.pages}
+                  handleChange={handleChangeHeaderInfo}
+                />
+              )}
+              {headerInfo && (
+                <SelectOption
+                  title="Font size"
+                  type="sizes"
+                  selected={JSON.parse(headerInfo).sizes}
+                  option={jsonWithHeaderChoice.sizes}
+                  handleChange={handleChangeHeaderInfo}
+                />
+              )}
             </Box>
           </Box>
         </Box>
@@ -386,7 +415,6 @@ export function PdfPublisher() {
                             <Grid2 container size={12}>
                               {/* LEFT ICON COLUMN */}
                               <Box
-                                size={10}
                                 sx={{
                                   display: "flex",
                                   flexDirection: "column",
@@ -406,7 +434,11 @@ export function PdfPublisher() {
                                   }}
                                 >
                                   {w.ranges.map((book, idss) => (
-                                    <Chip label={book} variant="outlined" />
+                                    <Chip
+                                      key={idss}
+                                      label={book}
+                                      variant="outlined"
+                                    />
                                   ))}
                                 </Box>
                                 <ArrowLeft show={w.sections.length > 1}>
@@ -451,6 +483,7 @@ export function PdfPublisher() {
                                             }}
                                           >
                                             <Typography
+                                              component="div"
                                               sx={{
                                                 height: 48,
                                                 display: "flex",
@@ -472,7 +505,7 @@ export function PdfPublisher() {
                                                 gap: 0.5,
                                               }}
                                             >
-                                              {Object.entries(s)
+                                              {Object.entries(s.content)
                                                 .filter(([e]) =>
                                                   allowedSelected.includes(e),
                                                 )
@@ -488,23 +521,135 @@ export function PdfPublisher() {
                                                       .fields.find(
                                                         (f) => f.id === e,
                                                       );
-
                                                   return (
                                                     <Typography
+                                                      component="div"
+                                                      key={idt}
+                                                      variant="body2"
+                                                      color="text.secondary"
                                                       sx={{
                                                         justifyContent: "left",
                                                         paddingLeft: 2,
                                                         display: "flex",
                                                       }}
-                                                      key={idt}
-                                                      variant="body2"
-                                                      color="text.secondary"
                                                     >
-                                                      {field?.label?.[lang]}:{" "}
-                                                      {
-                                                        projectSummaries[value]
-                                                          ?.name
-                                                      }
+                                                      {field.typeSpec ? (
+                                                        <Box
+                                                          sx={{
+                                                            gap: 0.5,
+                                                            display: "flex",
+                                                            flexDirection:
+                                                              "column",
+                                                          }}
+                                                        >
+                                                          {value.map(
+                                                            (
+                                                              typespec,
+                                                              idTypeSpec,
+                                                            ) =>
+                                                              Object.entries(
+                                                                typespec,
+                                                              )
+                                                                .filter(
+                                                                  ([
+                                                                    typeSpecFilter,
+                                                                  ]) =>
+                                                                    allowedSelected.includes(
+                                                                      typeSpecFilter,
+                                                                    ),
+                                                                )
+                                                                .map(
+                                                                  ([k, v]) => (
+                                                                    <Typography
+                                                                      key={idt}
+                                                                      variant="body2"
+                                                                      color="text.secondary"
+                                                                      sx={{
+                                                                        justifyContent:
+                                                                          "left",
+                                                                        display:
+                                                                          "flex",
+                                                                      }}
+                                                                    >
+                                                                      {field?.typeSpec
+                                                                        ?.find(
+                                                                          (e) =>
+                                                                            e.id ===
+                                                                            k,
+                                                                        )
+                                                                        .label?.[
+                                                                          lang
+                                                                        ].replace(
+                                                                          "#",
+                                                                          idTypeSpec +
+                                                                            1,
+                                                                        )}{" "}
+                                                                      :
+                                                                      {
+                                                                        <>
+                                                                          {
+                                                                            field
+                                                                              ?.label?.[
+                                                                              lang
+                                                                            ]
+                                                                          }
+                                                                          :
+                                                                          <InfoRessource
+                                                                            summary={
+                                                                              projectSummaries
+                                                                            }
+                                                                            pathElem={
+                                                                              v
+                                                                            }
+                                                                            flavors={
+                                                                              convertionTypes[
+                                                                                field
+                                                                                  .id
+                                                                              ]
+                                                                            }
+                                                                            bRanges={
+                                                                              w.ranges
+                                                                            }
+                                                                            i18nRef={
+                                                                              i18nRef
+                                                                            }
+                                                                            icons={
+                                                                              false
+                                                                            }
+                                                                            typographyVariant={
+                                                                              "body2"
+                                                                            }
+                                                                          />
+                                                                        </>
+                                                                      }
+                                                                    </Typography>
+                                                                  ),
+                                                                ),
+                                                          )}
+                                                        </Box>
+                                                      ) : (
+                                                        <>
+                                                          {field?.label?.[lang]}{" "}
+                                                          :
+                                                          <InfoRessource
+                                                            summary={
+                                                              projectSummaries
+                                                            }
+                                                            pathElem={value}
+                                                            flavors={
+                                                              convertionTypes[
+                                                                field.id
+                                                              ]
+                                                            }
+                                                            bRanges={w.ranges}
+                                                            i18nRef={i18nRef}
+                                                            icons={false}
+                                                            typographyVariant={
+                                                              "body2"
+                                                            }
+                                                          />
+                                                        </>
+                                                      )}
                                                     </Typography>
                                                   );
                                                 })}
@@ -577,6 +722,22 @@ export function PdfPublisher() {
           }}
         >
           <Button
+            disabled={
+              !wrappers.every(
+                (w) =>
+                  checkPathsSections(
+                    projectSummaries,
+                    w.sections,
+                    allowedSelected,
+                  ) &&
+                  checkPathBooks(
+                    projectSummaries,
+                    w.sections,
+                    w.ranges,
+                    allowedSelected,
+                  ),
+              )
+            }
             variant="contained"
             onClick={async () => {
               await PrintPdf();

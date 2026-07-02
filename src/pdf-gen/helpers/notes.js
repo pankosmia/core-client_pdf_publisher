@@ -1,4 +1,4 @@
-import { getJson, getText } from "pithekos-lib";
+import { getJson, getText } from "pankosmia-lib/http";
 export const cleanNoteLine = (noteLine) =>
   noteLine
     .trim()
