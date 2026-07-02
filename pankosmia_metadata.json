@@ -171,6 +171,38 @@
     "ressource_errors": {
       "en": "%%RESOURCE%% has multiple errors",
       "fr": "%%RESOURCE%% a plusieurs erreurs"
+    },
+    "dragAndDrop": {
+      "en": "Drag & drop %%DOCTYPE%% here, or click to browse",
+      "fr": "Drag & drop %%DOCTYPE%% ici, our cliquer pour rechercher"
+    },
+    "singleFile": {
+      "en": "Single file only",
+      "fr": "Un seul fichier"
+    },
+    "edit": {
+      "en": "Edit",
+      "fr": "Editer"
+    },
+    "preview": {
+      "en": "Preview",
+      "fr": "Prévisualisation"
+    },
+    "nothingToPreview": {
+      "en": "Nothing to preview yet.",
+      "fr": "Rien à afficher pour le moment"
+    },
+    "createMarkdown": {
+      "en": "Create new markdown document",
+      "fr": "Créer un nouveau document markdown"
+    },
+    "or": {
+      "en": "or",
+      "fr": "ou"
+    },
+    "save": {
+      "en": "save",
+      "fr": "sauvegarder"
     }
   }
 }

@@ -1,20 +1,25 @@
-export function checkPathsSections(manifest, sections, allowedSelected) {
+export function checkPathsSections(
+  manifest,
+  sections,
+  typeThatNeedRessourceSelection,
+) {
   let val = true;
   sections.forEach((s) => {
     if (s.content) {
       Object.entries(s.content).forEach(([k, v]) => {
-        if (allowedSelected.includes(k)) {
-          console.log([k, v]);
+        if (typeThatNeedRessourceSelection.includes(k)) {
           if (typeof v === typeof "string") {
             val = val && manifest[v] != null;
           } else if (typeof v === typeof {}) {
-            val = val && checkPathsSections(manifest, v, allowedSelected);
+            val =
+              val &&
+              checkPathsSections(manifest, v, typeThatNeedRessourceSelection);
           }
         }
       });
     } else {
       Object.entries(s).forEach(([k, v]) => {
-        if (allowedSelected.includes(k)) {
+        if (typeThatNeedRessourceSelection.includes(k)) {
           console.log([k, v]);
 
           if (typeof v === typeof "string") {
@@ -32,13 +37,13 @@ export function checkPathBooks(
   manifest,
   sections,
   bookRanges,
-  allowedSelected,
+  typeThatNeedRessourceSelection,
 ) {
   let val = true;
   sections.forEach((s) => {
     if (s.content) {
       Object.entries(s.content).forEach(([k, v]) => {
-        if (allowedSelected.includes(k)) {
+        if (typeThatNeedRessourceSelection.includes(k)) {
           console.log([k, v]);
           if (typeof v === typeof "string") {
             val =
@@ -47,13 +52,19 @@ export function checkPathBooks(
               bookRanges.every((bc) => manifest[v].book_codes.includes(bc));
           } else if (typeof v === typeof {}) {
             val =
-              val && checkPathBooks(manifest, v, bookRanges, allowedSelected);
+              val &&
+              checkPathBooks(
+                manifest,
+                v,
+                bookRanges,
+                typeThatNeedRessourceSelection,
+              );
           }
         }
       });
     } else {
       Object.entries(s).forEach(([k, v]) => {
-        if (allowedSelected.includes(k)) {
+        if (typeThatNeedRessourceSelection.includes(k)) {
           console.log([k, v]);
 
           if (typeof v === typeof "string") {

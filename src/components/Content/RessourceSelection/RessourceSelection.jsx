@@ -22,24 +22,11 @@ import {
   checkPathsSections,
 } from "../../RessourcesChecker/checkSpecs";
 import { InfoRessource } from "../../RessourcesChecker/InfoRessource";
-const allowedSelected = [
-  "md",
-  "pdf",
-  "jxl",
-  "scripture",
-  "notes",
-  "src",
-  "obs",
-  "obsImg",
-  "lhs",
-  "bcvNotes",
-  "scriptureSrc",
-  "tNotes",
-  "glossNotes",
-];
+import { typeThatNeedRessourceSelection } from "../../../pdf-gen/helpers/constants";
+
 const isFieldsValid = (fields, sectionData, isCard) => {
   return fields
-    .filter((f) => allowedSelected.includes(f.id))
+    .filter((f) => typeThatNeedRessourceSelection.includes(f.id))
     .every((f) => {
       if (f.typeSpec) {
         // typeSpec instance arrays always live under .content
@@ -113,7 +100,9 @@ export function RessourceSelection({
       let changed = false;
       currentSectionsSignature.forEach((section, sectionId) => {
         section.fields
-          .filter((f) => allowedSelected.includes(f.id) && f.typeSpec)
+          .filter(
+            (f) => typeThatNeedRessourceSelection.includes(f.id) && f.typeSpec,
+          )
           .forEach((f) => {
             const key = `${sectionId}-${f.id}`;
             // Only seed if we don't already have a tracked count for this
@@ -163,8 +152,17 @@ export function RessourceSelection({
       );
       allValid =
         allValid &&
-        checkPathsSections(summary, currentSections, allowedSelected) &&
-        checkPathBooks(summary, currentSections, bRanges, allowedSelected);
+        checkPathsSections(
+          summary,
+          currentSections,
+          typeThatNeedRessourceSelection,
+        ) &&
+        checkPathBooks(
+          summary,
+          currentSections,
+          bRanges,
+          typeThatNeedRessourceSelection,
+        );
 
       setIsRessourcesStepComplete(allValid);
     }
@@ -181,13 +179,13 @@ export function RessourceSelection({
       let book = [];
       currentSections.forEach((r) => {
         let ressources = Object.entries(r).filter(([k, v]) =>
-          allowedSelected.includes(k),
+          typeThatNeedRessourceSelection.includes(k),
         );
         ressources.forEach(([k, v]) => {
           if (typeof v === typeof []) {
             v.forEach((r2) => {
               let inRessources = Object.entries(r2).filter(([k2, v2]) =>
-                allowedSelected.includes(k2),
+                typeThatNeedRessourceSelection.includes(k2),
               );
               inRessources.forEach(([k2, v2]) => {
                 book.push(summary?.[v2]?.book_codes);
@@ -223,10 +221,13 @@ export function RessourceSelection({
   };
 
   const renderSection = (e, id) => {
+    console.log(
+      e.fields.filter((f) => typeThatNeedRessourceSelection.includes(f.id)),
+    );
     return (
       <Box key={id}>
         {e.fields
-          .filter((f) => allowedSelected.includes(f.id))
+          .filter((f) => typeThatNeedRessourceSelection.includes(f.id))
           .map((f, ids) => {
             const isRequired = f?.nValues[0] >= 1;
             if (f.typeSpec) {
@@ -443,6 +444,7 @@ export function RessourceSelection({
             {(provided) => (
               <Box ref={provided.innerRef} {...provided.droppableProps}>
                 {currentSectionsSignature.map((e, id) => {
+                  console.log(e.sectionType + "Section")
                   const Icon = iconBySection[e.sectionType + "Section"];
                   return (
                     <Draggable

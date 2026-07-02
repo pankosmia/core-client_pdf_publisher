@@ -11,10 +11,11 @@ import { doI18n } from "pankosmia-lib/i18n";
 import { SelectSection } from "./Sections/SelectSection";
 import { sectionHandlerLookup } from "../../pdf-gen/sectionHandlerLookup";
 import { conversionSection } from "../../pdf-gen/helpers/constants";
-import { RessourceSelection } from "./Sections/RessourceSelection";
+import { RessourceSelection } from "./RessourceSelection/RessourceSelection";
 import { ConfigSection } from "./Sections/ConfigSection";
 import { BRangesPicker } from "./Sections/BRangesPicker";
 import { getJson } from "pankosmia-lib/http";
+import { ImportDocument } from "./RessourceSelection/ImportDocument";
 
 let orderOfField = [
   "md",
@@ -152,7 +153,11 @@ export function ContentDialogue({
           </>
         );
       case 1:
-        return (
+        return wrapperName === "markdownPdfWrapper" ? (
+          <ImportDocument
+            documentType={currentSections[0].type.replace("Section", "")}
+          />
+        ) : (
           <RessourceSelection
             bRanges={bRanges}
             currentSections={currentSections}

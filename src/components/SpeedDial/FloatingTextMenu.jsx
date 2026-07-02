@@ -11,8 +11,7 @@ import { useState } from "react";
 const actions = [
   { name: "bcvWrapper" },
   { name: "obsWrapper" },
-  { name: "markdownWrapper" },
-  { name: "pdfWrapper" },
+  { name: "markdownPdfWrapper" },
 ];
 
 export default function FloatingTextMenu({ i18nRef, setWrappers }) {

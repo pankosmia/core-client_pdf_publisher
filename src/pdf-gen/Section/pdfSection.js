@@ -8,7 +8,7 @@ export class pdfSection extends Section {
 
   signature() {
     return {
-      sectionType: "front",
+      sectionType: "pdf",
       requiresWrapper: this.requiresWrapper(),
       fields: [
         {

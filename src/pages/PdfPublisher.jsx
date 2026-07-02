@@ -46,20 +46,7 @@ import {
   checkPathsSections,
 } from "../components/RessourcesChecker/checkSpecs";
 import { InfoRessource } from "../components/RessourcesChecker/InfoRessource";
-
-const allowedSelected = [
-  "md",
-  "pdf",
-  "jxl",
-  "scripture",
-  "notes",
-  "src",
-  "obs",
-  "obsImg",
-  "lhs",
-  "bcvNotes",
-  "scriptureSrc",
-];
+import { typeThatNeedRessourceSelection } from "../pdf-gen/helpers/constants";
 
 export function PdfPublisher() {
   const { debugRef } = useContext(debugContext);
@@ -507,7 +494,9 @@ export function PdfPublisher() {
                                             >
                                               {Object.entries(s.content)
                                                 .filter(([e]) =>
-                                                  allowedSelected.includes(e),
+                                                  typeThatNeedRessourceSelection.includes(
+                                                    e,
+                                                  ),
                                                 )
                                                 .map(([e, value], idt) => {
                                                   const field =
@@ -554,7 +543,7 @@ export function PdfPublisher() {
                                                                   ([
                                                                     typeSpecFilter,
                                                                   ]) =>
-                                                                    allowedSelected.includes(
+                                                                    typeThatNeedRessourceSelection.includes(
                                                                       typeSpecFilter,
                                                                     ),
                                                                 )
@@ -700,18 +689,6 @@ export function PdfPublisher() {
             </Droppable>
           </DragDropContext>
           <FloatingTextMenu i18nRef={i18nRef} setWrappers={setWrappers} />
-          {/* <ContentDialogue
-            type={"add"}
-            setWrapper={setWrappers}
-            ButtonToPress={
-              <Button variant="contained" startIcon={}>
-                {doI18n(
-                  `pages:core-client_pdf_publisher:add_section`,
-                  i18nRef.current,
-                )}
-              </Button>
-            }
-          /> */}
         </Box>
         <Box
           sx={{
@@ -728,13 +705,13 @@ export function PdfPublisher() {
                   checkPathsSections(
                     projectSummaries,
                     w.sections,
-                    allowedSelected,
+                    typeThatNeedRessourceSelection,
                   ) &&
                   checkPathBooks(
                     projectSummaries,
                     w.sections,
                     w.ranges,
-                    allowedSelected,
+                    typeThatNeedRessourceSelection,
                   ),
               )
             }
