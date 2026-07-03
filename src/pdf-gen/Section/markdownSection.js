@@ -81,7 +81,7 @@ export class markdownSection extends Section {
   async doSection({ section, templates, bookCode, manifest, options }) {
     let pdfPath;
     let mkrText = await getText(
-      `/api/burrito/ingredient/bytes${section.content.md.src}?ipath=${section.content.md.name}`,
+      `/api/burrito/ingredient/bytes/${section.content.md.src}?ipath=${section.content.md.name}`,
     );
     const server = window.location.origin;
     let srcPolyfill = `${server}/api/app-resources/pdf/paged.polyfill.js`;

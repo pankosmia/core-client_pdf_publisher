@@ -221,9 +221,6 @@ export function RessourceSelection({
   };
 
   const renderSection = (e, id) => {
-    console.log(
-      e.fields.filter((f) => typeThatNeedRessourceSelection.includes(f.id)),
-    );
     return (
       <Box key={id}>
         {e.fields
@@ -444,7 +441,6 @@ export function RessourceSelection({
             {(provided) => (
               <Box ref={provided.innerRef} {...provided.droppableProps}>
                 {currentSectionsSignature.map((e, id) => {
-                  console.log(e.sectionType + "Section")
                   const Icon = iconBySection[e.sectionType + "Section"];
                   return (
                     <Draggable

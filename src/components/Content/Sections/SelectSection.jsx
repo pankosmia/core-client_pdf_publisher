@@ -41,22 +41,22 @@ export function SelectSection({
 
   // Whether a given section type is currently part of the selection.
   const isSelected = (section) =>
-    currentSections.some((s) => s.type === section);
+    currentSections.some((s) => s.type + "Section" === section);
 
   // Position of a section type within the current selection (used for the order badge).
   const getIndex = (section) =>
-    currentSections.findIndex((s) => s.type === section);
+    currentSections.findIndex((s) => s.type + "Section" === section);
 
   // Handles clicking a section card: toggles it on/off in multi-select mode,
   // or replaces the whole selection with just this section in single-select mode.
   const handleSelection = (section) => {
     if (allowMultiple) {
       setCurrentSections((prev) => {
-        const exists = prev.some((s) => s.type === section);
+        const exists = prev.some((s) => s.type + "Section" === section);
 
         if (exists) {
           // Already selected -> deselect (remove from the list)
-          return prev.filter((s) => s.type !== section);
+          return prev.filter((s) => s.type + "Section" !== section);
         }
 
         // Not selected yet -> add as a new section with a fresh id and empty content
@@ -132,7 +132,9 @@ export function SelectSection({
                     }}
                   >
                     <Card
-                      onClick={() => handleSelection(section)}
+                      onClick={() =>
+                        handleSelection(section.replace("Section", ""))
+                      }
                       sx={{
                         width: 128,
                         height: 128,
@@ -175,6 +177,7 @@ export function SelectSection({
                           {(() => {
                             // Look up the icon for this section type;
                             // fall back to a generic info icon (and warn) if none is registered.
+
                             const Icon = iconBySection[section];
                             if (!Icon) {
                               console.warn(

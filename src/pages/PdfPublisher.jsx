@@ -22,6 +22,7 @@ import {
   Accordion,
   AccordionDetails,
   Chip,
+  Tooltip,
 } from "@mui/material";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import "react-pdf/dist/Page/AnnotationLayer.css";
@@ -47,6 +48,8 @@ import {
 } from "../components/RessourcesChecker/checkSpecs";
 import { InfoRessource } from "../components/RessourcesChecker/InfoRessource";
 import { typeThatNeedRessourceSelection } from "../pdf-gen/helpers/constants";
+import { BcvWrapperOverview } from "../components/Overview/BcvWrapperOverview";
+import { FreeFormatOverview } from "../components/Overview/FreeFormatOverview";
 
 export function PdfPublisher() {
   const { debugRef } = useContext(debugContext);
@@ -58,7 +61,6 @@ export function PdfPublisher() {
   const [headerInfo, setHeaderInfo] = useState(null);
   const [wrappers, setWrappers] = useState([]);
   const [lang, setlang] = useState("");
-
   const [fontFamilyCorrespondance, setFontFamilyCorrespondance] =
     useState(null);
   const [projectSpecs, setProjectSpecs] = useState(null);
@@ -70,13 +72,7 @@ export function PdfPublisher() {
           `/api/burrito/ingredient/raw/${currentProjectRef.current.organization}/${currentProjectRef.current.source}/${currentProjectRef.current.project}?ipath=specs.json`,
         );
         if (response.ok) {
-          let sections = response.json.sections.map((wrapper) => ({
-            ...wrapper,
-            sections: wrapper.sections.map((section) => ({
-              ...section,
-              type: `${section.type}Section`,
-            })),
-          }));
+          let sections = response.json.sections;
 
           setProjectSpecs({ ...response.json, sections: sections });
         }
@@ -124,14 +120,6 @@ export function PdfPublisher() {
 
   async function PrintPdf() {
     let header = JSON.parse(headerInfo);
-    let wrapperToPrint = wrappers.map((wrapper) => ({
-      ...wrapper,
-      sections: wrapper.sections.map((section) => ({
-        ...section,
-        type: `${section.type}`.replace("Section", ""),
-      })),
-    }));
-
     let font = await getJson("/api/settings/typography/");
     let newFont = {};
     let fontArray = font.json.font_set
@@ -145,7 +133,7 @@ export function PdfPublisher() {
     });
     const config = {
       global: header,
-      sections: wrapperToPrint,
+      sections: wrappers,
     };
     const options = {
       verbose: config.global.verbose,
@@ -240,23 +228,21 @@ export function PdfPublisher() {
             })
           }
           onClick={async () => {
-            let newWrappers = wrappers.map((wrapper) => ({
-              ...wrapper,
-              sections: wrapper.sections.map((section) => ({
-                ...section,
-                type: `${section.type}`.replace("Section", ""),
-              })),
-            }));
             const body = {
-              payload: JSON.stringify({
-                global: JSON.parse(headerInfo),
-                sections: newWrappers,
-              }),
+              payload: JSON.stringify(
+                {
+                  global: JSON.parse(headerInfo),
+                  sections: wrappers,
+                },
+                null,
+                2,
+              ),
             };
             let response = await postJson(
               `/api/burrito/ingredient/raw/${currentProjectRef.current.organization}/${currentProjectRef.current.source}/${currentProjectRef.current.project}?ipath=specs.json`,
               JSON.stringify(body),
             );
+            console.log(response.text);
             if (response.ok) {
               setProjectSpecs({
                 global: JSON.parse(headerInfo),
@@ -391,10 +377,41 @@ export function PdfPublisher() {
                               <DragIndicator />
                             </Box>
 
-                            {/* Optional title */}
-                            <Typography sx={{ fontWeight: 600 }}>
-                              Wrapper {id + 1}
-                            </Typography>
+                            <Box
+                              sx={{ display: "flex", flexDirection: "column" }}
+                            >
+                              <Typography sx={{ fontWeight: 600 }}>
+                                {doI18n(
+                                  `pages:core-client_pdf_publisher:${w.type}`,
+                                  i18nRef.current,
+                                )}
+                              </Typography>
+                              {w.type === "bcvWrapper" && (
+                                <Typography color="text.secondary">
+                                  {w.ranges.length}{" "}
+                                  {doI18n(
+                                    `pages:core-client_pdf_publisher:books`,
+                                    i18nRef.current,
+                                  )}{" "}
+                                  {doI18n(
+                                    `pages:core-client_pdf_publisher:as`,
+                                    i18nRef.current,
+                                  )}{" "}
+                                  {w.sections.map((s, id) => {
+                                    if (id === w.sections.length - 1) {
+                                      return `${doI18n(
+                                        `pages:core-client_pdf_publisher:${s.type + "Section"}`,
+                                        i18nRef.current,
+                                      )}`;
+                                    }
+                                    return `${doI18n(
+                                      `pages:core-client_pdf_publisher:${s.type + "Section"}`,
+                                      i18nRef.current,
+                                    )}, `;
+                                  })}
+                                </Typography>
+                              )}
+                            </Box>
                           </AccordionSummary>
 
                           {/* BODY */}
@@ -420,234 +437,36 @@ export function PdfPublisher() {
                                     justifyContent: "start",
                                   }}
                                 >
-                                  {w.ranges.map((book, idss) => (
-                                    <Chip
-                                      key={idss}
-                                      label={book}
-                                      variant="outlined"
-                                    />
-                                  ))}
-                                </Box>
-                                <ArrowLeft show={w.sections.length > 1}>
-                                  {w.sections.map((s, idss) => {
-                                    const Icon = iconBySection[s.type];
-
-                                    return (
-                                      <Box
+                                  {w?.ranges &&
+                                    w.ranges.map((book, idss) => (
+                                      <Chip
                                         key={idss}
-                                        sx={{
-                                          width: "100%",
-                                          py: 1,
-                                        }}
-                                      >
-                                        <Box
-                                          sx={{
-                                            display: "flex",
-                                            alignItems: "flex-start",
-                                            gap: 2,
-                                          }}
-                                        >
-                                          {/* ICON */}
-                                          <Box
-                                            sx={{
-                                              width: 48,
-                                              minWidth: 48,
-                                              height: 48,
-                                              display: "flex",
-                                              alignItems: "center",
-                                              justifyContent: "center",
-                                            }}
-                                          >
-                                            <Icon sx={{ fontSize: 48 }} />
-                                          </Box>
-
-                                          {/* CONTENT */}
-                                          <Box
-                                            sx={{
-                                              flex: 1,
-                                              display: "flex",
-                                              flexDirection: "column",
-                                            }}
-                                          >
-                                            <Typography
-                                              component="div"
-                                              sx={{
-                                                height: 48,
-                                                display: "flex",
-                                                alignItems: "center",
-                                                fontWeight: 500,
-                                              }}
-                                            >
-                                              {doI18n(
-                                                `pages:core-client_pdf_publisher:${s.type}`,
-                                                i18nRef.current,
-                                              )}
-                                            </Typography>
-
-                                            {/* DETAILS */}
-                                            <Box
-                                              sx={{
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                gap: 0.5,
-                                              }}
-                                            >
-                                              {Object.entries(s.content)
-                                                .filter(([e]) =>
-                                                  typeThatNeedRessourceSelection.includes(
-                                                    e,
-                                                  ),
-                                                )
-                                                .map(([e, value], idt) => {
-                                                  const field =
-                                                    sectionHandlerLookup[
-                                                      s.type.replace(
-                                                        "Section",
-                                                        "",
-                                                      )
-                                                    ]
-                                                      .signature()
-                                                      .fields.find(
-                                                        (f) => f.id === e,
-                                                      );
-                                                  return (
-                                                    <Typography
-                                                      component="div"
-                                                      key={idt}
-                                                      variant="body2"
-                                                      color="text.secondary"
-                                                      sx={{
-                                                        justifyContent: "left",
-                                                        paddingLeft: 2,
-                                                        display: "flex",
-                                                      }}
-                                                    >
-                                                      {field.typeSpec ? (
-                                                        <Box
-                                                          sx={{
-                                                            gap: 0.5,
-                                                            display: "flex",
-                                                            flexDirection:
-                                                              "column",
-                                                          }}
-                                                        >
-                                                          {value.map(
-                                                            (
-                                                              typespec,
-                                                              idTypeSpec,
-                                                            ) =>
-                                                              Object.entries(
-                                                                typespec,
-                                                              )
-                                                                .filter(
-                                                                  ([
-                                                                    typeSpecFilter,
-                                                                  ]) =>
-                                                                    typeThatNeedRessourceSelection.includes(
-                                                                      typeSpecFilter,
-                                                                    ),
-                                                                )
-                                                                .map(
-                                                                  ([k, v]) => (
-                                                                    <Typography
-                                                                      key={idt}
-                                                                      variant="body2"
-                                                                      color="text.secondary"
-                                                                      sx={{
-                                                                        justifyContent:
-                                                                          "left",
-                                                                        display:
-                                                                          "flex",
-                                                                      }}
-                                                                    >
-                                                                      {field?.typeSpec
-                                                                        ?.find(
-                                                                          (e) =>
-                                                                            e.id ===
-                                                                            k,
-                                                                        )
-                                                                        .label?.[
-                                                                          lang
-                                                                        ].replace(
-                                                                          "#",
-                                                                          idTypeSpec +
-                                                                            1,
-                                                                        )}{" "}
-                                                                      :
-                                                                      {
-                                                                        <>
-                                                                          {
-                                                                            field
-                                                                              ?.label?.[
-                                                                              lang
-                                                                            ]
-                                                                          }
-                                                                          :
-                                                                          <InfoRessource
-                                                                            summary={
-                                                                              projectSummaries
-                                                                            }
-                                                                            pathElem={
-                                                                              v
-                                                                            }
-                                                                            flavors={
-                                                                              convertionTypes[
-                                                                                field
-                                                                                  .id
-                                                                              ]
-                                                                            }
-                                                                            bRanges={
-                                                                              w.ranges
-                                                                            }
-                                                                            i18nRef={
-                                                                              i18nRef
-                                                                            }
-                                                                            icons={
-                                                                              false
-                                                                            }
-                                                                            typographyVariant={
-                                                                              "body2"
-                                                                            }
-                                                                          />
-                                                                        </>
-                                                                      }
-                                                                    </Typography>
-                                                                  ),
-                                                                ),
-                                                          )}
-                                                        </Box>
-                                                      ) : (
-                                                        <>
-                                                          {field?.label?.[lang]}{" "}
-                                                          :
-                                                          <InfoRessource
-                                                            summary={
-                                                              projectSummaries
-                                                            }
-                                                            pathElem={value}
-                                                            flavors={
-                                                              convertionTypes[
-                                                                field.id
-                                                              ]
-                                                            }
-                                                            bRanges={w.ranges}
-                                                            i18nRef={i18nRef}
-                                                            icons={false}
-                                                            typographyVariant={
-                                                              "body2"
-                                                            }
-                                                          />
-                                                        </>
-                                                      )}
-                                                    </Typography>
-                                                  );
-                                                })}
-                                            </Box>
-                                          </Box>
-                                        </Box>
-                                      </Box>
-                                    );
-                                  })}
+                                        label={book}
+                                        variant="outlined"
+                                      />
+                                    ))}
+                                </Box>
+                                <ArrowLeft show={w?.sections?.length > 1}>
+                                  {w.type === "bcvWrapper" &&
+                                    w.sections.map((s, idss) => (
+                                      <BcvWrapperOverview
+                                        section={s}
+                                        bRanges={w.ranges}
+                                        id={idss}
+                                        lang={lang}
+                                        i18nRef={i18nRef}
+                                        projectSummaries={projectSummaries}
+                                      />
+                                    ))}
+                                  {(w.type === "pdf" ||
+                                    w.type === "markdown") && (
+                                    <FreeFormatOverview
+                                      section={w}
+                                      lang={lang}
+                                      i18nRef={i18nRef}
+                                      projectSummaries={projectSummaries}
+                                    />
+                                  )}
                                 </ArrowLeft>
                               </Box>
                               <Box
@@ -698,13 +517,15 @@ export function PdfPublisher() {
             gap: 1, // spacing between button and text
           }}
         >
-          <Button
-            disabled={
+          {(() => {
+            const notInViewer = !(window?.electronAPI && window?.api);
+            const sectionsHaveIssues =
+              !notInViewer &&
               !wrappers.every(
                 (w) =>
                   checkPathsSections(
                     projectSummaries,
-                    w.sections,
+                    w?.sections,
                     typeThatNeedRessourceSelection,
                   ) &&
                   checkPathBooks(
@@ -713,15 +534,41 @@ export function PdfPublisher() {
                     w.ranges,
                     typeThatNeedRessourceSelection,
                   ),
-              )
-            }
-            variant="contained"
-            onClick={async () => {
-              await PrintPdf();
-            }}
-          >
-            {doI18n(`pages:core-client_pdf_publisher:print`, i18nRef.current)}
-          </Button>
+              );
+
+            const isDisabled = notInViewer || sectionsHaveIssues;
+
+            const tooltipTitle = notInViewer
+              ? doI18n(
+                  `pages:core-client_pdf_publisher:print_disabled_not_viewer`,
+                  i18nRef.current,
+                )
+              : sectionsHaveIssues
+                ? doI18n(
+                    `pages:core-client_pdf_publisher:print_disabled_sections_issue`,
+                    i18nRef.current,
+                  )
+                : "";
+
+            return (
+              <Tooltip title={isDisabled ? tooltipTitle : ""}>
+                <span>
+                  <Button
+                    disabled={isDisabled}
+                    variant="contained"
+                    onClick={async () => {
+                      await PrintPdf();
+                    }}
+                  >
+                    {doI18n(
+                      `pages:core-client_pdf_publisher:print`,
+                      i18nRef.current,
+                    )}
+                  </Button>
+                </span>
+              </Tooltip>
+            );
+          })()}
 
           <Typography sx={{ color: "text.secondary", textAlign: "center" }}>
             {doI18n(

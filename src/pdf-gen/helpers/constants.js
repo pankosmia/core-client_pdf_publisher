@@ -103,3 +103,5 @@ export const typeThatNeedRessourceSelection = [
   "tNotes",
   "glossNotes",
 ];
+
+export const freeFormat = ["pdf", "md"];

@@ -12,6 +12,7 @@ import {
   Link,
   Divider,
   Button,
+  Tooltip,
 } from "@mui/material";
 import {
   CloudUpload,
@@ -19,6 +20,7 @@ import {
   Close,
   NoteAdd,
   Save,
+  InfoOutlined,
 } from "@mui/icons-material";
 import { useFilePicker } from "use-file-picker";
 import { i18nContext } from "pankosmia-rcl";
@@ -27,13 +29,14 @@ import { doI18n } from "pankosmia-lib/i18n";
 import { postText } from "pankosmia-lib/http";
 import { currentProjectContext } from "pankosmia-rcl";
 import { v4 as uuidv4 } from "uuid";
+import { useSnackbar } from "notistack";
 
 export async function saveFile(localPath, fileBlob, name, folder) {
   const fd = new FormData();
 
   fd.append("file", fileBlob, name);
 
-  await fetch(
+  return await fetch(
     `/api/burrito/ingredient/bytes/${localPath}?ipath=${folder}/${name}`,
     {
       method: "POST",
@@ -109,8 +112,15 @@ const markdownComponents = {
     ),
 };
 
-export function ImportDocument({ documentType, onFilesSelected }) {
+export function ImportDocument({
+  documentType,
+  currentSections,
+  setCurrentSections,
+  setIsRessourcesStepComplete,
+}) {
   const { i18nRef } = useContext(i18nContext);
+  const { enqueueSnackbar } = useSnackbar();
+
   const { currentProjectRef } = useContext(currentProjectContext);
   const [isDragActive, setIsDragActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -126,14 +136,13 @@ export function ImportDocument({ documentType, onFilesSelected }) {
   const handleNewFile = useCallback(
     async (file) => {
       setSelectedFile(file);
-      onFilesSelected?.(file);
 
       if (documentType === "markdown") {
         const text = await file.text();
         setMarkdownContent(text);
       }
     },
-    [onFilesSelected, documentType],
+    [documentType],
   );
 
   // Start a brand-new, empty markdown document
@@ -143,16 +152,14 @@ export function ImportDocument({ documentType, onFilesSelected }) {
     });
     setSelectedFile(emptyFile);
     setMarkdownContent("");
-    onFilesSelected?.(emptyFile);
     setTab(0);
-  }, [onFilesSelected]);
+  }, []);
 
   // Sync click-picker result into local state
   useEffect(() => {
     if (plainFiles && plainFiles.length > 0) {
       const file = plainFiles[0];
       setSelectedFile(file);
-      onFilesSelected?.(file);
 
       if (documentType === "markdown" && filesContent?.[0]) {
         setMarkdownContent(filesContent[0].content ?? "");
@@ -167,7 +174,6 @@ export function ImportDocument({ documentType, onFilesSelected }) {
       const updatedFile = new File([markdownContent], selectedFile.name, {
         type: "text/markdown",
       });
-      onFilesSelected?.(updatedFile);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markdownContent]);
@@ -202,33 +208,99 @@ export function ImportDocument({ documentType, onFilesSelected }) {
   const handleRemove = () => {
     setSelectedFile(null);
     setMarkdownContent("");
-    onFilesSelected?.(null);
     clear();
   };
 
+  // New: preselect an already-saved document on mount / when it changes
+  useEffect(() => {
+    const docExtansion = acceptByType[documentType]?.replace(".", "");
+    if (!docExtansion) return;
+
+    const existing = currentSections?.[0]?.content?.[docExtansion];
+    if (!existing?.src || !existing?.name) return; // nothing saved yet, keep dropzone
+
+    const fileName = existing.name.split("/").pop();
+    const url = `/api/burrito/ingredient/bytes/${existing.src}?ipath=${existing.name}`;
+
+    if (documentType === "markdown") {
+      fetch(url)
+        .then((res) => res.text())
+        .then((text) => {
+          setMarkdownContent(text);
+          setSelectedFile(
+            new File([text], fileName, { type: "text/markdown" }),
+          );
+        })
+        .catch(() => {
+          // leave dropzone visible if fetch fails
+        });
+    } else if (documentType === "pdf") {
+      fetch(url)
+        .then((res) => res.blob())
+        .then((blob) => {
+          setSelectedFile(
+            new File([blob], fileName, { type: "application/pdf" }),
+          );
+        })
+        .catch(() => {});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentSections, documentType]);
   // endpoint (or storage mechanism) for persisting the document is decided.
   const handleSave = async () => {
     const localPath = `${currentProjectRef.current.organization}/${currentProjectRef.current.source}/${currentProjectRef.current.project}`;
-
+    let response;
     if (!selectedFile) return;
 
     if (documentType === "pdf") {
-      await saveFile(localPath, selectedFile, selectedFile.name, "pdf");
+      response = await saveFile(
+        localPath,
+        selectedFile,
+        selectedFile.name,
+        "pdf",
+      );
     } else if (documentType === "markdown") {
       const mdBlob = new Blob([markdownContent], {
         type: "text/markdown",
       });
 
       // ensure .md extension even if user renames later
-      const fileName = selectedFile.name.endsWith(".md")
-        ? selectedFile.name
-        : `${selectedFile.name.replace(/\.[^/.]+$/, "")}.md`;
 
-      const mdFile = new File([mdBlob], fileName, {
+      const mdFile = new File([mdBlob], selectedFile.name, {
         type: "text/markdown",
       });
 
-      await saveFile(localPath, mdFile, fileName, "md");
+      response = await saveFile(localPath, mdFile, selectedFile.name, "md");
+    }
+    if (response.ok) {
+      let docExtansion = acceptByType[documentType].replace(".", "");
+      setCurrentSections((prev) => {
+        let copy = [...prev];
+        copy[0].content = {
+          ...copy[0].content,
+          [docExtansion]: {
+            src: localPath,
+            name: `${docExtansion}/${selectedFile.name}`,
+          },
+        };
+        return copy;
+      });
+      enqueueSnackbar(
+        doI18n(
+          `pages:core-client_pdf_publisher:fileToSystemSuccess`,
+          i18nRef.current,
+        ),
+        { variant: "success" },
+      );
+      setIsRessourcesStepComplete(true);
+    } else {
+      enqueueSnackbar(
+        doI18n(
+          `pages:core-client_pdf_publisher:fileToSystemError`,
+          i18nRef.current,
+        ) + response.error,
+        { variant: "error" },
+      );
     }
   };
   return (
@@ -311,16 +383,6 @@ export function ImportDocument({ documentType, onFilesSelected }) {
       )}
 
       {selectedFile && (
-        <Button
-          variant="contained"
-          size="small"
-          startIcon={<Save />}
-          onClick={handleSave}
-        >
-          {doI18n("pages:core-client_pdf_publisher:save", i18nRef.current)}
-        </Button>
-      )}
-      {selectedFile && (
         <Stack spacing={1} sx={{ mt: 2 }}>
           <Paper
             variant="outlined"
@@ -361,15 +423,6 @@ export function ImportDocument({ documentType, onFilesSelected }) {
                 )}
               />
             </Tabs>
-
-            <Button
-              variant="contained"
-              size="small"
-              startIcon={<Save />}
-              onClick={handleSave}
-            >
-              {doI18n("pages:core-client_pdf_publisher:save", i18nRef.current)}
-            </Button>
           </Box>
 
           <Box sx={{ p: 2 }}>
@@ -396,6 +449,51 @@ export function ImportDocument({ documentType, onFilesSelected }) {
               </Typography>
             )}
           </Box>
+        </Box>
+      )}
+      {selectedFile && (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 1,
+          }}
+        >
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<Save />}
+            onClick={handleSave}
+          >
+            {doI18n("pages:core-client_pdf_publisher:save", i18nRef.current)}
+          </Button>
+
+          <Tooltip
+            title={doI18n(
+              "pages:core-client_pdf_publisher:saveRequiredForPrintTooltip",
+              i18nRef.current,
+            )}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 0.5,
+                cursor: "default",
+              }}
+            >
+              <InfoOutlined fontSize="small" color="action" />
+              <Typography variant="caption" color="text.secondary">
+                {doI18n(
+                  "pages:core-client_pdf_publisher:saveRequiredForPrint",
+                  i18nRef.current,
+                )}
+              </Typography>
+            </Box>
+          </Tooltip>
         </Box>
       )}
     </Box>
