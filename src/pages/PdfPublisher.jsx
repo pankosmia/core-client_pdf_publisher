@@ -75,6 +75,8 @@ export function PdfPublisher() {
           let sections = response.json.sections;
 
           setProjectSpecs({ ...response.json, sections: sections });
+        } else {
+          setProjectSpecs({ global: {}, sections: [] });
         }
       }
     }

@@ -162,9 +162,9 @@ export function ContentDialogue({
       case 1:
         return isRessourcesStep2Complete;
       case 2:
-        return wrapperName === "markdownPdfWrapper"
-          ? isRessourcesStep3Complete
-          : bRanges.length > 0 && isRessourcesStep3Complete;
+        return wrapperName === "bcvWrapper"
+          ? bRanges.length > 0 && isRessourcesStep3Complete
+          : isRessourcesStep3Complete;
       default:
         return true;
     }

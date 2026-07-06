@@ -52,11 +52,12 @@ export function SelectSection({
   const handleSelection = (section) => {
     if (allowMultiple) {
       setCurrentSections((prev) => {
-        const exists = prev.some((s) => s.type + "Section" === section);
+        console.log(section);
+        const exists = prev.some((s) => s.type === section);
 
         if (exists) {
           // Already selected -> deselect (remove from the list)
-          return prev.filter((s) => s.type + "Section" !== section);
+          return prev.filter((s) => s.type !== section);
         }
 
         // Not selected yet -> add as a new section with a fresh id and empty content
