@@ -76,7 +76,15 @@ export function PdfPublisher() {
 
           setProjectSpecs({ ...response.json, sections: sections });
         } else {
-          setProjectSpecs({ global: {}, sections: [] });
+          setProjectSpecs({
+            global: {
+              sizes: "9on11",
+              fonts: "allGentium",
+              pages: "EXECUTIVE",
+              verbose: false,
+            },
+            sections: [],
+          });
         }
       }
     }
