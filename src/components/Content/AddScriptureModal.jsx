@@ -63,37 +63,30 @@ export default function AddScriptureModal({
   const columns = [
     {
       field: "name",
-      headerName: doI18n("pages:uw-client-checks:row_name", i18nRef.current),
+      headerName: doI18n("library:pankosmia-rcl:row_language", i18nRef.current),
       // minWidth: 110,
       flex: 1,
     },
     {
       field: "description",
-      headerName: doI18n(
-        "pages:uw-client-checks:row_description",
-        i18nRef.current,
-      ),
+      headerName: doI18n("library:pankosmia-rcl:row_language", i18nRef.current),
       // minWidth: 130,
       flex: 1,
     },
     {
       field: "source",
-      headerName: doI18n("pages:uw-client-checks:row_source", i18nRef.current),
+      headerName: doI18n("library:pankosmia-rcl:row_language", i18nRef.current),
       // minWidth: 110,
       flex: 0.5,
     },
     {
       field: "language",
-      headerName: doI18n(
-        "pages:uw-client-checks:row_language",
-        i18nRef.current,
-      ),
+      headerName: doI18n("library:pankosmia-rcl:row_language", i18nRef.current),
       // minWidth: 100,
       flex: 0.5,
     },
     {
       field: "select",
-      headerName: "test",
       flex: 0.5,
     },
   ];
