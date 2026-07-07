@@ -7,24 +7,8 @@ import { i18nContext } from "pankosmia-rcl";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { iconBySection } from "../../../pdf-gen/helpers/constants";
 import { Done, DragIndicator } from "@mui/icons-material";
-
+import { typeThatNeedRessourceSelection } from "../../../pdf-gen/helpers/constants";
 const allowedConfig = ["boolean", "int", "string", "number"];
-
-const allowedSelected = [
-  "md",
-  "pdf",
-  "jxl",
-  "scripture",
-  "notes",
-  "src",
-  "obs",
-  "obsImg",
-  "lhs",
-  "bcvNotes",
-  "scriptureSrc",
-  "tNotes",
-  "glossNotes",
-];
 
 const isFieldsValid = (fields, sectionData, isCard) => {
   return fields
@@ -33,7 +17,7 @@ const isFieldsValid = (fields, sectionData, isCard) => {
         allowedConfig.includes(f.typeName) ||
         f.typeEnum ||
         f.typeSpec ||
-        allowedSelected.includes(f.id),
+        typeThatNeedRessourceSelection.includes(f.id),
     )
     .every((f) => {
       if (f.typeSpec) {
@@ -114,7 +98,7 @@ export function ConfigSection({
               allowedConfig.includes(f.typeName) ||
               f.typeEnum ||
               f.typeSpec ||
-              allowedSelected.includes(f.id),
+              typeThatNeedRessourceSelection.includes(f.id),
           )
           .map((f, ids) => {
             if (f.typeSpec) {
@@ -166,7 +150,9 @@ export function ConfigSection({
                           summary?.[
                             Object.entries(
                               currentSections?.[id]?.content?.[f.id][i],
-                            ).find(([k, v]) => allowedSelected.includes(k))[1]
+                            ).find(([k, v]) =>
+                              typeThatNeedRessourceSelection.includes(k),
+                            )[1]
                           ]?.name
                         }
                       </Typography>
@@ -187,7 +173,7 @@ export function ConfigSection({
             }
 
             // Resource fields chosen in the previous step: read-only display only.
-            if (allowedSelected.includes(f.id) && !f.typeSpec) {
+            if (typeThatNeedRessourceSelection.includes(f.id) && !f.typeSpec) {
               const isRequired = f?.nValues?.[0] >= 1;
               const value = currentSections?.[id]?.content?.[f.id];
               return (

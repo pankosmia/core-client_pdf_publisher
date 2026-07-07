@@ -2,16 +2,6 @@ import { useEffect, useState } from "react";
 
 import { Box, Card, Chip, CardContent, Typography } from "@mui/material";
 import { BIBLE_BOOKS } from "../../utils/booksOfTheBible";
-const allowedSelected = [
-  "jxl",
-  "scripture",
-  "notes",
-  "src",
-  "obs",
-  "obsImg",
-  "bcvNotes",
-  "scriptureSrc",
-];
 
 const OT_BOOKS = Object.keys(BIBLE_BOOKS.oldTestament);
 const NT_BOOKS = Object.keys(BIBLE_BOOKS.newTestament);

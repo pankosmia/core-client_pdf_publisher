@@ -16,7 +16,7 @@ export class markdownSection extends Section {
         {
           id: "startOn",
           label: {
-            en: "Start Page Side",
+            en: "First page on",
             fr: "Côté pour première page",
           },
           typeEnum: [
@@ -37,7 +37,7 @@ export class markdownSection extends Section {
             {
               id: "either",
               label: {
-                en: "Next Page",
+                en: "Next page",
                 fr: "Page suivante",
               },
             },
@@ -48,7 +48,7 @@ export class markdownSection extends Section {
         {
           id: "showPageNumber",
           label: {
-            en: "Show Page Number",
+            en: "Show page numbers",
             fr: "Afficher numéro de page",
           },
           typeName: "boolean",
@@ -81,7 +81,7 @@ export class markdownSection extends Section {
   async doSection({ section, templates, bookCode, manifest, options }) {
     let pdfPath;
     let mkrText = await getText(
-      `/api/burrito/ingredient/bytes${section.content.md.src}?ipath=${section.content.md.name}`,
+      `/api/burrito/ingredient/bytes/${section.content.md.src}?ipath=${section.content.md.name}`,
     );
     const server = window.location.origin;
     let srcPolyfill = `${server}/api/app-resources/pdf/paged.polyfill.js`;

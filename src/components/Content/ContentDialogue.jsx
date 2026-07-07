@@ -11,10 +11,11 @@ import { doI18n } from "pankosmia-lib/i18n";
 import { SelectSection } from "./Sections/SelectSection";
 import { sectionHandlerLookup } from "../../pdf-gen/sectionHandlerLookup";
 import { conversionSection } from "../../pdf-gen/helpers/constants";
-import { RessourceSelection } from "./Sections/RessourceSelection";
+import { RessourceSelection } from "./RessourceSelection/RessourceSelection";
 import { ConfigSection } from "./Sections/ConfigSection";
 import { BRangesPicker } from "./Sections/BRangesPicker";
 import { getJson } from "pankosmia-lib/http";
+import { ImportDocument } from "./RessourceSelection/ImportDocument";
 
 let orderOfField = [
   "md",
@@ -53,6 +54,71 @@ const getOrderIndex = (f) => {
   return orderOfField.length;
 };
 
+function DifferentWrapperSituationEdit(
+  wrapperName,
+  setWrapper,
+  bRanges,
+  currentSections,
+  indexSection,
+) {
+  switch (wrapperName) {
+    case "bcvWrapper":
+      setWrapper((prev) => {
+        let newPrev = [...prev];
+        let new_section = {
+          type: "bcvWrapper",
+          ranges: bRanges,
+          sections: [],
+        };
+        currentSections.forEach((n, id) => {
+          new_section.sections.push(n);
+        });
+        newPrev[indexSection] = new_section;
+        return newPrev;
+      });
+      break;
+    default:
+      let unitSection = currentSections[0];
+      setWrapper((prev) => {
+        let newPrev = [...prev];
+        newPrev[indexSection] = unitSection;
+        return newPrev;
+      });
+  }
+}
+
+function DifferentWrapperSituationNew(
+  wrapperName,
+  setWrapper,
+  bRanges,
+  currentSections,
+) {
+  switch (wrapperName) {
+    case "bcvWrapper":
+      setWrapper((prev) => {
+        let newPrev = [...prev];
+        let new_section = {
+          type: "bcvWrapper",
+          ranges: bRanges,
+          sections: [],
+        };
+        currentSections.forEach((n, id) => {
+          new_section.sections.push(n);
+        });
+        newPrev.push(new_section);
+        return newPrev;
+      });
+      break;
+    default:
+      let unitSection = currentSections[0];
+      setWrapper((prev) => {
+        let newPrev = [...prev];
+        newPrev.push(unitSection);
+        return newPrev;
+      });
+  }
+}
+
 export function ContentDialogue({
   type,
   setWrapper,
@@ -69,13 +135,12 @@ export function ContentDialogue({
   const [currentSections, setCurrentSections] = useState([]);
   const [bRanges, setBRanges] = useState([]);
   const [open, setOpen] = useState(false);
-
+  console.log(currentSections);
   const [isRessourcesStep2Complete, setIsRessourcesStep2Complete] =
     useState(false);
   const [isRessourcesStep3Complete, setIsRessourcesStep3Complete] =
     useState(false);
   const [summary, setSummary] = useState({});
-
   const steps = [
     doI18n("pages:core-client_pdf_publisher:choose_layout", i18nRef.current),
     doI18n("pages:core-client_pdf_publisher:choose_documents", i18nRef.current),
@@ -97,7 +162,9 @@ export function ContentDialogue({
       case 1:
         return isRessourcesStep2Complete;
       case 2:
-        return bRanges.length > 0 && isRessourcesStep3Complete;
+        return wrapperName === "bcvWrapper"
+          ? bRanges.length > 0 && isRessourcesStep3Complete
+          : isRessourcesStep3Complete;
       default:
         return true;
     }
@@ -122,13 +189,18 @@ export function ContentDialogue({
       }
 
       if (type === "edit" && initSection) {
-        let initSection_ = JSON.parse(JSON.stringify(initSection));
-        setCurrentSections(initSection_.sections);
-        setBRanges(initSection_.ranges ?? []);
+        if (wrapperName === "bcvWrapper") {
+          let initSection_ = JSON.parse(JSON.stringify(initSection));
+          setCurrentSections(initSection_.sections);
+          setBRanges(initSection_.ranges ?? []);
+        } else {
+          let initSection_ = JSON.parse(JSON.stringify(initSection));
+          setCurrentSections([initSection_]);
+          setBRanges([]);
+        }
       }
     }
   }, [open]);
-
   const renderStepContent = (step) => {
     switch (step) {
       case 0:
@@ -145,14 +217,18 @@ export function ContentDialogue({
             )}
 
             <SelectSection
-              wrapperName={wrapperName}
+              wrapperName={
+                wrapperName === "bcvWrapper"
+                  ? wrapperName
+                  : "markdownPdfWrapper"
+              }
               currentSections={currentSections}
               setCurrentSections={setCurrentSections}
             />
           </>
         );
       case 1:
-        return (
+        return wrapperName === "bcvWrapper" ? (
           <RessourceSelection
             bRanges={bRanges}
             currentSections={currentSections}
@@ -160,6 +236,13 @@ export function ContentDialogue({
             currentSectionsSignature={currentSectionsSignature}
             setIsRessourcesStepComplete={setIsRessourcesStep2Complete}
             summary={summary}
+          />
+        ) : (
+          <ImportDocument
+            documentType={currentSections[0].type}
+            setIsRessourcesStepComplete={setIsRessourcesStep2Complete}
+            setCurrentSections={setCurrentSections}
+            currentSections={currentSections}
           />
         );
       case 2:
@@ -191,8 +274,7 @@ export function ContentDialogue({
     if (currentSections) {
       let signatures = [];
       currentSections.forEach((cs, id) => {
-        const sig =
-          sectionHandlerLookup[conversionSection[cs.type]].signature();
+        const sig = sectionHandlerLookup[cs.type].signature();
 
         const sortedFields = sortFields(sig.fields);
 
@@ -247,34 +329,21 @@ export function ContentDialogue({
             }
             handleCreate={() => {
               if (type === "edit") {
-                setWrapper((prev) => {
-                  let newPrev = [...prev];
-                  let new_section = {
-                    type: "bcvWrapper",
-                    ranges: bRanges,
-                    sections: [],
-                  };
-                  currentSections.forEach((n, id) => {
-                    new_section.sections.push(n);
-                  });
-                  newPrev[indexSection] = new_section;
-                  return newPrev;
-                });
+                DifferentWrapperSituationEdit(
+                  wrapperName,
+                  setWrapper,
+                  bRanges,
+                  currentSections,
+                  indexSection,
+                );
                 setOpen(false);
               } else {
-                setWrapper((prev) => {
-                  let newPrev = [...prev];
-                  let new_section = {
-                    type: "bcvWrapper",
-                    ranges: bRanges,
-                    sections: [],
-                  };
-                  currentSections.forEach((n, id) => {
-                    new_section.sections.push(n);
-                  });
-                  newPrev.push(new_section);
-                  return newPrev;
-                });
+                DifferentWrapperSituationNew(
+                  wrapperName,
+                  setWrapper,
+                  bRanges,
+                  currentSections,
+                );
                 setCurrentSections([]);
                 setCurrentSectionsSignature([]);
                 setOpen(false);

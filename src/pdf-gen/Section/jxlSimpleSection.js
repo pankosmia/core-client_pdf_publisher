@@ -25,7 +25,7 @@ export class jxlSimpleSection extends Section {
         {
           id: "startOn",
           label: {
-            en: "Start Page Side",
+            en: "First page on",
             fr: "Côté pour première page",
           },
           typeEnum: [
@@ -46,7 +46,7 @@ export class jxlSimpleSection extends Section {
             {
               id: "either",
               label: {
-                en: "Next Page",
+                en: "Next page",
                 fr: "Page suivante",
               },
             },
@@ -57,7 +57,7 @@ export class jxlSimpleSection extends Section {
         {
           id: "showPageNumber",
           label: {
-            en: "Show Page Number",
+            en: "Show page Nnmber",
             fr: "Afficher numéro de page",
           },
           typeName: "boolean",
@@ -67,7 +67,7 @@ export class jxlSimpleSection extends Section {
         {
           id: "jxl",
           label: {
-            en: "Juxta Source",
+            en: "Juxta source",
             fr: "Source pour Juxta",
           },
           typeName: "juxta",
@@ -76,7 +76,7 @@ export class jxlSimpleSection extends Section {
         {
           id: "topTextSrc",
           label: {
-            en: "Scripture Top Text Source",
+            en: "Scripture top text dource",
             fr: "Source pour texte biblique en haut",
           },
           typeName: "translationText",
@@ -85,7 +85,7 @@ export class jxlSimpleSection extends Section {
         {
           id: "bottomTextSrc",
           label: {
-            en: "Scripture Bottom Text Source",
+            en: "Scripture bottom text source",
             fr: "Source pour texte biblique en bas",
           },
           typeName: "translationText",

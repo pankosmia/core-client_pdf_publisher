@@ -171,6 +171,78 @@
     "ressource_errors": {
       "en": "%%RESOURCE%% has multiple errors",
       "fr": "%%RESOURCE%% a plusieurs erreurs"
+    },
+    "dragAndDrop": {
+      "en": "Drag & drop %%DOCTYPE%% here, or click to browse",
+      "fr": "Drag & drop %%DOCTYPE%% ici, our cliquer pour rechercher"
+    },
+    "singleFile": {
+      "en": "Single file only",
+      "fr": "Un seul fichier"
+    },
+    "edit": {
+      "en": "Edit",
+      "fr": "Editer"
+    },
+    "preview": {
+      "en": "Preview",
+      "fr": "Prévisualisation"
+    },
+    "nothingToPreview": {
+      "en": "Nothing to preview yet.",
+      "fr": "Rien à afficher pour le moment"
+    },
+    "createMarkdown": {
+      "en": "Create new markdown document",
+      "fr": "Créer un nouveau document markdown"
+    },
+    "or": {
+      "en": "or",
+      "fr": "ou"
+    },
+    "save": {
+      "en": "save",
+      "fr": "sauvegarder"
+    },
+    "markdownPdfWrapper": {
+      "en": "Free format",
+      "fr": "Format libre"
+    },
+    "pdf": {
+      "en": "Pdf",
+      "fr": "Pdf"
+    },
+    "markdown": {
+      "en": "Markdown",
+      "fr": "Markdown"
+    },
+    "print_disabled_not_viewer": {
+      "en": "You can't print if you are not inside the Viewer",
+      "fr": "Vous ne pouvez pas imprimer si vous n'etes pas dans le Viewer"
+    },
+    "print_disabled_sections_issue": {
+      "en": "Some of the section still have probleme be sure to check them",
+      "fr": "Certaine section(s) ont des erreurs"
+    },
+    "as": {
+      "en": "as",
+      "fr": "pour"
+    },
+    "books": {
+      "en": "book(s)",
+      "fr": "livre(s)"
+    },
+    "currentlySelected": {
+      "en": "Currently selected",
+      "fr": "Actuellement sélectionné"
+    },
+    "saveRequiredForPrint": {
+      "en": "Import required for print",
+      "fr": "Importation requise pour l'impression"
+    },
+    "saveRequiredForPrintTooltip": {
+      "en": "This file must be saved to the project before it can be used when printing the PDF.",
+      "fr": "Ce fichier doit être sauvegardé dans le projet avant de pouvoir être utilisé lors de l'impression du PDF."
     }
   }
 }

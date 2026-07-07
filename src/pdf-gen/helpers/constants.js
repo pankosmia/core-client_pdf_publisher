@@ -33,8 +33,7 @@ export const constants = {
 };
 
 export const sectionsTypes = {
-  pdfWrapper: { free_format: ["pdfSection"] },
-  markdownWrapper: { free_format: ["markdownSection"] },
+  markdownPdfWrapper: { free_format: ["pdfSection", "markdownSection"] },
   bcvWrapper: {
     "one-page-bible": [
       "bcvBibleSection",
@@ -90,3 +89,19 @@ export const conversionSection = {
   pdfSection: "pdf",
   twoColumnSection: "twoColumn",
 };
+
+export const typeThatNeedRessourceSelection = [
+  "jxl",
+  "scripture",
+  "notes",
+  "src",
+  "obs",
+  "obsImg",
+  "lhs",
+  "bcvNotes",
+  "scriptureSrc",
+  "tNotes",
+  "glossNotes",
+];
+
+export const freeFormat = ["pdf", "md"];

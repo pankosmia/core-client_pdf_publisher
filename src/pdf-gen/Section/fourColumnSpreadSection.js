@@ -24,7 +24,7 @@ export class fourColumnSpreadSection extends Section {
         {
           id: "startOn",
           label: {
-            en: "Start Page Side",
+            en: "First page on",
             fr: "Côté pour première page",
           },
           typeLiteral: "verso",
@@ -33,7 +33,7 @@ export class fourColumnSpreadSection extends Section {
         {
           id: "showPageNumber",
           label: {
-            en: "Show Page Number",
+            en: "Show page numbers",
             fr: "Afficher numéro de page",
           },
           typeName: "boolean",
@@ -43,7 +43,7 @@ export class fourColumnSpreadSection extends Section {
         {
           id: "notes",
           label: {
-            en: "Notes Source",
+            en: "Notes source",
             fr: "Source pour notes",
           },
           typeName: "tNotes",
@@ -52,7 +52,7 @@ export class fourColumnSpreadSection extends Section {
         {
           id: "scripture",
           label: {
-            en: "Scripture Texts",
+            en: "Scripture texts",
             fr: "Textes bibliques",
           },
           nValues: [4, 4],
@@ -60,7 +60,7 @@ export class fourColumnSpreadSection extends Section {
             {
               id: "text",
               label: {
-                en: "Scripture # Text Label",
+                en: "Scripture # text label",
                 fr: "Etiquette pour texte biblique #",
               },
               typeName: "string",
@@ -69,7 +69,7 @@ export class fourColumnSpreadSection extends Section {
             {
               id: "src",
               label: {
-                en: "Source # Text Source",
+                en: "Source # text source",
                 fr: "Source pour texte biblique #",
               },
               typeName: "translationText",
@@ -78,7 +78,7 @@ export class fourColumnSpreadSection extends Section {
             {
               id: "type",
               label: {
-                en: "Scripture # Text Type",
+                en: "Scripture # text type",
                 fr: "Type de texte biblique #",
               },
               typeEnum: [

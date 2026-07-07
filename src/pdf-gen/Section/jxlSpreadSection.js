@@ -27,7 +27,7 @@ export class jxlSpreadSection extends Section {
         {
           id: "startOn",
           label: {
-            en: "Start Page Side",
+            en: "First page on",
             fr: "Côté pour première page",
           },
           typeLiteral: "verso",
@@ -36,7 +36,7 @@ export class jxlSpreadSection extends Section {
         {
           id: "showPageNumber",
           label: {
-            en: "Show Page Number",
+            en: "Show page numbers",
             fr: "Afficher numéro de page",
           },
           typeName: "boolean",
@@ -46,7 +46,7 @@ export class jxlSpreadSection extends Section {
         {
           id: "jxl",
           label: {
-            en: "Juxta Source",
+            en: "Juxta source",
             fr: "Source pour Juxta",
           },
           typeName: "juxta",
@@ -92,7 +92,7 @@ export class jxlSpreadSection extends Section {
         {
           id: "firstSentence",
           label: {
-            en: "First Sentence Number",
+            en: "First sentence number",
             fr: "N° de première phrase",
           },
           typeName: "number",
@@ -101,7 +101,7 @@ export class jxlSpreadSection extends Section {
         {
           id: "lastSentence",
           label: {
-            en: "Last Sentence Number",
+            en: "Last sentence number",
             fr: "N° de dernière phrase",
           },
           typeName: "number",
@@ -111,7 +111,7 @@ export class jxlSpreadSection extends Section {
         {
           id: "lhs",
           label: {
-            en: "Scripture Texts",
+            en: "Scripture texts",
             fr: "Textes bibliques",
           },
           nValues: [1, 5],
@@ -119,7 +119,7 @@ export class jxlSpreadSection extends Section {
             {
               id: "text",
               label: {
-                en: "Scripture # Text Label",
+                en: "Scripture # text label",
                 fr: "Etiquette pour texte biblique #",
               },
               typeName: "string",
@@ -128,7 +128,7 @@ export class jxlSpreadSection extends Section {
             {
               id: "src",
               label: {
-                en: "Source # Text Source",
+                en: "Source # text source",
                 fr: "Source pour texte biblique #",
               },
               typeName: "translationText",
@@ -137,7 +137,7 @@ export class jxlSpreadSection extends Section {
             {
               id: "type",
               label: {
-                en: "Scripture # Text Type",
+                en: "Scripture # text type",
                 fr: "Type de texte biblique #",
               },
               typeEnum: [

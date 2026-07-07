@@ -8,13 +8,13 @@ export class pdfSection extends Section {
 
   signature() {
     return {
-      sectionType: "front",
+      sectionType: "pdf",
       requiresWrapper: this.requiresWrapper(),
       fields: [
         {
           id: "startOn",
           label: {
-            en: "Start Page Side",
+            en: "First page on",
             fr: "Côté pour première page",
           },
           typeEnum: [
@@ -46,7 +46,7 @@ export class pdfSection extends Section {
         {
           id: "showPageNumber",
           label: {
-            en: "Show Page Number",
+            en: "Show page numbers",
             fr: "Afficher numéro de page",
           },
           typeName: "boolean",
@@ -56,7 +56,7 @@ export class pdfSection extends Section {
         {
           id: "pdf",
           label: {
-            en: "External PDF Source",
+            en: "External PDF source",
             fr: "Source pour PDF externe",
           },
           typeName: "pdf",
@@ -68,7 +68,7 @@ export class pdfSection extends Section {
 
   async doSection({ section, templates, manifest, options }) {
     let response = await fetch(
-      `/api/burrito/ingredient/bytes${section.content.pdf.src}?ipath=${section.content.pdf.name}`,
+      `/api/burrito/ingredient/bytes/${section.content.pdf.src}?ipath=${section.content.pdf.name}`,
       {
         method: "GET",
       },
