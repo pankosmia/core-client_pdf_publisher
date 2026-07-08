@@ -42,7 +42,7 @@
       "en": "Edit section"
     },
     "markdownSection": {
-      "en": "Simple formatting"
+      "en": "Markdown"
     },
     "pdfSection": {
       "en": "Import PDF"
@@ -81,7 +81,7 @@
       "en": "Obs with notes "
     },
     "free_format": {
-      "en": "Free-format content"
+      "en": "External file"
     },
     "one-page-bible": {
       "en": "One-page Bible"
