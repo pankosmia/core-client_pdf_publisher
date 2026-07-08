@@ -302,7 +302,7 @@ export function ContentDialogue({
             onCloseFromOutise();
           }
         }}
-        size="md"
+        size="xl"
         titleLabel={
           type === "edit"
             ? doI18n(
@@ -322,6 +322,12 @@ export function ContentDialogue({
             renderStepContent={renderStepContent}
             primaryButtonVariant="secondary"
             secondaryButtonVariant="secondary"
+            handleClose={() => {
+              setOpen(false);
+              if (onCloseFromOutise) {
+                onCloseFromOutise();
+              }
+            }}
             primaryActionKey={
               type === "edit"
                 ? "pages:core-client_pdf_publisher:edit_section"
