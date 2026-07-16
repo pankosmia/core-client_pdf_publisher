@@ -217,16 +217,16 @@ export class obsPlusNotesSection extends Section {
       checkCssSubstitution("obs_plus_notes_page_styles.css", css, "%");
       html.replace("%%CSS%%", css);
 
-      //   section.doPdfCallback &&
-      //     section.doPdfCallback({
-      //       type: "pdf",
-      //       level: 3,
-      //       msg: `Originating PDF ${path.join(options.pdfPath, `${section.id}_${name}.pdf}`)} for OBSPlusNotes story '${mdName}'`,
-      //       args: [
-      //         `${path.join(options.pdfPath, `${section.id}_${name}.pdf`)}`,
-      //         mdName,
-      //       ],
-      //     });
+      // section.doPdfCallback &&
+      //   section.doPdfCallback({
+      //     type: "pdf",
+      //     level: 3,
+      //     msg: `Originating PDF ${path.join(options.pdfPath, `${section.id}_${name}.pdf}`)} for OBSPlusNotes story '${mdName}'`,
+      //     args: [
+      //       `${path.join(options.pdfPath, `${section.id}_${name}.pdf`)}`,
+      //       mdName,
+      //     ],
+      //   });
       let uuidHtml = await toTemp(html);
       let pdfUuid = await window.api.generatePdf(uuidHtml);
 

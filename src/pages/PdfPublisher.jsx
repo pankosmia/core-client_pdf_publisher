@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 // import {PdfGen} from "jxl-pdf"
 import { getJson, postJson } from "pankosmia-lib/http";
 import { doI18n } from "pankosmia-lib/i18n";
@@ -23,6 +23,7 @@ import {
   AccordionDetails,
   Chip,
   Tooltip,
+  CircularProgress,
 } from "@mui/material";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import "react-pdf/dist/Page/AnnotationLayer.css";
@@ -51,12 +52,30 @@ import { typeThatNeedRessourceSelection } from "../pdf-gen/helpers/constants";
 import { BcvWrapperOverview } from "../components/Overview/BcvWrapperOverview";
 import { FreeFormatOverview } from "../components/Overview/FreeFormatOverview";
 
+function countSteps(specs) {
+  let numberSteps = 0;
+  specs.sections.forEach((s) => {
+    if (s.type === "bcvWrapper") {
+      s.ranges.forEach((r) => {
+        s.sections.forEach((ss) => {
+          numberSteps += 2; // for creating & assembling
+        });
+      });
+    } else {
+      numberSteps += 2;
+    }
+  });
+  numberSteps += 1; // page numbers
+  return numberSteps;
+}
+
 export function PdfPublisher() {
   const { debugRef } = useContext(debugContext);
   const { i18nRef } = useContext(i18nContext);
-  const { enqueueSnackbar } = useSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const { currentProjectRef } = useContext(currentProjectContext);
   // fake selected project
+  const [messageSnackbar, setMessageSnackbar] = useState("this message");
   const [projectSummaries, setProjectSummaries] = useState({});
   const [headerInfo, setHeaderInfo] = useState(null);
   const [wrappers, setWrappers] = useState([]);
@@ -65,6 +84,10 @@ export function PdfPublisher() {
     useState(null);
   const [projectSpecs, setProjectSpecs] = useState(null);
   // const jsonWithHeaderChoice = PdfGen.pageInfo();
+  const [numberOfStepsToValidate, setNumberOfStepsToValidate] = useState(0);
+  const [currentNumberOfStepsValidated, setCurrentNumberOfStepsValidated] =
+    useState(0);
+  console.log(wrappers);
   useEffect(() => {
     async function getSpecs() {
       if (currentProjectRef.current) {
@@ -116,6 +139,7 @@ export function PdfPublisher() {
       setFontFamilyCorrespondance(cores);
     });
   }, []);
+
   const jsonWithHeaderChoice = {
     pages: Object.entries(pages).map(([key, value]) => ({
       value: key,
@@ -127,6 +151,19 @@ export function PdfPublisher() {
     })),
     verbose: [true, false],
   };
+
+  function doPdfCallback(e) {
+    setCurrentNumberOfStepsValidated((prev) => {
+      const next = prev + 1;
+      setMessageSnackbar(
+        doI18n("pages:core-client_pdf_publisher:step", i18nRef.current)
+          .replace("##CURRENT##", next)
+          .replace("##GLOBAL##", numberOfStepsToValidate),
+      );
+
+      return next;
+    });
+  }
 
   async function PrintPdf() {
     let header = JSON.parse(headerInfo);
@@ -167,8 +204,17 @@ export function PdfPublisher() {
       fontSizes: options.fontSizes,
     });
     options.cssLookUp = cssLookUp;
-    let manifest = await originatePdfs(options, null);
-    await assemblePdfs(options, null, manifest);
+
+    const totalSteps = countSteps(config);
+    console.log(totalSteps);
+    setNumberOfStepsToValidate(totalSteps);
+
+    let manifest = await originatePdfs(options, doPdfCallback);
+    await assemblePdfs(options, doPdfCallback, manifest);
+
+    closeSnackbar("pdf-progress");
+    setNumberOfStepsToValidate(0);
+    setCurrentNumberOfStepsValidated(0);
   }
 
   useEffect(() => {
@@ -564,27 +610,46 @@ export function PdfPublisher() {
               <Tooltip title={isDisabled ? tooltipTitle : ""}>
                 <span>
                   <Button
-                    disabled={isDisabled}
+                    disabled={
+                      isDisabled ||
+                      currentNumberOfStepsValidated < numberOfStepsToValidate
+                    }
                     variant="contained"
                     onClick={async () => {
                       await PrintPdf();
                     }}
                   >
-                    {doI18n(
-                      `pages:core-client_pdf_publisher:print`,
-                      i18nRef.current,
-                    )}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
+                      <Typography>
+                        {doI18n(
+                          `pages:core-client_pdf_publisher:print`,
+                          i18nRef.current,
+                        )}
+                      </Typography>
+                      {currentNumberOfStepsValidated <
+                        numberOfStepsToValidate && (
+                        <CircularProgress size={16} color="inherit" />
+                      )}
+                    </Box>
                   </Button>
                 </span>
               </Tooltip>
             );
           })()}
-
           <Typography sx={{ color: "text.secondary", textAlign: "center" }}>
-            {doI18n(
-              `pages:core-client_pdf_publisher:remember_save`,
-              i18nRef.current,
-            )}
+            {currentNumberOfStepsValidated < numberOfStepsToValidate
+              ? messageSnackbar
+              : doI18n(
+                  `pages:core-client_pdf_publisher:remember_save`,
+                  i18nRef.current,
+                )}
           </Typography>
           <FirefoxInstaller />
         </Box>
