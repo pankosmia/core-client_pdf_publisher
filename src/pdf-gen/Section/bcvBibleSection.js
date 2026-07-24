@@ -119,7 +119,7 @@ export class bcvBibleSection extends Section {
     };
   }
 
-  async doSection({ section, templates, manifest, options }) {
+  async doSection({ section, templates, manifest, options, i18nRef }) {
     if (!section.bcvRange) {
       throw new Error(`No bcvRange found for section ${section.id}`);
     }
@@ -131,12 +131,13 @@ export class bcvBibleSection extends Section {
           path: section.content.scriptureSrc,
         },
       ],
+      i18nRef,
       options.verbose,
     );
     const bookName = getBookName(pk, "xxx_yyy", section.bcvRange);
     const cvTexts = getCVTexts(section.bcvRange, pk);
     let notes = section.content.notes
-      ? bcvNotes(section.content.notes, section.bcvRange)
+      ? bcvNotes(section.content.notes, section.bcvRange, [], i18nRef)
       : {};
     for (const [cv, noteArray] of Object.entries(notes)) {
       notes[cv] = [

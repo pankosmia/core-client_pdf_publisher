@@ -16,6 +16,7 @@ import {
   PanTable,
 } from "pankosmia-rcl";
 import { getJson } from "pankosmia-lib/http";
+import { enqueueSnackbar } from "notistack";
 
 export default function AddBookModal({
   selectedResources,
@@ -41,6 +42,13 @@ export default function AddBookModal({
     );
     if (summariesResponse.ok) {
       setProjectSummaries(summariesResponse.json);
+    } else {
+      enqueueSnackbar(
+        doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+          " /api/burrito/metadata/summaries" +
+          `${summariesResponse.status}): ${summariesResponse.error}`,
+        { variant: "error" },
+      );
     }
   };
 

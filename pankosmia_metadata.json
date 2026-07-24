@@ -247,6 +247,10 @@
     "step": {
       "en": "Current step ##CURRENT##/##GLOBAL##",
       "fr": "Etape actuelle ##CURRENT##/##GLOBAL##"
+    },
+    "errorGet": {
+      "en": "Could not fetch",
+      "fr": "N'as pas reussi a fetch"
     }
   }
 }

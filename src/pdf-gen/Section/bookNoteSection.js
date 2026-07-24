@@ -66,9 +66,9 @@ export class bookNoteSection extends Section {
     };
   }
 
-  async doSection({ section, templates, manifest, options }) {
+  async doSection({ section, templates, manifest, options, i18nRef }) {
     const notes = section.content.notes
-      ? bcvNotes(section.content.notes, section.bcvRange)
+      ? bcvNotes(section.content.notes, section.bcvRange, [], i18nRef)
       : {};
     const introNotes = notes["front:intro"]
       ? notes["front:intro"].join("\n\n")

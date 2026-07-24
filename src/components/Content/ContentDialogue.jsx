@@ -16,6 +16,7 @@ import { ConfigSection } from "./Sections/ConfigSection";
 import { BRangesPicker } from "./Sections/BRangesPicker";
 import { getJson } from "pankosmia-lib/http";
 import { ImportDocument } from "./RessourceSelection/ImportDocument";
+import { enqueueSnackbar } from "notistack";
 
 let orderOfField = [
   "md",
@@ -175,7 +176,16 @@ export function ContentDialogue({
         "/api/burrito/metadata/summaries",
         debugRef.current,
       );
-      setSummary(summariesResponse.json);
+      if (summariesResponse.ok) {
+        setSummary(summariesResponse.json);
+      } else {
+        enqueueSnackbar(
+          doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+            " /api/burrito/metadata/summaries" +
+            `${summariesResponse.status}): ${summariesResponse.error}`,
+          { variant: "error" },
+        );
+      }
     };
     getProjectSummaries();
   }, []);

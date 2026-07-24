@@ -135,18 +135,23 @@ export class twoColumnSection extends Section {
     };
   }
 
-  async doSection({ section, templates, manifest, options }) {
+  async doSection({ section, templates, manifest, options, i18nRef }) {
     const docSpecs = [];
     let scriptureN = 0;
     for (const scripture of section.content.scripture) {
       docSpecs.push({ id: `xxx_yyy${scriptureN}`, path: scripture.src });
       scriptureN++;
     }
-    const pk = await pkWithDocs(section.bcvRange, docSpecs, options.verbose);
+    const pk = await pkWithDocs(
+      section.bcvRange,
+      docSpecs,
+      i18nRef,
+      options.verbose,
+    );
     const bookName = getBookName(pk, "xxx_yyy0", section.bcvRange);
     const cvTexts = getCVTexts(section.bcvRange, pk);
     let notes = section.content.notes
-      ? await bcvNotes(section.content.notes, section.bcvRange)
+      ? await bcvNotes(section.content.notes, section.bcvRange, [], i18nRef)
       : {};
     for (const [cv, noteArray] of Object.entries(notes)) {
       notes[cv] = [

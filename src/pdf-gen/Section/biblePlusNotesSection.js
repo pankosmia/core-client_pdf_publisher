@@ -180,7 +180,7 @@ export class biblePlusNotesSection extends Section {
     };
   }
 
-  async doSection({ section, templates, manifest, options }) {
+  async doSection({ section, templates, manifest, options, i18nRef }) {
     const cvBySentence = (cvTexts, endSentenceRegex) => {
       const emptyRecord = () => ({
         textBits: [],
@@ -226,10 +226,16 @@ export class biblePlusNotesSection extends Section {
           path: section.content.scriptureSrc,
         },
       ],
+      i18nRef,
       options.verbose,
     );
     const bookName = getBookName(pk, "xxx_yyy", section.bcvRange);
-    const notes = await bcvNotes(section.content.notes, section.bcvRange, []);
+    const notes = await bcvNotes(
+      section.content.notes,
+      section.bcvRange,
+      [],
+      i18nRef,
+    );
     const cvTexts = getCVTexts(section.bcvRange, pk);
     const verses = [`<h1>${bookName}</h1>`];
     const qualified_id = `${section.id}_${section.bcvRange}`;

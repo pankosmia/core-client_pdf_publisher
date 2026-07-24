@@ -1,7 +1,7 @@
 import { sectionHandlerLookup } from "./sectionHandlerLookup";
 
 import templates from "./HTML";
-export const originatePdfs = async (options, doPdfCallback = null) => {
+export const originatePdfs = async (options, doPdfCallback = null, i18nRef) => {
   // Set up workspace - options.workingDir should already exist
 
   let links = [];
@@ -50,6 +50,7 @@ export const originatePdfs = async (options, doPdfCallback = null) => {
       wrapperRange,
       manifest,
       options,
+      i18nRef,
     });
     if (section.forceQuit) {
       console.log("** Force quit in config file **");

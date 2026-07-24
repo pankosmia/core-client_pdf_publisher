@@ -66,7 +66,7 @@ export class pdfSection extends Section {
     };
   }
 
-  async doSection({ section, templates, manifest, options }) {
+  async doSection({ section, templates, manifest, options, i18nRef }) {
     let response = await fetch(
       `/api/burrito/ingredient/bytes/${section.content.pdf.src}?ipath=${section.content.pdf.name}`,
       {

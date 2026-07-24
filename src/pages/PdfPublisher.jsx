@@ -83,11 +83,11 @@ export function PdfPublisher() {
   const [fontFamilyCorrespondance, setFontFamilyCorrespondance] =
     useState(null);
   const [projectSpecs, setProjectSpecs] = useState(null);
-  // const jsonWithHeaderChoice = PdfGen.pageInfo();
+
   const [numberOfStepsToValidate, setNumberOfStepsToValidate] = useState(0);
   const [currentNumberOfStepsValidated, setCurrentNumberOfStepsValidated] =
     useState(0);
-  console.log(wrappers);
+
   useEffect(() => {
     async function getSpecs() {
       if (currentProjectRef.current) {
@@ -108,6 +108,15 @@ export function PdfPublisher() {
             },
             sections: [],
           });
+          enqueueSnackbar(
+            doI18n(
+              `pages:core-client_pdf_publisher:errorGet`,
+              i18nRef.current,
+            ) +
+              ` /api/burrito/ingredient/raw/${currentProjectRef.current.organization}/${currentProjectRef.current.source}/${currentProjectRef.current.project}?ipath=specs.json` +
+              `${response.status}): ${response.error}`,
+            { variant: "error" },
+          );
         }
       }
     }
@@ -152,69 +161,76 @@ export function PdfPublisher() {
     verbose: [true, false],
   };
 
-  function doPdfCallback(e) {
-    setCurrentNumberOfStepsValidated((prev) => {
-      const next = prev + 1;
-      setMessageSnackbar(
-        doI18n("pages:core-client_pdf_publisher:step", i18nRef.current)
-          .replace("##CURRENT##", next)
-          .replace("##GLOBAL##", numberOfStepsToValidate),
-      );
-
-      return next;
-    });
-  }
-
   async function PrintPdf() {
     let header = JSON.parse(headerInfo);
     let font = await getJson("/api/settings/typography/");
-    let newFont = {};
-    let fontArray = font.json.font_set
-      .replace("fonts-", "")
-      .split("Pankosmia")
-      .slice(1)
-      .map((e) => "Pankosmia" + e)
-      .map((f) => fontFamilyCorrespondance[f]);
-    Object.entries(fonts[header.fonts]).forEach(([k, v]) => {
-      newFont[k] = fontArray;
-    });
-    const config = {
-      global: header,
-      sections: wrappers,
-    };
-    const options = {
-      verbose: config.global.verbose,
-      steps: ["originate", "assemble"],
-      pageFormat: pages[config.global.pages],
-      fonts: newFont,
-      fontFamily: fontArray,
-      fontSizes: sizes[config.global.sizes],
-      referencePunctuation: config.global.referencePunctuation || {
-        bookChapter: " ",
-        chapterVerse: ":",
-        verseRange: "-",
-      },
-      configContent: config,
-      cssLookUp: null,
-    };
+    if (font.ok) {
+      let newFont = {};
+      let fontArray = font.json.font_set
+        .replace("fonts-", "")
+        .split("Pankosmia")
+        .slice(1)
+        .map((e) => "Pankosmia" + e)
+        .map((f) => fontFamilyCorrespondance[f]);
+      Object.entries(fonts[header.fonts]).forEach(([k, v]) => {
+        newFont[k] = fontArray;
+      });
+      const config = {
+        global: header,
+        sections: wrappers,
+      };
+      const options = {
+        verbose: config.global.verbose,
+        steps: ["originate", "assemble"],
+        pageFormat: pages[config.global.pages],
+        fonts: newFont,
+        fontFamily: fontArray,
+        fontSizes: sizes[config.global.sizes],
+        referencePunctuation: config.global.referencePunctuation || {
+          bookChapter: " ",
+          chapterVerse: ":",
+          verseRange: "-",
+        },
+        configContent: config,
+        cssLookUp: null,
+      };
 
-    let cssLookUp = await setupCSS({
-      pageFormat: options.pageFormat,
-      fonts: options.fonts,
-      fontSizes: options.fontSizes,
-    });
-    options.cssLookUp = cssLookUp;
+      let cssLookUp = await setupCSS({
+        pageFormat: options.pageFormat,
+        fonts: options.fonts,
+        fontSizes: options.fontSizes,
+      });
+      options.cssLookUp = cssLookUp;
 
-    const totalSteps = countSteps(config);
-    console.log(totalSteps);
-    setNumberOfStepsToValidate(totalSteps);
+      const totalSteps = countSteps(config);
 
-    let manifest = await originatePdfs(options, doPdfCallback);
-    await assemblePdfs(options, doPdfCallback, manifest);
+      function doPdfCallback(e) {
+        setCurrentNumberOfStepsValidated((prev) => {
+          const next = prev + 1;
+          setMessageSnackbar(
+            doI18n("pages:core-client_pdf_publisher:step", i18nRef.current)
+              .replace("##CURRENT##", next)
+              .replace("##GLOBAL##", totalSteps),
+          );
 
-    closeSnackbar("pdf-progress");
-    setNumberOfStepsToValidate(0);
-    setCurrentNumberOfStepsValidated(0);
+          return next;
+        });
+      }
+      setNumberOfStepsToValidate(totalSteps);
+      let manifest = await originatePdfs(options, doPdfCallback, i18nRef);
+      await assemblePdfs(options, doPdfCallback, manifest);
+
+      closeSnackbar("pdf-progress");
+      setNumberOfStepsToValidate(0);
+      setCurrentNumberOfStepsValidated(0);
+    } else {
+      enqueueSnackbar(
+        doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+          ` /api/settings/typography/` +
+          `${font.status}): ${font.error}`,
+        { variant: "error" },
+      );
+    }
   }
 
   useEffect(() => {
@@ -225,6 +241,13 @@ export function PdfPublisher() {
       );
       if (summariesResponse.ok) {
         setProjectSummaries(summariesResponse.json);
+      } else {
+        enqueueSnackbar(
+          doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+            " /api/burrito/metadata/summaries" +
+            `${summariesResponse.status}): ${summariesResponse.error}`,
+          { variant: "error" },
+        );
       }
     };
     getProjectSummaries();
@@ -232,7 +255,16 @@ export function PdfPublisher() {
   useEffect(() => {
     async function getLang() {
       let langs = await getJson(`/api/settings/languages`);
-      setlang(langs.json[0]);
+      if (langs.ok) {
+        setlang(langs.json[0]);
+      } else {
+        enqueueSnackbar(
+          doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+            " /api/settings/languages" +
+            `${langs.status}): ${langs.error}`,
+          { variant: "error" },
+        );
+      }
     }
     getLang();
   }, []);
@@ -604,7 +636,10 @@ export function PdfPublisher() {
                     `pages:core-client_pdf_publisher:print_disabled_sections_issue`,
                     i18nRef.current,
                   )
-                : "";
+                : doI18n(
+                    `pages:core-client_pdf_publisher:remember_save`,
+                    i18nRef.current,
+                  );
 
             return (
               <Tooltip title={isDisabled ? tooltipTitle : ""}>
@@ -627,15 +662,27 @@ export function PdfPublisher() {
                         gap: 1,
                       }}
                     >
-                      <Typography>
-                        {doI18n(
-                          `pages:core-client_pdf_publisher:print`,
-                          i18nRef.current,
-                        )}
-                      </Typography>
                       {currentNumberOfStepsValidated <
-                        numberOfStepsToValidate && (
-                        <CircularProgress size={16} color="inherit" />
+                      numberOfStepsToValidate ? (
+                        <Box>
+                          <Typography
+                            sx={{
+                              color: "text.secondary",
+                              textAlign: "center",
+                            }}
+                          >
+                            {currentNumberOfStepsValidated <
+                              numberOfStepsToValidate && messageSnackbar}
+                          </Typography>
+                          <CircularProgress size={16} color="inherit" />
+                        </Box>
+                      ) : (
+                        <Typography>
+                          {doI18n(
+                            `pages:core-client_pdf_publisher:print`,
+                            i18nRef.current,
+                          )}
+                        </Typography>
                       )}
                     </Box>
                   </Button>
@@ -643,14 +690,7 @@ export function PdfPublisher() {
               </Tooltip>
             );
           })()}
-          <Typography sx={{ color: "text.secondary", textAlign: "center" }}>
-            {currentNumberOfStepsValidated < numberOfStepsToValidate
-              ? messageSnackbar
-              : doI18n(
-                  `pages:core-client_pdf_publisher:remember_save`,
-                  i18nRef.current,
-                )}
-          </Typography>
+
           <FirefoxInstaller />
         </Box>
       </Box>

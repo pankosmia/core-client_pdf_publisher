@@ -11,6 +11,8 @@ import { getJson, getText } from "pankosmia-lib/http";
 import books from "../Css/Ressources/books.json";
 import { Section } from "./section";
 import { getCssFromLookUp, toTemp } from "../helpers/PankosmiaUtils";
+import { enqueueSnackbar } from "notistack";
+import { doI18n } from "pankosmia-lib/i18n";
 
 export class jxlSimpleSection extends Section {
   requiresWrapper() {
@@ -141,299 +143,365 @@ export class jxlSimpleSection extends Section {
     };
   }
 
-  async doSection({ section, templates, manifest, options }) {
+  async doSection({ section, templates, manifest, options, i18nRef }) {
     let pdfPath;
-    const jsonFile = (
-      await getJson(
-        `/api/burrito/ingredient/raw/${section.content.jxl}?ipath=${section.bcvRange}.json`,
-      )
-    ).json;
-    const mergeCvs = (cvs, canonical = false) => {
-      const chapter = cvs[0].split(":")[0];
-      const firstCvFirstV = cvs[0].split(":")[1].split("-")[0];
-      const lastCvLastV = [...cvs]
-        .reverse()[0]
-        .split(":")[1]
-        .split("-")
-        .reverse()[0];
-      const chapterVerseSeparator =
-        !canonical && options.referencePunctuation
-          ? options.referencePunctuation.chapterVerse || ":"
-          : ":";
-      const verseRangeSeparator =
-        !canonical && options.referencePunctuation
-          ? options.referencePunctuation.verseRange || "-"
-          : "-";
-      return `${chapter}${chapterVerseSeparator}${firstCvFirstV}${firstCvFirstV === lastCvLastV ? "" : `${verseRangeSeparator}${lastCvLastV}`}`;
-    };
-    const jxlJson = jsonFile.bookCode ? jsonFile.sentences : jsonFile;
-    const sentenceMerges = []; // True means "merge with next sentence"
-    let sentenceN = 0;
-    for (const sentence of jxlJson) {
-      let sentenceLastV = cvForSentence(sentence)
-        .split(":")[1]
-        .split("-")
-        .reverse()[0];
-      let nextSentenceFirstV =
-        sentenceN + 1 === jxlJson.length
-          ? 999
-          : cvForSentence(jxlJson[sentenceN + 1])
-              .split(":")[1]
-              .split("-")[0];
-      sentenceMerges.push(sentenceLastV === nextSentenceFirstV);
-      sentenceN++;
-    }
-    let vNotes = section.content.bcvNotes
-      ? await bcvNotes(section.content.bcvNotes, section.bcvRange)
-      : {};
-    for (const [cv, noteArray] of Object.entries(vNotes)) {
-      vNotes[cv] = [
-        `<b>${cv}</b> ${noteArray[0]}`,
-        ...noteArray
-          .slice(1)
-          .map((nt) => `<span class="not_first_note">${nt}</span>`),
-      ];
-    }
-    let pivotIds = new Set([]);
-    const glossNotes = {};
-    const glossNotePivot = {};
-    if (section.content.glossNotes) {
-      const pivotRows = (
-        await getText(
+    const jsonFileResponse = await getJson(
+      `/api/burrito/ingredient/raw/${section.content.jxl}?ipath=${section.bcvRange}.json`,
+    );
+    if (jsonFileResponse.ok) {
+      const jsonFile = jsonFileResponse.json;
+      const mergeCvs = (cvs, canonical = false) => {
+        const chapter = cvs[0].split(":")[0];
+        const firstCvFirstV = cvs[0].split(":")[1].split("-")[0];
+        const lastCvLastV = [...cvs]
+          .reverse()[0]
+          .split(":")[1]
+          .split("-")
+          .reverse()[0];
+        const chapterVerseSeparator =
+          !canonical && options.referencePunctuation
+            ? options.referencePunctuation.chapterVerse || ":"
+            : ":";
+        const verseRangeSeparator =
+          !canonical && options.referencePunctuation
+            ? options.referencePunctuation.verseRange || "-"
+            : "-";
+        return `${chapter}${chapterVerseSeparator}${firstCvFirstV}${firstCvFirstV === lastCvLastV ? "" : `${verseRangeSeparator}${lastCvLastV}`}`;
+      };
+      const jxlJson = jsonFile.bookCode ? jsonFile.sentences : jsonFile;
+      const sentenceMerges = []; // True means "merge with next sentence"
+      let sentenceN = 0;
+      for (const sentence of jxlJson) {
+        let sentenceLastV = cvForSentence(sentence)
+          .split(":")[1]
+          .split("-")
+          .reverse()[0];
+        let nextSentenceFirstV =
+          sentenceN + 1 === jxlJson.length
+            ? 999
+            : cvForSentence(jxlJson[sentenceN + 1])
+                .split(":")[1]
+                .split("-")[0];
+        sentenceMerges.push(sentenceLastV === nextSentenceFirstV);
+        sentenceN++;
+      }
+      let vNotes = section.content.bcvNotes
+        ? await bcvNotes(
+            section.content.bcvNotes,
+            section.bcvRange,
+            [],
+            i18nRef,
+          )
+        : {};
+      for (const [cv, noteArray] of Object.entries(vNotes)) {
+        vNotes[cv] = [
+          `<b>${cv}</b> ${noteArray[0]}`,
+          ...noteArray
+            .slice(1)
+            .map((nt) => `<span class="not_first_note">${nt}</span>`),
+        ];
+      }
+      let pivotIds = new Set([]);
+      const glossNotes = {};
+      const glossNotePivot = {};
+      if (section.content.glossNotes) {
+        let pivotRowsResponse = await getText(
           `/api/burrito/ingredient/raw/${section.content.glossNotes[0].pivot}?ipath=${section.bcvRange}.tsv`,
-        )
-      ).text.split("\n");
+        );
+        if (pivotRowsResponse.ok) {
+          const pivotRows = pivotRowsResponse.text.split("\n");
 
-      for (const pivotRow of pivotRows) {
-        const cells = pivotRow.split("\t");
-        if (!cells[4] || cells[4].length === 0) {
-          continue;
-        }
-        if (!glossNotePivot[cells[0]]) {
-          glossNotePivot[cells[0]] = {};
-        }
-        const noteIds = cells[4].split(";").map((n) => n.trim());
-        glossNotePivot[cells[0]][cells[1]] = noteIds;
-        for (const noteId of noteIds) {
-          pivotIds.add(noteId);
-        }
-      }
-
-      const notesRows = (
-        await getText(
-          `/api/burrito/ingredient/raw/${section.content.glossNotes[0].notes}?ipath=${section.bcvRange}.tsv`,
-        )
-      ).text.split("\n");
-
-      for (const notesRow of notesRows) {
-        const cells = notesRow.split("\t");
-        if (pivotIds.has(cells[4])) {
-          glossNotes[cells[4]] = cells[6];
-        }
-      }
-    }
-
-    let extraTexts = {};
-    if (section.content.topTextSrc) {
-      extraTexts["top"] = {
-        id: `xxx_top`,
-        path: section.content.topTextSrc,
-        type: "greek",
-        text: "top text",
-      };
-    }
-    if (section.content.bottomTextSrc) {
-      extraTexts["bottom"] = {
-        id: `xxx_bottom`,
-        path: section.content.bottomTextSrc,
-        type: "translation",
-        text: "bottom text",
-      };
-    }
-    const docSpecs = Object.values(extraTexts);
-    let pk;
-    if (docSpecs.length > 0) {
-      pk = await pkWithDocs(section.bcvRange, docSpecs, options.verbose);
-    }
-
-    const bookName = section.bcvRange;
-    let sentences = [];
-    let first = true;
-    const qualified_id = `${section.id}_${section.bcvRange}`;
-    options.verbose && console.log(`       Sentences`);
-    let jxls = [];
-    let cvs = [];
-    for (const [sentenceN, sentenceJson] of jxlJson.entries()) {
-      if (
-        section.content.firstSentence &&
-        sentenceN + 1 < section.content.firstSentence
-      ) {
-        continue;
-      }
-      if (
-        section.content.lastSentence &&
-        sentenceN + 1 > section.content.lastSentence
-      ) {
-        continue;
-      }
-      cvs.push(cvForSentence(sentenceJson));
-      options.verbose && console.log(`         ${sentenceN + 1}`);
-      let jxlRows = [];
-      let sentenceNotes = [];
-      for (const [chunkN, chunk] of sentenceJson.chunks.entries()) {
-        const source = chunk.source.map((s) => s.content).join(" ");
-        const gloss = chunk.gloss;
-        let noteFound = false;
-        if (
-          glossNotePivot[`${sentenceN + 1}`] &&
-          glossNotePivot[`${sentenceN + 1}`][`${chunkN + 1}`]
-        ) {
-          noteFound = true;
-          for (const noteId of glossNotePivot[`${sentenceN + 1}`][
-            `${chunkN + 1}`
-          ]) {
-            if (!glossNotes[noteId]) {
+          for (const pivotRow of pivotRows) {
+            const cells = pivotRow.split("\t");
+            if (!cells[4] || cells[4].length === 0) {
               continue;
             }
-            sentenceNotes.push(cleanNoteLine(glossNotes[noteId]));
+            if (!glossNotePivot[cells[0]]) {
+              glossNotePivot[cells[0]] = {};
+            }
+            const noteIds = cells[4].split(";").map((n) => n.trim());
+            glossNotePivot[cells[0]][cells[1]] = noteIds;
+            for (const noteId of noteIds) {
+              pivotIds.add(noteId);
+            }
           }
-        }
-        const bookTestament = books[section.bcvRange];
-        const add3Col = section.content.parseVerbs ? "3Col" : "";
-        const morphLookup = [
-          {
-            I: "ind",
-            P: "part",
-            N: "inf",
-            S: "subj",
-            M: "impér",
-            O: "opt",
-          },
-          {
-            A: "aor",
-            P: "prés",
-            I: "impft",
-            F: "fut",
-            E: "parf",
-            L: "pqp",
-          },
-          {
-            A: "act",
-            P: "pass",
-            M: "moy",
-          },
-          {
-            1: "1",
-            2: "2",
-            3: "3",
-          },
-          {
-            S: "s",
-            P: "p",
-          },
-        ];
+          let notesRowsResponse = await getText(
+            `/api/burrito/ingredient/raw/${section.content.glossNotes[0].notes}?ipath=${section.bcvRange}.tsv`,
+          );
+          if (notesRowsResponse.ok) {
+            const notesRows = notesRowsResponse.text.split("\n");
 
-        const morphSummary = (morphArray) => {
-          let retBits = [];
-          let morphString = morphArray[2];
-          if (morphString.length > 3) {
-            retBits.push(
-              morphLookup[3][morphString.substring(3, 4)] +
-                (morphLookup[4][morphArray[4]] || "") || "?",
+            for (const notesRow of notesRows) {
+              const cells = notesRow.split("\t");
+              if (pivotIds.has(cells[4])) {
+                glossNotes[cells[4]] = cells[6];
+              }
+            }
+          } else {
+            enqueueSnackbar(
+              doI18n(
+                `pages:core-client_pdf_publisher:errorGet`,
+                i18nRef.current,
+              ) +
+                `/api/burrito/ingredient/raw/${section.content.glossNotes[0].notes}?ipath=${section.bcvRange}.tsv` +
+                `${notesRowsResponse.status}): ${notesRowsResponse.error}`,
+              { variant: "error" },
             );
           }
-          retBits.push(morphLookup[0][morphString.substring(0, 1)] || "?");
-          retBits.push(morphLookup[1][morphString.substring(1, 2)] || "?");
-          retBits.push(morphLookup[2][morphString.substring(2, 3)] || "?");
-          return retBits.join(" ");
-        };
-
-        let verbs = "";
-        if (section.content.parseVerbs) {
-          verbs = chunk.source
-            .filter((s) => s.morph[1] === "V")
-            .map((s) => `${s.lemma} <i>${morphSummary(s.morph)}</i>`)
-            .join("; ");
-          if (verbs) {
-            verbs = " |&nbsp;" + verbs;
-          }
-        }
-        const row = (
-          section.content.parseVerbs ? templates.jxlRow3Col : templates.jxlRow
-        )
-          .replace("%%SOURCE%%", source)
-          .replace(
-            "%%SOURCECLASS%%",
-            bookTestament === "OT" ? "jxlHebrew" : `jxlGreek${add3Col}`,
-          )
-          .replace(
-            "%%GLOSS%%",
-            gloss.replace(/\*([^*]+)\*/g, (m, m1) => `<i>${m1}</i>`),
-          )
-          .replace(
-            "%%NOTECALLERS%%",
-            noteFound
-              ? `${sentenceNotes.map((note) => `<p class="note">${note}</p>`).join("")}`
-              : "",
-          )
-          .replace("%%VERBS%%", verbs);
-        jxlRows.push(row);
-        sentenceNotes = [];
-      }
-      jxls.push(templates.jxl.replace("%%ROWS%%", jxlRows.join("\n")));
-      if (!sentenceMerges[sentenceN]) {
-        const canonicalCvRef = mergeCvs(cvs, true);
-        const cvRef = mergeCvs(cvs);
-        const cvNotes = unpackCellRange(canonicalCvRef).map(
-          (cv) => vNotes[cv] || [],
-        );
-        const sentence = templates.simple_juxta_sentence
-          .replace(
-            "%%TOPTEXT%%",
-            extraTexts.top
-              ? tidyLhsText(
-                  quoteForCv(
-                    pk,
-                    extraTexts.top,
-                    section.bcvRange,
-                    canonicalCvRef,
-                  ),
-                )
-              : "",
-          )
-          .replace(
-            "%%BOTTOMTEXT%%",
-            extraTexts.bottom
-              ? tidyLhsText(
-                  quoteForCv(
-                    pk,
-                    extraTexts.bottom,
-                    section.bcvRange,
-                    canonicalCvRef,
-                  ),
-                )
-              : "",
-          )
-          .replace("%%BOOKNAME%%", bookName)
-          .replace("%%SENTENCEREF%%", cvRef)
-          .replace("%%JXL%%", jxls.join("\n"))
-          .replace(
-            "%%NOTES%%",
-            cvNotes.length > 0
-              ? `${cvNotes
-                  .reduce((a, b) => [...a, ...b])
-                  .map((nr) => cleanNoteLine(nr))
-                  .map((note, i) => {
-                    return `<p class="bcvnote no_break">${note}</p>`;
-                  })
-                  .join("\n")}`
-              : "",
+        } else {
+          enqueueSnackbar(
+            doI18n(
+              `pages:core-client_pdf_publisher:errorGet`,
+              i18nRef.current,
+            ) +
+              `/api/burrito/ingredient/raw/${section.content.glossNotes[0].pivot}?ipath=${section.bcvRange}.tsv` +
+              `${pivotRowsResponse.status}): ${pivotRowsResponse.error}`,
+            { variant: "error" },
           );
-        sentences.push(sentence);
-        jxls = [];
-        cvs = [];
+        }
       }
-      if (sentenceN % 25 === 24) {
+      let extraTexts = {};
+      if (section.content.topTextSrc) {
+        extraTexts["top"] = {
+          id: `xxx_top`,
+          path: section.content.topTextSrc,
+          type: "greek",
+          text: "top text",
+        };
+      }
+      if (section.content.bottomTextSrc) {
+        extraTexts["bottom"] = {
+          id: `xxx_bottom`,
+          path: section.content.bottomTextSrc,
+          type: "translation",
+          text: "bottom text",
+        };
+      }
+      const docSpecs = Object.values(extraTexts);
+      let pk;
+      if (docSpecs.length > 0) {
+        pk = await pkWithDocs(
+          section.bcvRange,
+          docSpecs,
+          i18nRef,
+          options.verbose,
+        );
+      }
+
+      const bookName = section.bcvRange;
+      let sentences = [];
+      let first = true;
+      const qualified_id = `${section.id}_${section.bcvRange}`;
+      options.verbose && console.log(`       Sentences`);
+      let jxls = [];
+      let cvs = [];
+      for (const [sentenceN, sentenceJson] of jxlJson.entries()) {
+        if (
+          section.content.firstSentence &&
+          sentenceN + 1 < section.content.firstSentence
+        ) {
+          continue;
+        }
+        if (
+          section.content.lastSentence &&
+          sentenceN + 1 > section.content.lastSentence
+        ) {
+          continue;
+        }
+        cvs.push(cvForSentence(sentenceJson));
+        options.verbose && console.log(`         ${sentenceN + 1}`);
+        let jxlRows = [];
+        let sentenceNotes = [];
+        for (const [chunkN, chunk] of sentenceJson.chunks.entries()) {
+          const source = chunk.source.map((s) => s.content).join(" ");
+          const gloss = chunk.gloss;
+          let noteFound = false;
+          if (
+            glossNotePivot[`${sentenceN + 1}`] &&
+            glossNotePivot[`${sentenceN + 1}`][`${chunkN + 1}`]
+          ) {
+            noteFound = true;
+            for (const noteId of glossNotePivot[`${sentenceN + 1}`][
+              `${chunkN + 1}`
+            ]) {
+              if (!glossNotes[noteId]) {
+                continue;
+              }
+              sentenceNotes.push(cleanNoteLine(glossNotes[noteId]));
+            }
+          }
+          const bookTestament = books[section.bcvRange];
+          const add3Col = section.content.parseVerbs ? "3Col" : "";
+          const morphLookup = [
+            {
+              I: "ind",
+              P: "part",
+              N: "inf",
+              S: "subj",
+              M: "impér",
+              O: "opt",
+            },
+            {
+              A: "aor",
+              P: "prés",
+              I: "impft",
+              F: "fut",
+              E: "parf",
+              L: "pqp",
+            },
+            {
+              A: "act",
+              P: "pass",
+              M: "moy",
+            },
+            {
+              1: "1",
+              2: "2",
+              3: "3",
+            },
+            {
+              S: "s",
+              P: "p",
+            },
+          ];
+
+          const morphSummary = (morphArray) => {
+            let retBits = [];
+            let morphString = morphArray[2];
+            if (morphString.length > 3) {
+              retBits.push(
+                morphLookup[3][morphString.substring(3, 4)] +
+                  (morphLookup[4][morphArray[4]] || "") || "?",
+              );
+            }
+            retBits.push(morphLookup[0][morphString.substring(0, 1)] || "?");
+            retBits.push(morphLookup[1][morphString.substring(1, 2)] || "?");
+            retBits.push(morphLookup[2][morphString.substring(2, 3)] || "?");
+            return retBits.join(" ");
+          };
+
+          let verbs = "";
+          if (section.content.parseVerbs) {
+            verbs = chunk.source
+              .filter((s) => s.morph[1] === "V")
+              .map((s) => `${s.lemma} <i>${morphSummary(s.morph)}</i>`)
+              .join("; ");
+            if (verbs) {
+              verbs = " |&nbsp;" + verbs;
+            }
+          }
+          const row = (
+            section.content.parseVerbs ? templates.jxlRow3Col : templates.jxlRow
+          )
+            .replace("%%SOURCE%%", source)
+            .replace(
+              "%%SOURCECLASS%%",
+              bookTestament === "OT" ? "jxlHebrew" : `jxlGreek${add3Col}`,
+            )
+            .replace(
+              "%%GLOSS%%",
+              gloss.replace(/\*([^*]+)\*/g, (m, m1) => `<i>${m1}</i>`),
+            )
+            .replace(
+              "%%NOTECALLERS%%",
+              noteFound
+                ? `${sentenceNotes.map((note) => `<p class="note">${note}</p>`).join("")}`
+                : "",
+            )
+            .replace("%%VERBS%%", verbs);
+          jxlRows.push(row);
+          sentenceNotes = [];
+        }
+        jxls.push(templates.jxl.replace("%%ROWS%%", jxlRows.join("\n")));
+        if (!sentenceMerges[sentenceN]) {
+          const canonicalCvRef = mergeCvs(cvs, true);
+          const cvRef = mergeCvs(cvs);
+          const cvNotes = unpackCellRange(canonicalCvRef).map(
+            (cv) => vNotes[cv] || [],
+          );
+          const sentence = templates.simple_juxta_sentence
+            .replace(
+              "%%TOPTEXT%%",
+              extraTexts.top
+                ? tidyLhsText(
+                    quoteForCv(
+                      pk,
+                      extraTexts.top,
+                      section.bcvRange,
+                      canonicalCvRef,
+                    ),
+                  )
+                : "",
+            )
+            .replace(
+              "%%BOTTOMTEXT%%",
+              extraTexts.bottom
+                ? tidyLhsText(
+                    quoteForCv(
+                      pk,
+                      extraTexts.bottom,
+                      section.bcvRange,
+                      canonicalCvRef,
+                    ),
+                  )
+                : "",
+            )
+            .replace("%%BOOKNAME%%", bookName)
+            .replace("%%SENTENCEREF%%", cvRef)
+            .replace("%%JXL%%", jxls.join("\n"))
+            .replace(
+              "%%NOTES%%",
+              cvNotes.length > 0
+                ? `${cvNotes
+                    .reduce((a, b) => [...a, ...b])
+                    .map((nr) => cleanNoteLine(nr))
+                    .map((note, i) => {
+                      return `<p class="bcvnote no_break">${note}</p>`;
+                    })
+                    .join("\n")}`
+                : "",
+            );
+          sentences.push(sentence);
+          jxls = [];
+          cvs = [];
+        }
+        if (sentenceN % 25 === 24) {
+          const server = window.location.origin;
+          let srcPolyfill = `${server}/api/app-resources/pdf/paged.polyfill.js`;
+          const fontLinks = options.fontFamily
+            .map((e) => {
+              const ebis = e
+                .replace("Pankosmia", "pankosmia")
+                .replaceAll(" ", "_");
+
+              return `<link rel="stylesheet" href="/api/webfonts/${ebis}.css">`;
+            })
+            .join("\n");
+
+          let htmlContent = templates["simple_juxta_page"]
+            .replace("%%SENTENCES%%", sentences.join(""))
+            .replace(
+              "%%CSS%%",
+              await getCssFromLookUp(
+                options.cssLookUp,
+                "simple_juxta_page_styles",
+              ),
+            )
+            .replace("%%POLYFY%%", srcPolyfill)
+            .replace("%%FONTLINKS%%", fontLinks);
+          let uuidHtml = await toTemp(htmlContent);
+          let pdfPathUuid = await window.api.generatePdf(uuidHtml);
+          sentences = [];
+          manifest.push({
+            id: pdfPathUuid,
+            type: section.type,
+            startOn: first ? section.content.startOn : false,
+            showPageNumber: section.content.showPageNumber,
+            makeFromDouble: false,
+          });
+        }
+      }
+      if (sentences.length > 0) {
         const server = window.location.origin;
         let srcPolyfill = `${server}/api/app-resources/pdf/paged.polyfill.js`;
         const fontLinks = options.fontFamily
@@ -445,7 +513,6 @@ export class jxlSimpleSection extends Section {
             return `<link rel="stylesheet" href="/api/webfonts/${ebis}.css">`;
           })
           .join("\n");
-
         let htmlContent = templates["simple_juxta_page"]
           .replace("%%SENTENCES%%", sentences.join(""))
           .replace(
@@ -457,6 +524,7 @@ export class jxlSimpleSection extends Section {
           )
           .replace("%%POLYFY%%", srcPolyfill)
           .replace("%%FONTLINKS%%", fontLinks);
+
         let uuidHtml = await toTemp(htmlContent);
         let pdfPathUuid = await window.api.generatePdf(uuidHtml);
         sentences = [];
@@ -468,36 +536,13 @@ export class jxlSimpleSection extends Section {
           makeFromDouble: false,
         });
       }
-    }
-    if (sentences.length > 0) {
-      const server = window.location.origin;
-      let srcPolyfill = `${server}/api/app-resources/pdf/paged.polyfill.js`;
-      const fontLinks = options.fontFamily
-        .map((e) => {
-          const ebis = e.replace("Pankosmia", "pankosmia").replaceAll(" ", "_");
-
-          return `<link rel="stylesheet" href="/api/webfonts/${ebis}.css">`;
-        })
-        .join("\n");
-      let htmlContent = templates["simple_juxta_page"]
-        .replace("%%SENTENCES%%", sentences.join(""))
-        .replace(
-          "%%CSS%%",
-          await getCssFromLookUp(options.cssLookUp, "simple_juxta_page_styles"),
-        )
-        .replace("%%POLYFY%%", srcPolyfill)
-        .replace("%%FONTLINKS%%", fontLinks);
-
-      let uuidHtml = await toTemp(htmlContent);
-      let pdfPathUuid = await window.api.generatePdf(uuidHtml);
-      sentences = [];
-      manifest.push({
-        id: pdfPathUuid,
-        type: section.type,
-        startOn: first ? section.content.startOn : false,
-        showPageNumber: section.content.showPageNumber,
-        makeFromDouble: false,
-      });
+    } else {
+      enqueueSnackbar(
+        doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+          ` /api/burrito/ingredient/raw/${section.content.jxl}?ipath=${section.bcvRange}.json`,
+        +`${jsonFileResponse.status}): ${jsonFileResponse.error}`,
+        { variant: "error" },
+      );
     }
   }
 }

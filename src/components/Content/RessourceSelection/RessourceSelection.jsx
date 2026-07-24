@@ -23,6 +23,7 @@ import {
 } from "../../RessourcesChecker/checkSpecs";
 import { InfoRessource } from "../../RessourcesChecker/InfoRessource";
 import { typeThatNeedRessourceSelection } from "../../../pdf-gen/helpers/constants";
+import { enqueueSnackbar } from "notistack";
 
 const isFieldsValid = (fields, sectionData, isCard) => {
   return fields
@@ -140,7 +141,16 @@ export function RessourceSelection({
   useEffect(() => {
     async function getLang() {
       let langs = await getJson(`/api/settings/languages`);
-      setlang(langs.json[0]);
+      if (langs.ok) {
+        setlang(langs.json[0]);
+      } else {
+        enqueueSnackbar(
+          doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+            " /api/settings/languages" +
+            `${langs.status}): ${langs.error}`,
+          { variant: "error" },
+        );
+      }
     }
     getLang();
   }, []);
