@@ -1,0 +1,14 @@
+allowBuilds:
+  core-js-pure: true
+  esbuild: true
+minimumReleaseAgeExclude:
+  - pankosmia-rcl@0.4.22
+supportedArchitectures:
+  os:
+    - win32
+    - linux
+    - darwin
+    - current
+  cpu:
+    - x64
+    - arm64
