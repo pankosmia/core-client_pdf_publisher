@@ -92,11 +92,34 @@ export function PdfPublisher() {
     useState(0);
   const [firefoxModalOpen, setFirefoxModalOpen] = useState(false);
 
+  const hash = window.location.hash;
+  const query = hash.includes("?") ? hash.split("?") : "";
+  const typePageQuery = new URLSearchParams(query[1]);
+  const returnType = typePageQuery.get("returnTypePage");
+
   useEffect(() => {
     window?.electronAPI?.checkFirefoxInstalled().then((installed) => {
       setFirefoxModalOpen(installed ? false : true);
     });
   }, [firefoxModalOpen]);
+
+  const handleClose = () => {
+    window?.electronAPI?.checkFirefoxInstalled().then((installed) => {
+      if (installed) {
+        setFirefoxModalOpen(false);
+      } else {
+        if (returnType === "dashboard") {
+          setTimeout(() => {
+            window.location.href = "/clients/main";
+          });
+        } else {
+          setTimeout(() => {
+            window.location.href = "/clients/content";
+          });
+        }
+      }
+    });
+  };
 
   useEffect(() => {
     async function getSpecs() {
@@ -329,7 +352,7 @@ export function PdfPublisher() {
         </DialogContent>
         <PanDialogActions
           onlyCloseButton
-          closeFn={() => setFirefoxModalOpen(false)}
+          closeFn={() => handleClose()}
           closeLabel="Close"
         />
       </PanDialog>
