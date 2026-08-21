@@ -15,7 +15,7 @@ import { RessourceSelection } from "./RessourceSelection/RessourceSelection";
 import { ConfigSection } from "./Sections/ConfigSection";
 import { BRangesPicker } from "./Sections/BRangesPicker";
 import { getJson } from "pankosmia-lib/http";
-import { ImportDocument } from "./RessourceSelection/ImportDocument";
+import { ImportDocument, saveFile } from "./RessourceSelection/ImportDocument";
 import { enqueueSnackbar } from "notistack";
 
 let orderOfField = [
@@ -136,7 +136,6 @@ export function ContentDialogue({
   const [currentSections, setCurrentSections] = useState([]);
   const [bRanges, setBRanges] = useState([]);
   const [open, setOpen] = useState(false);
-  console.log(currentSections);
   const [isRessourcesStep2Complete, setIsRessourcesStep2Complete] =
     useState(false);
   const [isRessourcesStep3Complete, setIsRessourcesStep3Complete] =
@@ -150,6 +149,8 @@ export function ContentDialogue({
       i18nRef.current,
     ),
   ];
+  const [documentInfo, setDocumentInfo] = useState(null);
+
   useEffect(() => {
     if (openFromOutside >= 1) {
       setOpen(true);
@@ -253,6 +254,7 @@ export function ContentDialogue({
             setIsRessourcesStepComplete={setIsRessourcesStep2Complete}
             setCurrentSections={setCurrentSections}
             currentSections={currentSections}
+            setDocumentInfo={setDocumentInfo}
           />
         );
       case 2:
@@ -329,7 +331,19 @@ export function ContentDialogue({
           <PanStepperPicker
             steps={steps}
             isStepValid={isStepValid}
-            renderStepContent={renderStepContent}
+            renderStepContent={(step) => {
+              if (step === 2) {
+                if (documentInfo) {
+                  saveFile(
+                    documentInfo[0],
+                    documentInfo[1],
+                    documentInfo[2],
+                    documentInfo[3],
+                  );
+                }
+              }
+              return renderStepContent(step);
+            }}
             primaryButtonVariant="secondary"
             secondaryButtonVariant="secondary"
             handleClose={() => {
