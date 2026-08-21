@@ -65,7 +65,6 @@ function countSteps(specs) {
       numberSteps += 2;
     }
   });
-  numberSteps += 1; // page numbers
   return numberSteps;
 }
 
@@ -205,16 +204,18 @@ export function PdfPublisher() {
       const totalSteps = countSteps(config);
 
       function doPdfCallback(e) {
-        setCurrentNumberOfStepsValidated((prev) => {
-          const next = prev + 1;
-          setMessageSnackbar(
-            doI18n("pages:core-client_pdf_publisher:step", i18nRef.current)
-              .replace("##CURRENT##", next)
-              .replace("##GLOBAL##", totalSteps),
-          );
+        if (e.level <= 2) {
+          setCurrentNumberOfStepsValidated((prev) => {
+            const next = prev + 1;
+            setMessageSnackbar(
+              doI18n("pages:core-client_pdf_publisher:step", i18nRef.current)
+                .replace("##CURRENT##", next)
+                .replace("##GLOBAL##", totalSteps),
+            );
 
-          return next;
-        });
+            return next;
+          });
+        }
       }
       setNumberOfStepsToValidate(totalSteps);
       let manifest = await originatePdfs(options, doPdfCallback, i18nRef);
