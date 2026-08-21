@@ -86,18 +86,34 @@ export function SelectSection({
   let usedSectionType = JSON.parse(JSON.stringify(sectionsTypes));
 
   return (
-    <Box sx={{ mt: 2 }}>
+    <Box sx={{ mt: 2, p: 2 }}>
+      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+        {doI18n("pages:core-client_pdf_publisher:layouts", i18nRef.current)}
+      </Typography>
       {/* Helper text shown only in multi-select mode, explaining that order matters */}
       {allowMultiple && (
         <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
           <InfoOutlinedIcon />
-
-          <Typography>
-            {doI18n(
-              "pages:core-client_pdf_publisher:multipleSelectionDescription",
-              i18nRef.current,
-            )}
-          </Typography>
+          <Box sx={{ display: "flex", flexDirection: "row", gap: "0.3em" }}>
+            <Typography>
+              {doI18n(
+                "pages:core-client_pdf_publisher:multipleSelectionDescription1",
+                i18nRef.current,
+              )}
+            </Typography>
+            <Typography sx={{ fontWeight: "bold" }}>
+              {doI18n(
+                "pages:core-client_pdf_publisher:multipleSelectionDescription2",
+                i18nRef.current,
+              )}
+            </Typography>
+            <Typography>
+              {doI18n(
+                "pages:core-client_pdf_publisher:multipleSelectionDescription3",
+                i18nRef.current,
+              )}
+            </Typography>
+          </Box>
         </Box>
       )}
 
@@ -105,9 +121,9 @@ export function SelectSection({
       {usedSectionType?.[wrapperName] &&
         Object.entries({ ...usedSectionType?.[wrapperName] }).map(
           ([name, sections], id) => (
-            <Box key={id} sx={{ margin: 2 }}>
+            <Box key={id} sx={{ mt: 2 }}>
               {/* Category heading (e.g. "Text sections", "Media sections", etc.) */}
-              <Typography sx={{ fontWeight: 700 }}>
+              <Typography variant="body1">
                 {doI18n(
                   `pages:core-client_pdf_publisher:${name}`,
                   i18nRef.current,
