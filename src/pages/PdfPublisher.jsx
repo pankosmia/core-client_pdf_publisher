@@ -24,6 +24,8 @@ import {
   Chip,
   Tooltip,
   CircularProgress,
+  DialogContent,
+  DialogContentText,
 } from "@mui/material";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import "react-pdf/dist/Page/AnnotationLayer.css";
@@ -35,6 +37,8 @@ import {
   Header,
   currentProjectContext,
   debugContext,
+  PanDialog,
+  PanDialogActions,
 } from "pankosmia-rcl";
 import { ContentDialogue } from "../components/Content/ContentDialogue";
 import { Delete, DragIndicator, ExpandMore, Save } from "@mui/icons-material";
@@ -86,6 +90,13 @@ export function PdfPublisher() {
   const [numberOfStepsToValidate, setNumberOfStepsToValidate] = useState(0);
   const [currentNumberOfStepsValidated, setCurrentNumberOfStepsValidated] =
     useState(0);
+  const [firefoxModalOpen, setFirefoxModalOpen] = useState(false);
+
+  useEffect(() => {
+    window?.electronAPI?.checkFirefoxInstalled().then((installed) => {
+      setFirefoxModalOpen(installed ? false : true);
+    });
+  }, [firefoxModalOpen]);
 
   useEffect(() => {
     async function getSpecs() {
@@ -298,6 +309,30 @@ export function PdfPublisher() {
   };
   return (
     <Box>
+      <PanDialog
+        titleLabel={doI18n(
+          `pages:core-client_pdf_publisher:Firefox_not_installed`,
+          i18nRef.current,
+        )}
+        isOpen={firefoxModalOpen}
+        closeFn={() => setFirefoxModalOpen(false)}
+        size="sm"
+      >
+        <DialogContent>
+          <DialogContentText sx={{ mb: 2 }}>
+            {doI18n(
+              `pages:core-client_pdf_publisher:need_firefox`,
+              i18nRef.current,
+            )}
+          </DialogContentText>
+          <FirefoxInstaller />
+        </DialogContent>
+        <PanDialogActions
+          onlyCloseButton
+          closeFn={() => setFirefoxModalOpen(false)}
+          closeLabel="Close"
+        />
+      </PanDialog>
       <Header
         titleKey={`${doI18n("pages:content:title", i18nRef.current)}`}
         currentId="core-contenthandler_text_translation"
@@ -691,8 +726,6 @@ export function PdfPublisher() {
               </Tooltip>
             );
           })()}
-
-          <FirefoxInstaller />
         </Box>
       </Box>
     </Box>

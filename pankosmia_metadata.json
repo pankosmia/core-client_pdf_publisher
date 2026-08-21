@@ -251,6 +251,14 @@
     "errorGet": {
       "en": "Could not fetch",
       "fr": "N'as pas reussi a fetch"
+    },
+    "need_firefox": {
+      "en": "Firefox engine is required to create PDFs and is not installed yet. Download it below, then generate the pdf.",
+      "fr": "Firefox est nécessaire pour créer des PDFs. Télécharger le en appuyant sur le bouton dessous pour commencer "
+    },
+    "Firefox_not_installed": {
+      "en": "Firefox not installed",
+      "fr": "Firefox n'est pas installé"
     }
   }
 }

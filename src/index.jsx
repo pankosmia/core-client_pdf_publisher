@@ -5,7 +5,12 @@ import { createHashRouter, Outlet, RouterProvider } from "react-router-dom";
 import "./index.css";
 
 import { PdfPublisher } from "./pages/PdfPublisher";
-import { createTheme, ThemeProvider } from "@mui/material";
+import {
+  createTheme,
+  DialogContent,
+  DialogContentText,
+  ThemeProvider,
+} from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
 
 import { useContext, useEffect, useMemo, useState } from "react";
