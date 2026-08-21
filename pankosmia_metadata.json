@@ -205,8 +205,8 @@
       "fr": "sauvegarder"
     },
     "markdownPdfWrapper": {
-      "en": "Free format",
-      "fr": "Format libre"
+      "en": "External file",
+      "fr": "Fichier externe"
     },
     "pdf": {
       "en": "Pdf",
