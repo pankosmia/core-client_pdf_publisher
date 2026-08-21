@@ -13,7 +13,7 @@ import { setupCSS } from "../pdf-gen/doCss";
 import {
   Button,
   Box,
-  Grid2,
+  Grid,
   AppBar,
   Typography,
   Divider,
@@ -505,7 +505,7 @@ export function PdfPublisher() {
 
                           {/* BODY */}
                           <AccordionDetails>
-                            <Grid2 container size={12}>
+                            <Grid container size={12}>
                               {/* LEFT ICON COLUMN */}
                               <Box
                                 sx={{
@@ -585,7 +585,7 @@ export function PdfPublisher() {
                                   <Delete />
                                 </IconButton>
                               </Box>
-                            </Grid2>
+                            </Grid>
                           </AccordionDetails>
                         </Accordion>
                       )}

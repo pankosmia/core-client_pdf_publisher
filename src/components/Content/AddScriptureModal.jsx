@@ -3,7 +3,7 @@ import {
   Typography,
   Box,
   DialogContent,
-  Grid2,
+  Grid,
   Fab,
 } from "@mui/material";
 import { useState, useContext, useEffect } from "react";
@@ -157,7 +157,7 @@ export default function AddScriptureModal({
       >
         <DialogContent>
           <Box sx={{ m: 2 }}>
-            <Grid2 item size={12}>
+            <Grid item size={12}>
               <Box
                 sx={{
                   display: "flex",
@@ -169,7 +169,7 @@ export default function AddScriptureModal({
                   <PanTable showColumnFilters columns={columns} rows={rows} />
                 </Box>
               </Box>
-            </Grid2>
+            </Grid>
           </Box>
         </DialogContent>
       </PanDialog>

@@ -1,5 +1,5 @@
 import { useContext, useState, useCallback, useEffect } from "react";
-import { Button, Chip, Grid2 } from "@mui/material";
+import { Button, Chip, Grid } from "@mui/material";
 import { doI18n } from "pankosmia-lib/i18n";
 import { i18nContext } from "pankosmia-rcl";
 import { useNavigate } from "react-router-dom";
@@ -22,15 +22,15 @@ function App() {
   }, [handleWindowResize]);
 
   return (
-    <Grid2 container spacing={2} sx={{ maxHeight: maxWindowHeight }}>
-      <Grid2 size={12}>
+    <Grid container spacing={2} sx={{ maxHeight: maxWindowHeight }}>
+      <Grid size={12}>
         <h1>
           {doI18n(
             "pages:contenthandler-template:stub_content",
             i18nRef.current,
           )}
         </h1>
-      </Grid2>
+      </Grid>
       <Chip
         label="bouton create"
         color="secondary"
@@ -43,7 +43,7 @@ function App() {
         variant="outlined"
         onClick={() => navigate("updatePage")}
       />
-    </Grid2>
+    </Grid>
   );
 }
 
