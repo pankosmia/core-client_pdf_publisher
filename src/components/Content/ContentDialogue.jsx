@@ -161,7 +161,11 @@ export function ContentDialogue({
   const isStepValid = (step) => {
     switch (step) {
       case 0:
-        return currentSections.length > 0;
+        if (wrapperName === "bcvWrapper") {
+          return currentSections.length > 0 && bRanges.length > 0;
+        } else {
+          return currentSections.length > 0;
+        }
       case 1:
         return isRessourcesStep2Complete;
       case 2:
