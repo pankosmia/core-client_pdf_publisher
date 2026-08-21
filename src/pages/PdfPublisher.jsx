@@ -695,10 +695,7 @@ export function PdfPublisher() {
                     `pages:core-client_pdf_publisher:print_disabled_sections_issue`,
                     i18nRef.current,
                   )
-                : doI18n(
-                    `pages:core-client_pdf_publisher:remember_save`,
-                    i18nRef.current,
-                  );
+                : "";
 
             return (
               <Tooltip title={isDisabled ? tooltipTitle : ""}>
