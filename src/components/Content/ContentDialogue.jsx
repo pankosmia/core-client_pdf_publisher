@@ -151,7 +151,7 @@ export function ContentDialogue({
     ),
   ];
   const [documentInfo, setDocumentInfo] = useState(null);
-
+  const [currentStep, setCurrentStep] = useState(0);
   useEffect(() => {
     if (openFromOutside >= 1) {
       setOpen(true);
@@ -202,6 +202,7 @@ export function ContentDialogue({
         setCurrentSectionsSignature([]);
         setCurrentSections([]);
         setBRanges([]);
+        setCurrentStep(0);
       }
 
       if (type === "edit" && initSection) {
@@ -220,6 +221,8 @@ export function ContentDialogue({
   const renderStepContent = (step) => {
     switch (step) {
       case 0:
+        setCurrentStep(0);
+
         return (
           <>
             {wrapperName === "bcvWrapper" ? (
@@ -244,6 +247,8 @@ export function ContentDialogue({
           </>
         );
       case 1:
+        setCurrentStep(1);
+
         return wrapperName === "bcvWrapper" ? (
           <RessourceSelection
             bRanges={bRanges}
@@ -263,6 +268,7 @@ export function ContentDialogue({
           />
         );
       case 2:
+        setCurrentStep(2);
         return (
           <ConfigSection
             summary={summary}
@@ -319,7 +325,7 @@ export function ContentDialogue({
             onCloseFromOutise();
           }
         }}
-        size="xl"
+        size="md"
         titleLabel={
           type === "edit"
             ? doI18n(
@@ -332,7 +338,13 @@ export function ContentDialogue({
               )
         }
       >
-        <DialogContent ref={contentRef}>
+        <DialogContent
+          sx={{
+            overflowY: "auto",
+            overflowX: "hidden",
+          }}
+          ref={contentRef}
+        >
           <PanStepperPicker
             steps={steps}
             isStepValid={isStepValid}
@@ -347,7 +359,7 @@ export function ContentDialogue({
                   );
                 }
               }
-              if (contentRef.current) {
+              if (contentRef.current && currentStep != step) {
                 contentRef.current.scrollTop = 0;
               }
 
