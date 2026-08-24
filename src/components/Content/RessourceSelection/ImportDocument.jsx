@@ -30,6 +30,7 @@ import { postText } from "pankosmia-lib/http";
 import { currentProjectContext } from "pankosmia-rcl";
 import { v4 as uuidv4 } from "uuid";
 import { useSnackbar } from "notistack";
+const sanitizeFileName = (name) => name.replace(/\s+/g, "_");
 
 export async function saveFile(localPath, fileBlob, name, folder) {
   const fd = new FormData();
@@ -117,6 +118,7 @@ export function ImportDocument({
   currentSections,
   setCurrentSections,
   setIsRessourcesStepComplete,
+  setDocumentInfo,
 }) {
   const { i18nRef } = useContext(i18nContext);
   const { enqueueSnackbar } = useSnackbar();
@@ -135,10 +137,16 @@ export function ImportDocument({
 
   const handleNewFile = useCallback(
     async (file) => {
-      setSelectedFile(file);
+      const cleanName = sanitizeFileName(file.name);
+      const renamedFile =
+        cleanName === file.name
+          ? file
+          : new File([file], cleanName, { type: file.type });
+
+      setSelectedFile(renamedFile);
 
       if (documentType === "markdown") {
-        const text = await file.text();
+        const text = await renamedFile.text();
         setMarkdownContent(text);
       }
     },
@@ -159,7 +167,13 @@ export function ImportDocument({
   useEffect(() => {
     if (plainFiles && plainFiles.length > 0) {
       const file = plainFiles[0];
-      setSelectedFile(file);
+      const cleanName = sanitizeFileName(file.name);
+      const renamedFile =
+        cleanName === file.name
+          ? file
+          : new File([file], cleanName, { type: file.type });
+
+      setSelectedFile(renamedFile);
 
       if (documentType === "markdown" && filesContent?.[0]) {
         setMarkdownContent(filesContent[0].content ?? "");
@@ -168,12 +182,12 @@ export function ImportDocument({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [plainFiles, filesContent]);
 
-  // Keep parent's File object in sync as the user types (markdown only)
   useEffect(() => {
     if (documentType === "markdown" && selectedFile) {
       const updatedFile = new File([markdownContent], selectedFile.name, {
         type: "text/markdown",
       });
+      setSelectedFile(updatedFile);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markdownContent]);
@@ -269,64 +283,50 @@ export function ImportDocument({
         });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentSections, documentType]);
+  }, [documentType]);
   // endpoint (or storage mechanism) for persisting the document is decided.
-  const handleSave = async () => {
-    const localPath = `${currentProjectRef.current.organization}/${currentProjectRef.current.source}/${currentProjectRef.current.project}`;
-    let response;
-    if (!selectedFile) return;
+  useEffect(() => {
+    if (!selectedFile || !currentSections?.[0]) return;
 
-    if (documentType === "pdf") {
-      response = await saveFile(
-        localPath,
-        selectedFile,
-        selectedFile.name,
-        "pdf",
-      );
-    } else if (documentType === "markdown") {
-      const mdBlob = new Blob([markdownContent], {
-        type: "text/markdown",
-      });
+    const docExtension = acceptByType[documentType]?.replace(".", "");
+    if (!docExtension) return;
 
-      // ensure .md extension even if user renames later
+    const localPath =
+      `${currentProjectRef.current.organization}/` +
+      `${currentProjectRef.current.source}/` +
+      `${currentProjectRef.current.project}`;
 
-      const mdFile = new File([mdBlob], selectedFile.name, {
-        type: "text/markdown",
-      });
+    const newName = `${docExtension}/${selectedFile.name}`;
 
-      response = await saveFile(localPath, mdFile, selectedFile.name, "md");
-    }
-    if (response.ok) {
-      let docExtansion = acceptByType[documentType].replace(".", "");
-      setCurrentSections((prev) => {
-        let copy = [...prev];
-        copy[0].content = {
+    setCurrentSections((prev) => {
+      if (!prev[0]) return prev;
+
+      const existing = prev[0].content?.[docExtension];
+
+      // IMPORTANT: don't create a new object if nothing changed
+      if (existing?.src === localPath && existing?.name === newName) {
+        return prev;
+      }
+
+      const copy = [...prev];
+
+      copy[0] = {
+        ...copy[0],
+        content: {
           ...copy[0].content,
-          [docExtansion]: {
+          [docExtension]: {
             src: localPath,
-            name: `${docExtansion}/${selectedFile.name}`,
+            name: newName,
           },
-        };
-        return copy;
-      });
-      enqueueSnackbar(
-        doI18n(
-          `pages:core-client_pdf_publisher:fileToSystemSuccess`,
-          i18nRef.current,
-        ),
-        { variant: "success" },
-      );
-      setIsRessourcesStepComplete(true);
-    } else {
-      enqueueSnackbar(
-        doI18n(
-          `pages:core-client_pdf_publisher:fileToSystemError`,
-          i18nRef.current,
-        ) + response.error,
-        { variant: "error" },
-      );
-    }
-  };
+        },
+      };
+
+      return copy;
+    });
+
+    setIsRessourcesStepComplete(true);
+    setDocumentInfo([localPath, selectedFile, selectedFile.name, docExtension]);
+  }, [selectedFile, documentType, setCurrentSections]);
   return (
     <Box sx={{ mt: 1 }}>
       {!selectedFile && (
@@ -475,7 +475,7 @@ export function ImportDocument({
           </Box>
         </Box>
       )}
-      {selectedFile && (
+      {/* {selectedFile && (
         <Box
           sx={{
             display: "flex",
@@ -519,7 +519,7 @@ export function ImportDocument({
             </Box>
           </Tooltip>
         </Box>
-      )}
+      )} */}
     </Box>
   );
 }
