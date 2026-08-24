@@ -376,7 +376,7 @@ export function PdfPublisher() {
         />
       </PanDialog>
       <Header
-        titleKey={`${doI18n("pages:content:title", i18nRef.current)}`}
+        titleKey={`${doI18n("pages:core-client_pdf_publisher:title", i18nRef.current)}`}
         currentId="core-contenthandler_text_translation"
         requireNet={false}
       />
