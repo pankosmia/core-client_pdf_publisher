@@ -8,6 +8,7 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { iconBySection } from "../../../pdf-gen/helpers/constants";
 import { Done, DragIndicator } from "@mui/icons-material";
 import { typeThatNeedRessourceSelection } from "../../../pdf-gen/helpers/constants";
+import { enqueueSnackbar } from "notistack";
 const allowedConfig = ["boolean", "int", "string", "number"];
 
 const isFieldsValid = (fields, sectionData, isCard) => {
@@ -55,7 +56,16 @@ export function ConfigSection({
   useEffect(() => {
     async function getLang() {
       let langs = await getJson(`/api/settings/languages`);
-      setLang(langs.json[0]);
+      if (langs.ok) {
+        setLang(langs.json[0]);
+      } else {
+        enqueueSnackbar(
+          doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+            " /api/settings/languages" +
+            `${langs.status}): ${langs.error}`,
+          { variant: "error" },
+        );
+      }
     }
     getLang();
   }, []);

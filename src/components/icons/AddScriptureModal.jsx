@@ -3,7 +3,7 @@ import {
   Typography,
   Box,
   DialogContent,
-  Grid2,
+  Grid,
   Fab,
 } from "@mui/material";
 import { useState, useContext, useEffect } from "react";
@@ -17,6 +17,7 @@ import {
 } from "pankosmia-rcl";
 import { getJson } from "pankosmia-lib/http";
 import LayoutIcon from "../ui_tool_kit/LayoutIcon";
+import { enqueueSnackbar } from "notistack";
 
 export default function AddScriptureModal({
   selectedResources,
@@ -42,6 +43,13 @@ export default function AddScriptureModal({
     );
     if (summariesResponse.ok) {
       setProjectSummaries(summariesResponse.json);
+    } else {
+      enqueueSnackbar(
+        doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+          " /api/burrito/metadata/summaries" +
+          `${summariesResponse.status}): ${summariesResponse.error}`,
+        { variant: "error" },
+      );
     }
   };
 
@@ -160,14 +168,17 @@ export default function AddScriptureModal({
         )}`}
       >
         <DialogContent>
-          <Grid2
-            sx={{ display: "flex", flexFlow: "row nowrap" }}
+          <Grid
+            sx={{
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "100%",
+              display: "flex",
+              flexFlow: "row nowrap",
+            }}
             container
-            alignItems="center"
-            justifyContent="space-between"
-            width="100%"
           >
-            <Grid2 display="flex" gap={1}>
+            <Grid sx={{ display: "flex" }} gap={1}>
               <Typography
                 sx={{
                   overflow: "hide",
@@ -179,8 +190,8 @@ export default function AddScriptureModal({
                   i18nRef.current,
                 )}
               </Typography>
-            </Grid2>
-            <Grid2 display="flex" gap={1}>
+            </Grid>
+            <Grid sx={{ display: "flex" }} gap={1}>
               <Fab
                 variant="extended"
                 color="primary"
@@ -196,10 +207,10 @@ export default function AddScriptureModal({
                 </Typography>
                 {/* <PlayArrowIcon /> */}
               </Fab>
-            </Grid2>
-          </Grid2>
+            </Grid>
+          </Grid>
           <Box sx={{ m: 2 }}>
-            <Grid2 item size={12}>
+            <Grid item size={12}>
               <Box
                 sx={{
                   //   height: `${maxWindowHeight}px`,
@@ -226,7 +237,7 @@ export default function AddScriptureModal({
                   />
                 </Box>
               </Box>
-            </Grid2>
+            </Grid>
           </Box>
         </DialogContent>
       </PanDialog>

@@ -241,7 +241,7 @@ export class paraBibleSection extends Section {
     };
   }
 
-  async doSection({ section, templates, manifest, options }) {
+  async doSection({ section, templates, manifest, options, i18nRef }) {
     if (!section.bcvRange) {
       throw new Error(`No bcvRange found for section ${section.id}`);
     }
@@ -263,11 +263,12 @@ export class paraBibleSection extends Section {
     const pk = await pkWithDocs(
       section.bcvRange,
       [{ id: "xxx_yyy", path: section.content.scriptureSrc }],
+      i18nRef,
       options.verbose,
     );
     const bookName = getBookName(pk, "xxx_yyy", section.bcvRange);
     const notes = section.content.notes
-      ? bcvNotes(section.content.notes, section.bcvRange)
+      ? bcvNotes(section.content.notes, section.bcvRange, [], i18nRef)
       : {};
     const docId = pk.gqlQuerySync("{documents { id } }").data.documents[0].id;
     const actions = render.sofria2web.renderActions.sofria2WebActions;

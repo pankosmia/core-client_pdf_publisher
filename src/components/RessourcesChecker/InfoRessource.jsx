@@ -1,7 +1,6 @@
 import { doI18n } from "pankosmia-lib/i18n";
 import { Tooltip, Typography, Box } from "@mui/material";
-import { ErrorOutline, Done } from "@mui/icons-material";
-
+import { ErrorOutlined, Done } from "@mui/icons-material";
 export const InfoRessource = ({
   summary,
   pathElem,
@@ -15,7 +14,7 @@ export const InfoRessource = ({
   if (!summary?.[pathElem]?.name) {
     return (
       <>
-        {icons && <ErrorOutline fontSize="small" />}
+        {icons && <ErrorOutlined fontSize="small" />}
         <Typography
           variant={typographyVariant ? typographyVariant : "body1"}
           color="text.primary"
@@ -68,7 +67,7 @@ export const InfoRessource = ({
         ))}
       >
         <Box sx={{ display: "flex", flexDirection: "row", gap: 0.5 }}>
-          {icons && <ErrorOutline fontSize="small" />}
+          {icons && <ErrorOutlined fontSize="small" />}
           <Typography
             color="text.primary"
             variant={typographyVariant ? typographyVariant : "body1"}
@@ -86,7 +85,7 @@ export const InfoRessource = ({
   if (toolTipMessages.length === 1) {
     return (
       <>
-        {icons && <ErrorOutline fontSize="small" />}
+        {icons && <ErrorOutlined fontSize="small" />}
         <Typography
           color="text.primary"
           variant={typographyVariant ? typographyVariant : "body1"}

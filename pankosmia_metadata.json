@@ -243,6 +243,14 @@
     "saveRequiredForPrintTooltip": {
       "en": "This file must be saved to the project before it can be used when printing the PDF.",
       "fr": "Ce fichier doit être sauvegardé dans le projet avant de pouvoir être utilisé lors de l'impression du PDF."
+    },
+    "step": {
+      "en": "Current step ##CURRENT##/##GLOBAL##",
+      "fr": "Etape actuelle ##CURRENT##/##GLOBAL##"
+    },
+    "errorGet": {
+      "en": "Could not fetch",
+      "fr": "N'as pas reussi a fetch"
     }
   }
 }

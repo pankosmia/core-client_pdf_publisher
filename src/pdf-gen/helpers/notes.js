@@ -1,4 +1,6 @@
+import { enqueueSnackbar } from "notistack";
 import { getJson, getText } from "pankosmia-lib/http";
+import { doI18n } from "pankosmia-lib/i18n";
 export const cleanNoteLine = (noteLine) =>
   noteLine
     .trim()
@@ -95,52 +97,75 @@ export const unpackCellRange = (cv) => {
   return ret;
 };
 
-export const bcvNotes = async (notesPath, bookCode, excludeTags = []) => {
+export const bcvNotes = async (
+  notesPath,
+  bookCode,
+  excludeTags = [],
+  i18nRef,
+) => {
   const notes = {};
   const summary = await getJson(`/api/burrito/metadata/summary/${notesPath}`);
+  if (summary.ok) {
+    const fileWithBook = summary.json.book_codes.filter((p) =>
+      p.includes(bookCode),
+    );
 
-  const fileWithBook = summary.json.book_codes.filter((p) =>
-    p.includes(bookCode),
-  );
-
-  if (!fileWithBook) {
-    throw new Error(`No notes for ${bookCode} found in bcvNotes`);
-  }
-  const notesRowsRaw = await getText(
-    `/api/burrito/ingredient/raw/${notesPath}?ipath=${fileWithBook}.tsv`,
-  );
-  const notesRows = notesRowsRaw.text.split("\n");
-  // Introspect type (question or note)
-  let noteType = "notes";
-  const headings = notesRows[0];
-  if (headings.indexOf("Question") > 0) {
-    noteType = "questions";
-  }
-
-  for (const notesRow of notesRows.slice(1)) {
-    const cells = notesRow.split("\t");
-    let toExclude = false;
-    for (const tag of (cells[2] || "").split(",")) {
-      if (excludeTags.includes(tag)) {
-        toExclude = true;
-        break;
+    if (!fileWithBook) {
+      throw new Error(`No notes for ${bookCode} found in bcvNotes`);
+    }
+    const notesRowsRaw = await getText(
+      `/api/burrito/ingredient/raw/${notesPath}?ipath=${fileWithBook}.tsv`,
+    );
+    if (notesRowsRaw.ok) {
+      const notesRows = notesRowsRaw.text.split("\n");
+      // Introspect type (question or note)
+      let noteType = "notes";
+      const headings = notesRows[0];
+      if (headings.indexOf("Question") > 0) {
+        noteType = "questions";
       }
+
+      for (const notesRow of notesRows.slice(1)) {
+        const cells = notesRow.split("\t");
+        let toExclude = false;
+        for (const tag of (cells[2] || "").split(",")) {
+          if (excludeTags.includes(tag)) {
+            toExclude = true;
+            break;
+          }
+        }
+        if (toExclude) {
+          continue;
+        }
+        const rowKey = cells[0].replace(/^0+/g, "");
+        let content = (noteType === "questions" ? cells[5] : cells[6]) || "";
+        if (content.trim().length === 0) {
+          continue;
+        }
+        if (content.slice(0, 1) === '"') {
+          content = content.slice(1, content.length - 1).replace(/""/g, '"');
+        }
+        if (!(rowKey in notes)) {
+          notes[rowKey] = [];
+        }
+        notes[rowKey].push(content);
+      }
+
+      return notes;
+    } else {
+      enqueueSnackbar(
+        doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+          `/api/burrito/ingredient/raw/${notesPath}?ipath=${fileWithBook}.tsv` +
+          `${notesRowsRaw.status}): ${notesRowsRaw.error}`,
+        { variant: "error" },
+      );
     }
-    if (toExclude) {
-      continue;
-    }
-    const rowKey = cells[0].replace(/^0+/g, "");
-    let content = (noteType === "questions" ? cells[5] : cells[6]) || "";
-    if (content.trim().length === 0) {
-      continue;
-    }
-    if (content.slice(0, 1) === '"') {
-      content = content.slice(1, content.length - 1).replace(/""/g, '"');
-    }
-    if (!(rowKey in notes)) {
-      notes[rowKey] = [];
-    }
-    notes[rowKey].push(content);
+  } else {
+    enqueueSnackbar(
+      doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+        `/api/burrito/metadata/summary/${notesPath}` +
+        `${summary.status}): ${summary.error}`,
+      { variant: "error" },
+    );
   }
-  return notes;
 };

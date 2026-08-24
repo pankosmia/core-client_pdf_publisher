@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
 // import {PdfGen} from "jxl-pdf"
 import { getJson, postJson } from "pankosmia-lib/http";
 import { doI18n } from "pankosmia-lib/i18n";
@@ -13,7 +13,7 @@ import { setupCSS } from "../pdf-gen/doCss";
 import {
   Button,
   Box,
-  Grid2,
+  Grid,
   AppBar,
   Typography,
   Divider,
@@ -23,6 +23,7 @@ import {
   AccordionDetails,
   Chip,
   Tooltip,
+  CircularProgress,
 } from "@mui/material";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import "react-pdf/dist/Page/AnnotationLayer.css";
@@ -51,12 +52,29 @@ import { typeThatNeedRessourceSelection } from "../pdf-gen/helpers/constants";
 import { BcvWrapperOverview } from "../components/Overview/BcvWrapperOverview";
 import { FreeFormatOverview } from "../components/Overview/FreeFormatOverview";
 
+function countSteps(specs) {
+  let numberSteps = 0;
+  specs.sections.forEach((s) => {
+    if (s.type === "bcvWrapper") {
+      s.ranges.forEach((r) => {
+        s.sections.forEach((ss) => {
+          numberSteps += 2; // for creating & assembling
+        });
+      });
+    } else {
+      numberSteps += 2;
+    }
+  });
+  return numberSteps;
+}
+
 export function PdfPublisher() {
   const { debugRef } = useContext(debugContext);
   const { i18nRef } = useContext(i18nContext);
-  const { enqueueSnackbar } = useSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const { currentProjectRef } = useContext(currentProjectContext);
   // fake selected project
+  const [messageSnackbar, setMessageSnackbar] = useState("this message");
   const [projectSummaries, setProjectSummaries] = useState({});
   const [headerInfo, setHeaderInfo] = useState(null);
   const [wrappers, setWrappers] = useState([]);
@@ -64,7 +82,11 @@ export function PdfPublisher() {
   const [fontFamilyCorrespondance, setFontFamilyCorrespondance] =
     useState(null);
   const [projectSpecs, setProjectSpecs] = useState(null);
-  // const jsonWithHeaderChoice = PdfGen.pageInfo();
+
+  const [numberOfStepsToValidate, setNumberOfStepsToValidate] = useState(0);
+  const [currentNumberOfStepsValidated, setCurrentNumberOfStepsValidated] =
+    useState(0);
+  const [disablePrintButton, setDisablePrintButton] = useState(false);
   useEffect(() => {
     async function getSpecs() {
       if (currentProjectRef.current) {
@@ -85,6 +107,15 @@ export function PdfPublisher() {
             },
             sections: [],
           });
+          enqueueSnackbar(
+            doI18n(
+              `pages:core-client_pdf_publisher:errorGet`,
+              i18nRef.current,
+            ) +
+              ` /api/burrito/ingredient/raw/${currentProjectRef.current.organization}/${currentProjectRef.current.source}/${currentProjectRef.current.project}?ipath=specs.json` +
+              `${response.status}): ${response.error}`,
+            { variant: "error" },
+          );
         }
       }
     }
@@ -116,6 +147,7 @@ export function PdfPublisher() {
       setFontFamilyCorrespondance(cores);
     });
   }, []);
+
   const jsonWithHeaderChoice = {
     pages: Object.entries(pages).map(([key, value]) => ({
       value: key,
@@ -129,46 +161,78 @@ export function PdfPublisher() {
   };
 
   async function PrintPdf() {
+    setDisablePrintButton(true);
     let header = JSON.parse(headerInfo);
     let font = await getJson("/api/settings/typography/");
-    let newFont = {};
-    let fontArray = font.json.font_set
-      .replace("fonts-", "")
-      .split("Pankosmia")
-      .slice(1)
-      .map((e) => "Pankosmia" + e)
-      .map((f) => fontFamilyCorrespondance[f]);
-    Object.entries(fonts[header.fonts]).forEach(([k, v]) => {
-      newFont[k] = fontArray;
-    });
-    const config = {
-      global: header,
-      sections: wrappers,
-    };
-    const options = {
-      verbose: config.global.verbose,
-      steps: ["originate", "assemble"],
-      pageFormat: pages[config.global.pages],
-      fonts: newFont,
-      fontFamily: fontArray,
-      fontSizes: sizes[config.global.sizes],
-      referencePunctuation: config.global.referencePunctuation || {
-        bookChapter: " ",
-        chapterVerse: ":",
-        verseRange: "-",
-      },
-      configContent: config,
-      cssLookUp: null,
-    };
+    if (font.ok) {
+      let newFont = {};
+      let fontArray = font.json.font_set
+        .replace("fonts-", "")
+        .split("Pankosmia")
+        .slice(1)
+        .map((e) => "Pankosmia" + e)
+        .map((f) => fontFamilyCorrespondance[f]);
+      Object.entries(fonts[header.fonts]).forEach(([k, v]) => {
+        newFont[k] = fontArray;
+      });
+      const config = {
+        global: header,
+        sections: wrappers,
+      };
+      const options = {
+        verbose: config.global.verbose,
+        steps: ["originate", "assemble"],
+        pageFormat: pages[config.global.pages],
+        fonts: newFont,
+        fontFamily: fontArray,
+        fontSizes: sizes[config.global.sizes],
+        referencePunctuation: config.global.referencePunctuation || {
+          bookChapter: " ",
+          chapterVerse: ":",
+          verseRange: "-",
+        },
+        configContent: config,
+        cssLookUp: null,
+      };
 
-    let cssLookUp = await setupCSS({
-      pageFormat: options.pageFormat,
-      fonts: options.fonts,
-      fontSizes: options.fontSizes,
-    });
-    options.cssLookUp = cssLookUp;
-    let manifest = await originatePdfs(options, null);
-    await assemblePdfs(options, null, manifest);
+      let cssLookUp = await setupCSS({
+        pageFormat: options.pageFormat,
+        fonts: options.fonts,
+        fontSizes: options.fontSizes,
+      });
+      options.cssLookUp = cssLookUp;
+
+      const totalSteps = countSteps(config);
+
+      function doPdfCallback(e) {
+        if (e.level <= 2) {
+          setCurrentNumberOfStepsValidated((prev) => {
+            const next = prev + 1;
+            setMessageSnackbar(
+              doI18n("pages:core-client_pdf_publisher:step", i18nRef.current)
+                .replace("##CURRENT##", next)
+                .replace("##GLOBAL##", totalSteps),
+            );
+
+            return next;
+          });
+        }
+      }
+      setNumberOfStepsToValidate(totalSteps);
+      let manifest = await originatePdfs(options, doPdfCallback, i18nRef);
+      await assemblePdfs(options, doPdfCallback, manifest);
+
+      setNumberOfStepsToValidate(0);
+      setCurrentNumberOfStepsValidated(0);
+    } else {
+      enqueueSnackbar(
+        doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+          ` /api/settings/typography/` +
+          `${font.status}): ${font.error}`,
+        { variant: "error" },
+      );
+    }
+    setDisablePrintButton(false);
   }
 
   useEffect(() => {
@@ -179,6 +243,13 @@ export function PdfPublisher() {
       );
       if (summariesResponse.ok) {
         setProjectSummaries(summariesResponse.json);
+      } else {
+        enqueueSnackbar(
+          doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+            " /api/burrito/metadata/summaries" +
+            `${summariesResponse.status}): ${summariesResponse.error}`,
+          { variant: "error" },
+        );
       }
     };
     getProjectSummaries();
@@ -186,7 +257,16 @@ export function PdfPublisher() {
   useEffect(() => {
     async function getLang() {
       let langs = await getJson(`/api/settings/languages`);
-      setlang(langs.json[0]);
+      if (langs.ok) {
+        setlang(langs.json[0]);
+      } else {
+        enqueueSnackbar(
+          doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+            " /api/settings/languages" +
+            `${langs.status}): ${langs.error}`,
+          { variant: "error" },
+        );
+      }
     }
     getLang();
   }, []);
@@ -426,7 +506,7 @@ export function PdfPublisher() {
 
                           {/* BODY */}
                           <AccordionDetails>
-                            <Grid2 container size={12}>
+                            <Grid container size={12}>
                               {/* LEFT ICON COLUMN */}
                               <Box
                                 sx={{
@@ -506,7 +586,7 @@ export function PdfPublisher() {
                                   <Delete />
                                 </IconButton>
                               </Box>
-                            </Grid2>
+                            </Grid>
                           </AccordionDetails>
                         </Accordion>
                       )}
@@ -558,34 +638,62 @@ export function PdfPublisher() {
                     `pages:core-client_pdf_publisher:print_disabled_sections_issue`,
                     i18nRef.current,
                   )
-                : "";
+                : doI18n(
+                    `pages:core-client_pdf_publisher:remember_save`,
+                    i18nRef.current,
+                  );
 
             return (
               <Tooltip title={isDisabled ? tooltipTitle : ""}>
                 <span>
                   <Button
-                    disabled={isDisabled}
+                    disabled={
+                      isDisabled ||
+                      currentNumberOfStepsValidated < numberOfStepsToValidate ||
+                      disablePrintButton
+                    }
                     variant="contained"
                     onClick={async () => {
                       await PrintPdf();
                     }}
                   >
-                    {doI18n(
-                      `pages:core-client_pdf_publisher:print`,
-                      i18nRef.current,
-                    )}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
+                      {currentNumberOfStepsValidated <
+                        numberOfStepsToValidate || disablePrintButton ? (
+                        <Box>
+                          <Typography
+                            sx={{
+                              color: "text.secondary",
+                              textAlign: "center",
+                            }}
+                          >
+                            {currentNumberOfStepsValidated <
+                              numberOfStepsToValidate && messageSnackbar}
+                          </Typography>
+                          <CircularProgress size={16} color="inherit" />
+                        </Box>
+                      ) : (
+                        <Typography>
+                          {doI18n(
+                            `pages:core-client_pdf_publisher:print`,
+                            i18nRef.current,
+                          )}
+                        </Typography>
+                      )}
+                    </Box>
                   </Button>
                 </span>
               </Tooltip>
             );
           })()}
 
-          <Typography sx={{ color: "text.secondary", textAlign: "center" }}>
-            {doI18n(
-              `pages:core-client_pdf_publisher:remember_save`,
-              i18nRef.current,
-            )}
-          </Typography>
           <FirefoxInstaller />
         </Box>
       </Box>

@@ -1,4 +1,6 @@
+import { enqueueSnackbar } from "notistack";
 import { getJson, getText } from "pankosmia-lib/http";
+import { doI18n } from "pankosmia-lib/i18n";
 import { Proskomma } from "proskomma-core";
 export const getBookName = (pk, docSetId, bookCode) => {
   const headers = pk.gqlQuerySync(
@@ -13,7 +15,12 @@ export const getBookName = (pk, docSetId, bookCode) => {
   return bookCode;
 };
 
-export const pkWithDocs = async (bookCode, docSpecs, verbose = false) => {
+export const pkWithDocs = async (
+  bookCode,
+  docSpecs,
+  i18nRef,
+  verbose = false,
+) => {
   const pk = new Proskomma();
   verbose && console.log("Loading USFM into Proskomma");
   for (const docSpec of docSpecs) {
@@ -34,9 +41,24 @@ export const pkWithDocs = async (bookCode, docSpecs, verbose = false) => {
       const contentString = await getText(
         `/api/burrito/ingredient/raw/${docSpec.path}?ipath=${matchingBookUsfm}.usfm`,
       );
-
-      const [lang, abbr] = docSpec.id.split("_");
-      pk.importDocument({ lang, abbr }, "usfm", contentString.text);
+      if (contentString.ok) {
+        const [lang, abbr] = docSpec.id.split("_");
+        pk.importDocument({ lang, abbr }, "usfm", contentString.text);
+      } else {
+        enqueueSnackbar(
+          doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+            `/api/burrito/ingredient/raw/${docSpec.path}?ipath=${matchingBookUsfm}.usfm` +
+            `${contentString.status}): ${contentString.error}`,
+          { variant: "error" },
+        );
+      }
+    } else {
+      enqueueSnackbar(
+        doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+          ` /api/burrito/metadata/summary/${docSpec.path}`,
+        `${summary.status}): ${summary.error}`,
+        { variant: "error" },
+      );
     }
   }
   return pk;

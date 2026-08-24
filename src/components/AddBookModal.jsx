@@ -3,7 +3,7 @@ import {
   Typography,
   Box,
   DialogContent,
-  Grid2,
+  Grid,
   Fab,
 } from "@mui/material";
 import { useState, useContext, useEffect } from "react";
@@ -16,6 +16,7 @@ import {
   PanTable,
 } from "pankosmia-rcl";
 import { getJson } from "pankosmia-lib/http";
+import { enqueueSnackbar } from "notistack";
 
 export default function AddBookModal({
   selectedResources,
@@ -41,6 +42,13 @@ export default function AddBookModal({
     );
     if (summariesResponse.ok) {
       setProjectSummaries(summariesResponse.json);
+    } else {
+      enqueueSnackbar(
+        doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+          " /api/burrito/metadata/summaries" +
+          `${summariesResponse.status}): ${summariesResponse.error}`,
+        { variant: "error" },
+      );
     }
   };
 
@@ -151,14 +159,17 @@ export default function AddBookModal({
         )}`}
       >
         <DialogContent>
-          <Grid2
-            sx={{ display: "flex", flexFlow: "row nowrap" }}
+          <Grid
+            sx={{
+              width: "100%",
+              justifyContent: "space-between",
+              alignItems: "center",
+              display: "flex",
+              flexFlow: "row nowrap",
+            }}
             container
-            alignItems="center"
-            justifyContent="space-between"
-            width="100%"
           >
-            <Grid2 display="flex" gap={1}>
+            <Grid sx={{ display: "flex" }} gap={1}>
               <Typography
                 sx={{
                   overflow: "hide",
@@ -170,8 +181,8 @@ export default function AddBookModal({
                   i18nRef.current,
                 )}
               </Typography>
-            </Grid2>
-            <Grid2 display="flex" gap={1}>
+            </Grid>
+            <Grid sx={{ display: "flex" }} gap={1}>
               <Fab
                 variant="extended"
                 color="primary"
@@ -187,10 +198,10 @@ export default function AddBookModal({
                 </Typography>
                 {/* <PlayArrowIcon /> */}
               </Fab>
-            </Grid2>
-          </Grid2>
+            </Grid>
+          </Grid>
           <Box sx={{ m: 2 }}>
-            <Grid2 item size={12}>
+            <Grid item size={12}>
               <Box
                 sx={{
                   //   height: `${maxWindowHeight}px`,
@@ -217,7 +228,7 @@ export default function AddBookModal({
                   />
                 </Box>
               </Box>
-            </Grid2>
+            </Grid>
           </Box>
         </DialogContent>
       </PanDialog>
