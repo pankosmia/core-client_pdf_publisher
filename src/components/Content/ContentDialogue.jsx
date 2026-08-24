@@ -6,7 +6,7 @@ import {
 } from "pankosmia-rcl";
 
 import { DialogContent, Box } from "@mui/material";
-import { useState, useContext, useEffect, cloneElement } from "react";
+import { useState, useContext, useEffect, cloneElement, useRef } from "react";
 import { doI18n } from "pankosmia-lib/i18n";
 import { SelectSection } from "./Sections/SelectSection";
 import { sectionHandlerLookup } from "../../pdf-gen/sectionHandlerLookup";
@@ -130,6 +130,7 @@ export function ContentDialogue({
   openFromOutside = 0,
   onCloseFromOutise = null,
 }) {
+  const contentRef = useRef(null);
   const { i18nRef } = useContext(i18nContext);
   const { debugRef } = useContext(debugContext);
   const [currentSectionsSignature, setCurrentSectionsSignature] = useState([]);
@@ -327,7 +328,7 @@ export function ContentDialogue({
               )
         }
       >
-        <DialogContent>
+        <DialogContent ref={contentRef}>
           <PanStepperPicker
             steps={steps}
             isStepValid={isStepValid}
@@ -342,6 +343,10 @@ export function ContentDialogue({
                   );
                 }
               }
+              if (contentRef.current) {
+                contentRef.current.scrollTop = 0;
+              }
+
               return renderStepContent(step);
             }}
             primaryButtonVariant="secondary"
