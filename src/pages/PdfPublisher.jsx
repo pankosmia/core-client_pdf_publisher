@@ -90,6 +90,7 @@ export function PdfPublisher() {
   const [numberOfStepsToValidate, setNumberOfStepsToValidate] = useState(0);
   const [currentNumberOfStepsValidated, setCurrentNumberOfStepsValidated] =
     useState(0);
+  const [disablePrintButton, setDisablePrintButton] = useState(false);
   const [firefoxModalOpen, setFirefoxModalOpen] = useState(false);
 
   const hash = window.location.hash;
@@ -195,6 +196,7 @@ export function PdfPublisher() {
   };
 
   async function PrintPdf() {
+    setDisablePrintButton(true);
     let header = JSON.parse(headerInfo);
     let font = await getJson("/api/settings/typography/");
     if (font.ok) {
@@ -255,7 +257,6 @@ export function PdfPublisher() {
       let manifest = await originatePdfs(options, doPdfCallback, i18nRef);
       await assemblePdfs(options, doPdfCallback, manifest);
 
-      closeSnackbar("pdf-progress");
       setNumberOfStepsToValidate(0);
       setCurrentNumberOfStepsValidated(0);
     } else {
@@ -266,6 +267,7 @@ export function PdfPublisher() {
         { variant: "error" },
       );
     }
+    setDisablePrintButton(false);
   }
 
   useEffect(() => {
@@ -706,7 +708,8 @@ export function PdfPublisher() {
                   <Button
                     disabled={
                       isDisabled ||
-                      currentNumberOfStepsValidated < numberOfStepsToValidate
+                      currentNumberOfStepsValidated < numberOfStepsToValidate ||
+                      disablePrintButton
                     }
                     variant="contained"
                     onClick={async () => {
@@ -722,7 +725,7 @@ export function PdfPublisher() {
                       }}
                     >
                       {currentNumberOfStepsValidated <
-                      numberOfStepsToValidate ? (
+                        numberOfStepsToValidate || disablePrintButton ? (
                         <Box>
                           <Typography
                             sx={{

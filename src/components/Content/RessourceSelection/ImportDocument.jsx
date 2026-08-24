@@ -224,25 +224,49 @@ export function ImportDocument({
 
     if (documentType === "markdown") {
       fetch(url)
-        .then((res) => res.text())
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
+          }
+          return res.text();
+        })
         .then((text) => {
           setMarkdownContent(text);
           setSelectedFile(
             new File([text], fileName, { type: "text/markdown" }),
           );
         })
-        .catch(() => {
-          // leave dropzone visible if fetch fails
+        .catch((error) => {
+          enqueueSnackbar(
+            `${doI18n(
+              `pages:core-client_pdf_publisher:errorGet`,
+              i18nRef.current,
+            )}: ${error.message}`,
+            { variant: "error" },
+          );
         });
     } else if (documentType === "pdf") {
       fetch(url)
-        .then((res) => res.blob())
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`HTTP ${res.status}`);
+          }
+          return res.blob();
+        })
         .then((blob) => {
           setSelectedFile(
             new File([blob], fileName, { type: "application/pdf" }),
           );
         })
-        .catch(() => {});
+        .catch((error) => {
+          enqueueSnackbar(
+            `${doI18n(
+              `pages:core-client_pdf_publisher:errorGet`,
+              i18nRef.current,
+            )}: ${error.message}`,
+            { variant: "error" },
+          );
+        });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentSections, documentType]);
