@@ -4,7 +4,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import AddIcon from "@mui/icons-material/Add";
 import Box from "@mui/material/Box";
-import { Button } from "@mui/material";
+import { Button, Divider } from "@mui/material";
 import { ContentDialogue } from "../Content/ContentDialogue";
 import { doI18n } from "pankosmia-lib/i18n";
 import { useState } from "react";
@@ -42,7 +42,7 @@ export default function FloatingTextMenu({ i18nRef, setWrappers }) {
         open={open}
         onClose={() => setAnchorEl(null)}
         anchorOrigin={{
-          vertical: "bottom",
+          vertical: "top",
           horizontal: "right",
         }}
         transformOrigin={{
@@ -51,22 +51,25 @@ export default function FloatingTextMenu({ i18nRef, setWrappers }) {
         }}
       >
         {actions.map((action) => (
-          <MenuItem
-            key={action.name}
-            onClick={() => {
-              setSelectedAction(action.name);
-              setOpenFromOustide((prev) => prev + 1);
-              setAnchorEl(null);
-            }}
-            sx={{
-              minHeight: 32,
-            }}
-          >
-            {doI18n(
-              `pages:core-client_pdf_publisher:${action.name}`,
-              i18nRef.current,
-            )}
-          </MenuItem>
+          <>
+            {action.name === "markdownPdfWrapper" ? <Divider /> : <></>}
+            <MenuItem
+              key={action.name}
+              onClick={() => {
+                setSelectedAction(action.name);
+                setOpenFromOustide((prev) => prev + 1);
+                setAnchorEl(null);
+              }}
+              sx={{
+                minHeight: 32,
+              }}
+            >
+              {doI18n(
+                `pages:core-client_pdf_publisher:${action.name}`,
+                i18nRef.current,
+              )}
+            </MenuItem>
+          </>
         ))}
       </Menu>
       {selectedAction && (
