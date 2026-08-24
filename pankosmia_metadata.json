@@ -39,7 +39,8 @@
       "en": "New section"
     },
     "edit_section": {
-      "en": "Edit section"
+      "en": "Save",
+      "fr": "Sauvegarder"
     },
     "markdownSection": {
       "en": "Markdown"
