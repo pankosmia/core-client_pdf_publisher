@@ -247,8 +247,8 @@
       "fr": "livre(s)"
     },
     "book_plural": {
-      "en": "Books",
-      "fr": "Livres"
+      "en": "Books *",
+      "fr": "Livres *"
     },
     "currentlySelected": {
       "en": "Currently selected",
