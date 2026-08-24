@@ -29,6 +29,10 @@
     "choose_layout": {
       "en": "Choose layout"
     },
+    "layouts": {
+      "en": "Layouts",
+      "fr": "layouts"
+    },
     "choose_documents": {
       "en": "Choose document(s)"
     },
@@ -108,9 +112,17 @@
       "en": "Multiple layouts",
       "fr": "Layouts muliple"
     },
-    "multipleSelectionDescription": {
-      "en": "You can assemble several layouts, they will be cycled through for each selected book of the section.",
-      "fr": "Vous pouvez assemblez plusieurs layouts, ils seront cicler pour chaque livre de chaque section"
+    "multipleSelectionDescription1": {
+      "en": "You can assemble several layouts, they will be cycled through",
+      "fr": "Vous pouvez assemblez plusieurs layouts, ils seront cicle"
+    },
+    "multipleSelectionDescription2": {
+      "en": "for each selected book",
+      "fr": "pour chaque livre"
+    },
+    "multipleSelectionDescription3": {
+      "en": "of the section.",
+      "fr": "de chaque section"
     },
     "print": {
       "en": "Print",
@@ -233,6 +245,10 @@
     "books": {
       "en": "book(s)",
       "fr": "livre(s)"
+    },
+    "book_plural": {
+      "en": "Books *",
+      "fr": "Livres *"
     },
     "currentlySelected": {
       "en": "Currently selected",
