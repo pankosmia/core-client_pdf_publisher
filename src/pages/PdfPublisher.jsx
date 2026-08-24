@@ -142,29 +142,56 @@ export function PdfPublisher() {
   useEffect(() => {
     async function getSpecs() {
       if (currentProjectRef.current) {
-        let response = await getJson(
-          `/api/burrito/ingredient/raw/${currentProjectRef.current.organization}/${currentProjectRef.current.source}/${currentProjectRef.current.project}?ipath=specs.json`,
+        let ingredients = await getJson(
+          `/api/burrito/paths/${currentProjectRef.current.organization}/${currentProjectRef.current.source}/${currentProjectRef.current.project}`,
         );
-        if (response.ok) {
-          let sections = response.json.sections;
+        if (ingredients.ok) {
+          if (ingredients.json.includes("specs.json")) {
+            let response = await getJson(
+              `/api/burrito/ingredient/raw/${currentProjectRef.current.organization}/${currentProjectRef.current.source}/${currentProjectRef.current.project}?ipath=specs.json`,
+            );
+            if (response.ok) {
+              let sections = response.json.sections;
 
-          setProjectSpecs({ ...response.json, sections: sections });
+              setProjectSpecs({ ...response.json, sections: sections });
+            } else {
+              setProjectSpecs({
+                global: {
+                  sizes: "9on11",
+                  fonts: "allGentium",
+                  pages: "A4P",
+                  verbose: false,
+                },
+                sections: [],
+              });
+              enqueueSnackbar(
+                doI18n(
+                  `pages:core-client_pdf_publisher:errorGet`,
+                  i18nRef.current,
+                ) +
+                  ` /api/burrito/ingredient/raw/${currentProjectRef.current.organization}/${currentProjectRef.current.source}/${currentProjectRef.current.project}?ipath=specs.json` +
+                  `${response.status}): ${response.error}`,
+                { variant: "error" },
+              );
+            }
+          } else {
+            setProjectSpecs({
+              global: {
+                sizes: "9on11",
+                fonts: "allGentium",
+                pages: "A4P",
+                verbose: false,
+              },
+              sections: [],
+            });
+          }
         } else {
-          setProjectSpecs({
-            global: {
-              sizes: "9on11",
-              fonts: "allGentium",
-              pages: "EXECUTIVE",
-              verbose: false,
-            },
-            sections: [],
-          });
           enqueueSnackbar(
             doI18n(
               `pages:core-client_pdf_publisher:errorGet`,
               i18nRef.current,
             ) +
-              ` /api/burrito/ingredient/raw/${currentProjectRef.current.organization}/${currentProjectRef.current.source}/${currentProjectRef.current.project}?ipath=specs.json` +
+              `/api/burrito/paths/${currentProjectRef.current.organization}/${currentProjectRef.current.source}/${currentProjectRef.current.project}` +
               `${response.status}): ${response.error}`,
             { variant: "error" },
           );
