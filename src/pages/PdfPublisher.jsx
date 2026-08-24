@@ -97,7 +97,24 @@ export function PdfPublisher() {
   const query = hash.includes("?") ? hash.split("?") : "";
   const typePageQuery = new URLSearchParams(query[1]);
   const returnType = typePageQuery.get("returnTypePage");
-
+  useEffect(() => {
+    const isElectron = !!window.electronAPI;
+    if (isElectron) {
+      if (
+        !(
+          !projectSpecs ||
+          deepEqual(projectSpecs, {
+            global: JSON.parse(headerInfo),
+            sections: wrappers,
+          })
+        )
+      ) {
+        window.electronAPI.setCanClose(false);
+      } else {
+        window.electronAPI.setCanClose(true);
+      }
+    }
+  }, [projectSpecs, headerInfo, wrappers]);
   useEffect(() => {
     window?.electronAPI?.checkFirefoxInstalled().then((installed) => {
       setFirefoxModalOpen(installed ? false : true);
