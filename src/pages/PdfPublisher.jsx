@@ -473,7 +473,7 @@ export function PdfPublisher() {
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: "2fr 9fr 1fr",
+          gridTemplateColumns: "2fr 10fr",
           width: "100%",
           padding: 5,
           alignItems: "start",
@@ -530,7 +530,7 @@ export function PdfPublisher() {
                 <Box
                   {...provided.droppableProps}
                   ref={provided.innerRef}
-                  sx={{ marginBottom: 2 }}
+                  sx={{ marginBottom: 2, overflow: "scroll", height: "600" }}
                 >
                   {wrappers.map((w, id) => (
                     <Draggable
@@ -701,98 +701,99 @@ export function PdfPublisher() {
             </Droppable>
           </DragDropContext>
           <FloatingTextMenu i18nRef={i18nRef} setWrappers={setWrappers} />
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: 1, // spacing between button and text
-          }}
-        >
-          {(() => {
-            const notInViewer = !(window?.electronAPI && window?.api);
-            const sectionsHaveIssues =
-              !notInViewer &&
-              !wrappers.every(
-                (w) =>
-                  checkPathsSections(
-                    projectSummaries,
-                    w?.sections,
-                    typeThatNeedRessourceSelection,
-                  ) &&
-                  checkPathBooks(
-                    projectSummaries,
-                    w.sections,
-                    w.ranges,
-                    typeThatNeedRessourceSelection,
-                  ),
-              );
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 1, // spacing between button and text
+            }}
+          >
+            {(() => {
+              const notInViewer = !(window?.electronAPI && window?.api);
+              const sectionsHaveIssues =
+                !notInViewer &&
+                !wrappers.every(
+                  (w) =>
+                    checkPathsSections(
+                      projectSummaries,
+                      w?.sections,
+                      typeThatNeedRessourceSelection,
+                    ) &&
+                    checkPathBooks(
+                      projectSummaries,
+                      w.sections,
+                      w.ranges,
+                      typeThatNeedRessourceSelection,
+                    ),
+                );
 
-            const isDisabled = notInViewer || sectionsHaveIssues;
+              const isDisabled = notInViewer || sectionsHaveIssues;
 
-            const tooltipTitle = notInViewer
-              ? doI18n(
-                  `pages:core-client_pdf_publisher:print_disabled_not_viewer`,
-                  i18nRef.current,
-                )
-              : sectionsHaveIssues
+              const tooltipTitle = notInViewer
                 ? doI18n(
-                    `pages:core-client_pdf_publisher:print_disabled_sections_issue`,
+                    `pages:core-client_pdf_publisher:print_disabled_not_viewer`,
                     i18nRef.current,
                   )
-                : "";
+                : sectionsHaveIssues
+                  ? doI18n(
+                      `pages:core-client_pdf_publisher:print_disabled_sections_issue`,
+                      i18nRef.current,
+                    )
+                  : "";
 
-            return (
-              <Tooltip title={isDisabled ? tooltipTitle : ""}>
-                <span>
-                  <Button
-                    disabled={
-                      isDisabled ||
-                      currentNumberOfStepsValidated < numberOfStepsToValidate ||
-                      disablePrintButton
-                    }
-                    variant="contained"
-                    onClick={async () => {
-                      await PrintPdf();
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: 1,
+              return (
+                <Tooltip title={isDisabled ? tooltipTitle : ""}>
+                  <span>
+                    <Button
+                      disabled={
+                        isDisabled ||
+                        currentNumberOfStepsValidated <
+                          numberOfStepsToValidate ||
+                        disablePrintButton
+                      }
+                      variant="contained"
+                      onClick={async () => {
+                        await PrintPdf();
                       }}
                     >
-                      {currentNumberOfStepsValidated <
-                        numberOfStepsToValidate || disablePrintButton ? (
-                        <Box>
-                          <Typography
-                            sx={{
-                              color: "text.secondary",
-                              textAlign: "center",
-                            }}
-                          >
-                            {currentNumberOfStepsValidated <
-                              numberOfStepsToValidate && messageSnackbar}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: 1,
+                        }}
+                      >
+                        {currentNumberOfStepsValidated <
+                          numberOfStepsToValidate || disablePrintButton ? (
+                          <Box>
+                            <Typography
+                              sx={{
+                                color: "text.secondary",
+                                textAlign: "center",
+                              }}
+                            >
+                              {currentNumberOfStepsValidated <
+                                numberOfStepsToValidate && messageSnackbar}
+                            </Typography>
+                            <CircularProgress size={16} color="inherit" />
+                          </Box>
+                        ) : (
+                          <Typography>
+                            {doI18n(
+                              `pages:core-client_pdf_publisher:print`,
+                              i18nRef.current,
+                            )}
                           </Typography>
-                          <CircularProgress size={16} color="inherit" />
-                        </Box>
-                      ) : (
-                        <Typography>
-                          {doI18n(
-                            `pages:core-client_pdf_publisher:print`,
-                            i18nRef.current,
-                          )}
-                        </Typography>
-                      )}
-                    </Box>
-                  </Button>
-                </span>
-              </Tooltip>
-            );
-          })()}
+                        )}
+                      </Box>
+                    </Button>
+                  </span>
+                </Tooltip>
+              );
+            })()}
+          </Box>
         </Box>
       </Box>
     </Box>
