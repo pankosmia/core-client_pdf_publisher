@@ -529,13 +529,7 @@ export function PdfPublisher() {
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable droppableId="wrappers">
                 {(provided) => (
-                  <Box
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    sx={{
-                      marginBottom: 2,
-                    }}
-                  >
+                  <Box {...provided.droppableProps} ref={provided.innerRef}>
                     {wrappers.map((w, id) => (
                       <Draggable
                         key={w.id || id}
@@ -548,7 +542,9 @@ export function PdfPublisher() {
                             {...provided.draggableProps}
                             sx={{
                               mb: 2,
-                              opacity: snapshot.isDragging ? 0.8 : 1,
+                              "&.Mui-expanded:last-of-type": {
+                                mb: 2,
+                              },
                             }}
                           >
                             {/* HEADER */}

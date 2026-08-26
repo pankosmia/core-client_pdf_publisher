@@ -26,7 +26,7 @@ export default function FloatingTextMenu({ i18nRef, setWrappers }) {
         color="primary"
         onClick={(e) => setAnchorEl(e.currentTarget)}
         sx={{
-          marginTop: 2,
+          marginBottom: 2,
           width: 40,
           height: 40,
           minHeight: 40,
