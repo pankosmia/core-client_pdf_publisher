@@ -93,6 +93,7 @@ export function PdfPublisher() {
   const [disablePrintButton, setDisablePrintButton] = useState(false);
   const [firefoxModalOpen, setFirefoxModalOpen] = useState(false);
 
+  const { printButtonRef } = useRef(null);
   const hash = window.location.hash;
   const query = hash.includes("?") ? hash.split("?") : "";
   const typePageQuery = new URLSearchParams(query[1]);
@@ -477,6 +478,7 @@ export function PdfPublisher() {
           width: "100%",
           padding: 5,
           alignItems: "start",
+          height: "calc(100vh - 112px)",
         }}
       >
         <Box>
@@ -523,184 +525,190 @@ export function PdfPublisher() {
               i18nRef.current,
             )}
           </Typography>
-
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="wrappers">
-              {(provided) => (
-                <Box
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  sx={{ marginBottom: 2, overflow: "scroll", height: "600" }}
-                >
-                  {wrappers.map((w, id) => (
-                    <Draggable
-                      key={w.id || id}
-                      draggableId={(w.id || id).toString()}
-                      index={id}
-                    >
-                      {(provided, snapshot) => (
-                        <Accordion
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          sx={{
-                            mb: 2,
-                            opacity: snapshot.isDragging ? 0.8 : 1,
-                          }}
-                        >
-                          {/* HEADER */}
-                          <AccordionSummary
-                            expandIcon={<ExpandMore />}
+          <Box sx={{ overflowY: "auto", maxHeight: "calc(100vh - 202px)" }}>
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="wrappers">
+                {(provided) => (
+                  <Box
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    sx={{
+                      marginBottom: 2,
+                    }}
+                  >
+                    {wrappers.map((w, id) => (
+                      <Draggable
+                        key={w.id || id}
+                        draggableId={(w.id || id).toString()}
+                        index={id}
+                      >
+                        {(provided, snapshot) => (
+                          <Accordion
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
                             sx={{
-                              display: "flex",
-                              alignItems: "center",
+                              mb: 2,
+                              opacity: snapshot.isDragging ? 0.8 : 1,
                             }}
                           >
-                            <Box
-                              {...provided.dragHandleProps}
+                            {/* HEADER */}
+                            <AccordionSummary
+                              expandIcon={<ExpandMore />}
                               sx={{
                                 display: "flex",
                                 alignItems: "center",
-                                mr: 1,
-                                cursor: "grab",
                               }}
-                              onClick={(e) => e.stopPropagation()}
-                              onMouseDown={(e) => e.stopPropagation()}
-                              onPointerDown={(e) => e.stopPropagation()}
                             >
-                              <DragIndicator />
-                            </Box>
+                              <Box
+                                {...provided.dragHandleProps}
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  mr: 1,
+                                  cursor: "grab",
+                                }}
+                                onClick={(e) => e.stopPropagation()}
+                                onMouseDown={(e) => e.stopPropagation()}
+                                onPointerDown={(e) => e.stopPropagation()}
+                              >
+                                <DragIndicator />
+                              </Box>
 
-                            <Box
-                              sx={{ display: "flex", flexDirection: "column" }}
-                            >
-                              <Typography sx={{ fontWeight: 600 }}>
-                                {doI18n(
-                                  `pages:core-client_pdf_publisher:${w.type}`,
-                                  i18nRef.current,
-                                )}
-                              </Typography>
-                              {w.type === "bcvWrapper" && (
-                                <Typography color="text.secondary">
-                                  {w.ranges.length}{" "}
-                                  {doI18n(
-                                    `pages:core-client_pdf_publisher:books`,
-                                    i18nRef.current,
-                                  )}{" "}
-                                  {doI18n(
-                                    `pages:core-client_pdf_publisher:as`,
-                                    i18nRef.current,
-                                  )}{" "}
-                                  {w.sections.map((s, id) => {
-                                    if (id === w.sections.length - 1) {
-                                      return `${doI18n(
-                                        `pages:core-client_pdf_publisher:${s.type + "Section"}`,
-                                        i18nRef.current,
-                                      )}`;
-                                    }
-                                    return `${doI18n(
-                                      `pages:core-client_pdf_publisher:${s.type + "Section"}`,
-                                      i18nRef.current,
-                                    )}, `;
-                                  })}
-                                </Typography>
-                              )}
-                            </Box>
-                          </AccordionSummary>
-
-                          {/* BODY */}
-                          <AccordionDetails>
-                            <Grid container size={12}>
-                              {/* LEFT ICON COLUMN */}
                               <Box
                                 sx={{
                                   display: "flex",
                                   flexDirection: "column",
-                                  alignItems: "center",
-                                  textAlign: "center",
                                 }}
                               >
+                                <Typography sx={{ fontWeight: 600 }}>
+                                  {doI18n(
+                                    `pages:core-client_pdf_publisher:${w.type}`,
+                                    i18nRef.current,
+                                  )}
+                                </Typography>
+                                {w.type === "bcvWrapper" && (
+                                  <Typography color="text.secondary">
+                                    {w.ranges.length}{" "}
+                                    {doI18n(
+                                      `pages:core-client_pdf_publisher:books`,
+                                      i18nRef.current,
+                                    )}{" "}
+                                    {doI18n(
+                                      `pages:core-client_pdf_publisher:as`,
+                                      i18nRef.current,
+                                    )}{" "}
+                                    {w.sections.map((s, id) => {
+                                      if (id === w.sections.length - 1) {
+                                        return `${doI18n(
+                                          `pages:core-client_pdf_publisher:${s.type + "Section"}`,
+                                          i18nRef.current,
+                                        )}`;
+                                      }
+                                      return `${doI18n(
+                                        `pages:core-client_pdf_publisher:${s.type + "Section"}`,
+                                        i18nRef.current,
+                                      )}, `;
+                                    })}
+                                  </Typography>
+                                )}
+                              </Box>
+                            </AccordionSummary>
+
+                            {/* BODY */}
+                            <AccordionDetails>
+                              <Grid container size={12}>
+                                {/* LEFT ICON COLUMN */}
                                 <Box
                                   sx={{
                                     display: "flex",
-                                    flexDirection: "row",
-                                    flexWrap: "wrap",
-                                    padding: 2,
-                                    gap: 1,
-                                    width: "100%",
-                                    justifyContent: "start",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    textAlign: "center",
                                   }}
                                 >
-                                  {w?.ranges &&
-                                    w.ranges.map((book, idss) => (
-                                      <Chip
-                                        key={idss}
-                                        label={book}
-                                        variant="outlined"
-                                      />
-                                    ))}
-                                </Box>
-                                <ArrowLeft show={w?.sections?.length > 1}>
-                                  {w.type === "bcvWrapper" &&
-                                    w.sections.map((s, idss) => (
-                                      <BcvWrapperOverview
-                                        section={s}
-                                        bRanges={w.ranges}
-                                        id={idss}
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      flexDirection: "row",
+                                      flexWrap: "wrap",
+                                      padding: 2,
+                                      gap: 1,
+                                      width: "100%",
+                                      justifyContent: "start",
+                                    }}
+                                  >
+                                    {w?.ranges &&
+                                      w.ranges.map((book, idss) => (
+                                        <Chip
+                                          key={idss}
+                                          label={book}
+                                          variant="outlined"
+                                        />
+                                      ))}
+                                  </Box>
+                                  <ArrowLeft show={w?.sections?.length > 1}>
+                                    {w.type === "bcvWrapper" &&
+                                      w.sections.map((s, idss) => (
+                                        <BcvWrapperOverview
+                                          section={s}
+                                          bRanges={w.ranges}
+                                          id={idss}
+                                          lang={lang}
+                                          i18nRef={i18nRef}
+                                          projectSummaries={projectSummaries}
+                                        />
+                                      ))}
+                                    {(w.type === "pdf" ||
+                                      w.type === "markdown") && (
+                                      <FreeFormatOverview
+                                        section={w}
                                         lang={lang}
                                         i18nRef={i18nRef}
                                         projectSummaries={projectSummaries}
                                       />
-                                    ))}
-                                  {(w.type === "pdf" ||
-                                    w.type === "markdown") && (
-                                    <FreeFormatOverview
-                                      section={w}
-                                      lang={lang}
-                                      i18nRef={i18nRef}
-                                      projectSummaries={projectSummaries}
-                                    />
-                                  )}
-                                </ArrowLeft>
-                              </Box>
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  flexDirection: "row",
-                                  alignItems: "center",
-                                  justifyContent: "flex-end",
-                                  width: "100%",
-                                  gap: 1,
-                                }}
-                              >
-                                <ContentDialogue
-                                  type={"edit"}
-                                  initSection={wrappers[id]}
-                                  setWrapper={setWrappers}
-                                  wrapperName={wrappers[id].type}
-                                  indexSection={id}
-                                  ButtonToPress={
-                                    <IconButton>
-                                      <EditIcon />
-                                    </IconButton>
-                                  }
-                                />
+                                    )}
+                                  </ArrowLeft>
+                                </Box>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    justifyContent: "flex-end",
+                                    width: "100%",
+                                    gap: 1,
+                                  }}
+                                >
+                                  <ContentDialogue
+                                    type={"edit"}
+                                    initSection={wrappers[id]}
+                                    setWrapper={setWrappers}
+                                    wrapperName={wrappers[id].type}
+                                    indexSection={id}
+                                    ButtonToPress={
+                                      <IconButton>
+                                        <EditIcon />
+                                      </IconButton>
+                                    }
+                                  />
 
-                                <IconButton onClick={() => remove(id)}>
-                                  <Delete />
-                                </IconButton>
-                              </Box>
-                            </Grid>
-                          </AccordionDetails>
-                        </Accordion>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </Box>
-              )}
-            </Droppable>
-          </DragDropContext>
-          <FloatingTextMenu i18nRef={i18nRef} setWrappers={setWrappers} />
+                                  <IconButton onClick={() => remove(id)}>
+                                    <Delete />
+                                  </IconButton>
+                                </Box>
+                              </Grid>
+                            </AccordionDetails>
+                          </Accordion>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </Box>
+                )}
+              </Droppable>
+            </DragDropContext>
+            <FloatingTextMenu i18nRef={i18nRef} setWrappers={setWrappers} />
+          </Box>
           <Box
             sx={{
               display: "flex",
@@ -743,54 +751,56 @@ export function PdfPublisher() {
                   : "";
 
               return (
-                <Tooltip title={isDisabled ? tooltipTitle : ""}>
-                  <span>
-                    <Button
-                      disabled={
-                        isDisabled ||
-                        currentNumberOfStepsValidated <
-                          numberOfStepsToValidate ||
-                        disablePrintButton
-                      }
-                      variant="contained"
-                      onClick={async () => {
-                        await PrintPdf();
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: 1,
+                <Box
+                  sx={{
+                    position: "fixed",
+                    right: 64,
+                    bottom: 24,
+                    zIndex: 1300,
+                  }}
+                >
+                  <Tooltip title={isDisabled ? tooltipTitle : ""}>
+                    <span>
+                      <Button
+                        disabled={
+                          isDisabled ||
+                          currentNumberOfStepsValidated <
+                            numberOfStepsToValidate ||
+                          disablePrintButton
+                        }
+                        variant="contained"
+                        onClick={async () => {
+                          await PrintPdf();
                         }}
                       >
-                        {currentNumberOfStepsValidated <
-                          numberOfStepsToValidate || disablePrintButton ? (
-                          <Box>
-                            <Typography
-                              sx={{
-                                color: "text.secondary",
-                                textAlign: "center",
-                              }}
-                            >
-                              {currentNumberOfStepsValidated <
-                                numberOfStepsToValidate && messageSnackbar}
+                        <Box>
+                          {currentNumberOfStepsValidated <
+                            numberOfStepsToValidate || disablePrintButton ? (
+                            <Box>
+                              <Typography
+                                sx={{
+                                  color: "text.secondary",
+                                  textAlign: "center",
+                                }}
+                              >
+                                {currentNumberOfStepsValidated <
+                                  numberOfStepsToValidate && messageSnackbar}
+                              </Typography>
+                              <CircularProgress size={16} color="inherit" />
+                            </Box>
+                          ) : (
+                            <Typography>
+                              {doI18n(
+                                `pages:core-client_pdf_publisher:print`,
+                                i18nRef.current,
+                              )}
                             </Typography>
-                            <CircularProgress size={16} color="inherit" />
-                          </Box>
-                        ) : (
-                          <Typography>
-                            {doI18n(
-                              `pages:core-client_pdf_publisher:print`,
-                              i18nRef.current,
-                            )}
-                          </Typography>
-                        )}
-                      </Box>
-                    </Button>
-                  </span>
-                </Tooltip>
+                          )}
+                        </Box>
+                      </Button>
+                    </span>
+                  </Tooltip>
+                </Box>
               );
             })()}
           </Box>
