@@ -50,7 +50,8 @@
       "en": "Markdown"
     },
     "pdfSection": {
-      "en": "Import PDF"
+      "en": "PDF",
+      "fr": "PDF"
     },
     "paraBibleSection": {
       "en": "Formatted Bible"
