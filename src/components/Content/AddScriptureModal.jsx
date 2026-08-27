@@ -126,12 +126,14 @@ export default function AddScriptureModal({
           ]?.en ?? rep.language_code,
         select: (
           <Button
+            color="primary"
+            variant="contained"
             onClick={() => {
               ChangeInSection(rep.path);
               setOpenResourcesDialog(false);
             }}
           >
-            Click here to add
+            {doI18n("pages:core-client_pdf_publisher:add", i18nRef.current)}
           </Button>
         ),
       };
