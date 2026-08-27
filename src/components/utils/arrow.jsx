@@ -110,7 +110,7 @@ export default function ArrowLeft({ children, show = false }) {
     <div
       style={{
         display: "flex",
-        alignItems: "stretch",
+        width: "100%",
       }}
     >
       <div
