@@ -40,7 +40,6 @@ const isFieldsValid = (fields, sectionData, isCard) => {
           isFieldsValid(f.typeSpec, inst, false),
         );
       }
-
       const isRequired = f?.nValues?.[0] >= 1;
       if (!isRequired) return true;
 

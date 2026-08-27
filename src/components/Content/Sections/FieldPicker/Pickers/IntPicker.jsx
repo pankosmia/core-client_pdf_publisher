@@ -79,6 +79,15 @@ export function IntPicker({
           onBlur={handleBlur}
           label={`${labelText}${rangeText}`}
           type="number"
+          sx={{
+            "& input[type=number]": {
+              MozAppearance: "textfield",
+            },
+            "& input[type=number]::-webkit-inner-spin-button": {
+              opacity: 1,
+              display: "block",
+            },
+          }}
           inputProps={{
             min: fieldInfo.minValue,
             max: fieldInfo.maxValue,

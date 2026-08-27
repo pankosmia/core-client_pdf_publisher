@@ -100,6 +100,8 @@ export function ConfigSection({
   };
 
   const renderSection = (e, id) => {
+    let isFirstOption = true;
+
     return (
       <Box>
         {e.fields
@@ -187,7 +189,8 @@ export function ConfigSection({
               const isRequired = f?.nValues?.[0] >= 1;
               const value = currentSections?.[id]?.content?.[f.id];
               return (
-                !sectionKey && (
+                !sectionKey &&
+                summary?.[value]?.name && (
                   <Box
                     key={ids}
                     sx={{
@@ -211,6 +214,37 @@ export function ConfigSection({
               );
             }
             // Non-typeSpec config field: regular FieldPicker
+            if (isFirstOption) {
+              isFirstOption = false;
+              return (
+                <Box>
+                  <Divider sx={{ mt: 2 }} />
+                  <FieldPicker
+                    key={ids}
+                    fieldInfo={f}
+                    lang={lang}
+                    currentIndex={sectionKey}
+                    currentFieldValue={currentSections?.[id]?.[f.id]}
+                    ChangeInSection={(src) =>
+                      setCurrentSections((prev) => {
+                        if (card) {
+                          let copy = [...prev];
+                          copy[id].content = {
+                            ...copy[id].content,
+                            [f.id]: src,
+                          };
+                          return copy;
+                        } else {
+                          let copy = [...prev];
+                          copy[id] = { ...copy[id], [f.id]: src };
+                          return copy;
+                        }
+                      })
+                    }
+                  />
+                </Box>
+              );
+            }
             return (
               <FieldPicker
                 key={ids}

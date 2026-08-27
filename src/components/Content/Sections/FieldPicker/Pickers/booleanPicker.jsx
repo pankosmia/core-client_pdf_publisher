@@ -25,21 +25,34 @@ export function BooleanPicker({
         alignItems: "center",
         mt: 2,
         width: "100%",
+        borderRadius: 1,
+        cursor: "pointer",
+        transition: "background-color 0.15s ease, transform 0.1s ease",
+
+        "&:hover": {
+          backgroundColor: "action.hover",
+        },
+
+        "&:active": {
+          backgroundColor: "action.selected",
+          transform: "scale(0.99)",
+        },
       }}
+      onClick={() => setSelected((prev) => !prev)}
     >
+      <Checkbox
+        sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
+        checked={selected}
+        onChange={() => setSelected((prev) => !prev)}
+      />
       {/* LEFT: label */}
-      <Typography sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+      <Typography sx={{}}>
         {fieldInfo.label[lang]?.includes("#")
           ? fieldInfo.label[lang].replace("#", currentIndex)
           : fieldInfo.label[lang]}
       </Typography>
 
       {/* RIGHT: checkbox */}
-      <Checkbox
-        sx={{ marginLeft: "auto" }}
-        checked={selected}
-        onChange={() => setSelected((prev) => !prev)}
-      />
     </Box>
   );
 }

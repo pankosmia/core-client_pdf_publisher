@@ -27,7 +27,12 @@
       "en": "Content goes here"
     },
     "choose_layout": {
-      "en": "Choose layout"
+      "en": "Choose book(s) and layout(s)",
+      "fr": "Choisir livre(s) et layout(s)"
+    },
+    "choose_layout_free_format": {
+      "en": "Choose format",
+      "fr": "Choisir un format"
     },
     "layouts": {
       "en": "Layouts",
@@ -42,6 +47,10 @@
     "add_section": {
       "en": "New section"
     },
+    "add": {
+      "en": "Add",
+      "fr": "Selectionner"
+    },
     "edit_section": {
       "en": "Save",
       "fr": "Sauvegarder"
@@ -50,7 +59,8 @@
       "en": "Markdown"
     },
     "pdfSection": {
-      "en": "Import PDF"
+      "en": "PDF",
+      "fr": "PDF"
     },
     "paraBibleSection": {
       "en": "Formatted Bible"
@@ -277,6 +287,10 @@
     "Firefox_not_installed": {
       "en": "Firefox not installed",
       "fr": "Firefox n'est pas installé"
+    },
+    "not_yet_implemented": {
+      "en": "Sorry, this feature is not yet implemented",
+      "fr": "Cette fonctionnalité n'est pas encore prête"
     },
     "print_succes": {
       "en": "Printed successfully in the Downloads folder!",
