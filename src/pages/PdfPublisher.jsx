@@ -69,6 +69,8 @@ function countSteps(specs) {
       numberSteps += 2;
     }
   });
+  numberSteps += 3;
+
   return numberSteps;
 }
 
@@ -300,9 +302,12 @@ export function PdfPublisher() {
       setNumberOfStepsToValidate(totalSteps);
       let manifest = await originatePdfs(options, doPdfCallback, i18nRef);
       await assemblePdfs(options, doPdfCallback, manifest);
-
       setNumberOfStepsToValidate(0);
       setCurrentNumberOfStepsValidated(0);
+      enqueueSnackbar(
+        doI18n(`pages:core-client_pdf_publisher:print_succes`, i18nRef.current),
+        { variant: "success" },
+      );
     } else {
       enqueueSnackbar(
         doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
@@ -752,6 +757,7 @@ export function PdfPublisher() {
                       currentNumberOfStepsValidated < numberOfStepsToValidate ||
                       disablePrintButton
                     }
+                    sx={{ textTransform: "none" }}
                     variant="contained"
                     onClick={async () => {
                       await PrintPdf();
@@ -765,8 +771,7 @@ export function PdfPublisher() {
                         gap: 1,
                       }}
                     >
-                      {currentNumberOfStepsValidated <
-                        numberOfStepsToValidate || disablePrintButton ? (
+                      {disablePrintButton ? (
                         <Box>
                           <Typography
                             sx={{
@@ -774,8 +779,7 @@ export function PdfPublisher() {
                               textAlign: "center",
                             }}
                           >
-                            {currentNumberOfStepsValidated <
-                              numberOfStepsToValidate && messageSnackbar}
+                            {messageSnackbar}
                           </Typography>
                           <CircularProgress size={16} color="inherit" />
                         </Box>

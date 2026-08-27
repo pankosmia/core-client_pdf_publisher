@@ -277,6 +277,10 @@
     "Firefox_not_installed": {
       "en": "Firefox not installed",
       "fr": "Firefox n'est pas installé"
+    },
+    "print_succes": {
+      "en": "Printed successfully in the Downloads folder!",
+      "fr": "Impression réussie dans le dossier Téléchargements !"
     }
   }
 }
