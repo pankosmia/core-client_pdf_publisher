@@ -93,6 +93,7 @@ export function BcvWrapperOverview({
                       justifyContent: "left",
                       paddingLeft: 2,
                       display: "flex",
+                      gap: 0.5,
                     }}
                   >
                     {field.typeSpec ? (
@@ -118,18 +119,19 @@ export function BcvWrapperOverview({
                                 sx={{
                                   justifyContent: "left",
                                   display: "flex",
+                                  gap: 0.5,
                                 }}
                               >
-                                {field?.typeSpec
+                                {`${field?.typeSpec
                                   ?.find((e) => e.id === k)
                                   .label?.[
                                     lang
-                                  ].replace("#", idTypeSpec + 1)}{" "}
-                                :
+                                  ].replace("#", idTypeSpec + 1)} -`}
+
                                 {
                                   <>
-                                    {field?.label?.[lang]}
-                                    :
+                                    {`${field?.label?.[lang]} -`}
+
                                     <InfoRessource
                                       summary={projectSummaries}
                                       pathElem={v}
@@ -147,7 +149,8 @@ export function BcvWrapperOverview({
                       </Box>
                     ) : (
                       <>
-                        {field?.label?.[lang]} :
+                        {`${field?.label?.[lang]} -`}
+
                         <InfoRessource
                           summary={projectSummaries}
                           pathElem={value}
