@@ -291,6 +291,10 @@
     "not_yet_implemented": {
       "en": "Sorry, this feature is not yet implemented",
       "fr": "Cette fonctionnalité n'est pas encore prête"
+    },
+    "print_succes": {
+      "en": "Printed successfully in the Downloads folder!",
+      "fr": "Impression réussie dans le dossier Téléchargements !"
     }
   }
 }
