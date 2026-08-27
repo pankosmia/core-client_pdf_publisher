@@ -4,10 +4,11 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import AddIcon from "@mui/icons-material/Add";
 import Box from "@mui/material/Box";
-import { Button, Divider } from "@mui/material";
+import { Button, Divider, Tooltip } from "@mui/material";
 import { ContentDialogue } from "../Content/ContentDialogue";
 import { doI18n } from "pankosmia-lib/i18n";
 import { useState } from "react";
+
 const actions = [
   { name: "bcvWrapper" },
   { name: "obsWrapper" },
@@ -18,6 +19,7 @@ export default function FloatingTextMenu({ i18nRef, setWrappers }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
   const [openFromOutside, setOpenFromOustide] = useState(0);
+
   const open = Boolean(anchorEl);
   return (
     <Box>
@@ -53,22 +55,52 @@ export default function FloatingTextMenu({ i18nRef, setWrappers }) {
         {actions.map((action) => (
           <>
             {action.name === "markdownPdfWrapper" ? <Divider /> : <></>}
-            <MenuItem
-              key={action.name}
-              onClick={() => {
-                setSelectedAction(action.name);
-                setOpenFromOustide((prev) => prev + 1);
-                setAnchorEl(null);
-              }}
-              sx={{
-                minHeight: 32,
-              }}
-            >
-              {doI18n(
-                `pages:core-client_pdf_publisher:${action.name}`,
-                i18nRef.current,
-              )}
-            </MenuItem>
+            {action.name === "obsWrapper" ? (
+              <Tooltip
+                title={doI18n(
+                  "pages:core-client_pdf_publisher:not_yet_implemented",
+                  i18nRef.current,
+                )}
+                placement="right"
+              >
+                <span>
+                  <MenuItem
+                    disabled={true}
+                    key={action.name}
+                    onClick={() => {
+                      setSelectedAction(action.name);
+                      setOpenFromOustide((prev) => prev + 1);
+                      setAnchorEl(null);
+                    }}
+                    sx={{
+                      minHeight: 32,
+                    }}
+                  >
+                    {doI18n(
+                      `pages:core-client_pdf_publisher:${action.name}`,
+                      i18nRef.current,
+                    )}
+                  </MenuItem>
+                </span>
+              </Tooltip>
+            ) : (
+              <MenuItem
+                key={action.name}
+                onClick={() => {
+                  setSelectedAction(action.name);
+                  setOpenFromOustide((prev) => prev + 1);
+                  setAnchorEl(null);
+                }}
+                sx={{
+                  minHeight: 32,
+                }}
+              >
+                {doI18n(
+                  `pages:core-client_pdf_publisher:${action.name}`,
+                  i18nRef.current,
+                )}
+              </MenuItem>
+            )}
           </>
         ))}
       </Menu>

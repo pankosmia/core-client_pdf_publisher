@@ -282,6 +282,10 @@
     "Firefox_not_installed": {
       "en": "Firefox not installed",
       "fr": "Firefox n'est pas installé"
+    },
+    "not_yet_implemented": {
+      "en": "Sorry, this feature is not yet implemented",
+      "fr": "Cette fonctionnalité n'est pas encore prête"
     }
   }
 }
