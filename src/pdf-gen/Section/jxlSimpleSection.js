@@ -111,34 +111,34 @@ export class jxlSimpleSection extends Section {
           typeName: "boolean",
           nValues: [0, 1],
         },
-        {
-          id: "glossNotes",
-          label: {
-            en: "Gloss notes (advanced)",
-            fr: "Notes pour gloss (avancé)",
-          },
-          nValues: [0, 1],
-          typeSpec: [
-            {
-              id: "notes",
-              label: {
-                en: "Notes",
-                fr: "Notes",
-              },
-              typeName: "tNotes",
-              nValues: [1, 1],
-            },
-            {
-              id: "pivot",
-              label: {
-                en: "Pivot table",
-                fr: "Tableau croisé",
-              },
-              typeName: "tNotes",
-              nValues: [1, 1],
-            },
-          ],
-        },
+        // {
+        //   id: "glossNotes",
+        //   label: {
+        //     en: "Gloss notes (advanced)",
+        //     fr: "Notes pour gloss (avancé)",
+        //   },
+        //   nValues: [0, 1],
+        //   typeSpec: [
+        //     {
+        //       id: "notes",
+        //       label: {
+        //         en: "Notes",
+        //         fr: "Notes",
+        //       },
+        //       typeName: "tNotes",
+        //       nValues: [1, 1],
+        //     },
+        //     {
+        //       id: "pivot",
+        //       label: {
+        //         en: "Pivot table",
+        //         fr: "Tableau croisé",
+        //       },
+        //       typeName: "tNotes",
+        //       nValues: [1, 1],
+        //     },
+        //   ],
+        // },
       ],
     };
   }
