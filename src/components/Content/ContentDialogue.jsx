@@ -143,7 +143,12 @@ export function ContentDialogue({
     useState(false);
   const [summary, setSummary] = useState({});
   const steps = [
-    doI18n("pages:core-client_pdf_publisher:choose_layout", i18nRef.current),
+    wrapperName === "bcvWrapper"
+      ? doI18n("pages:core-client_pdf_publisher:choose_layout", i18nRef.current)
+      : doI18n(
+          "pages:core-client_pdf_publisher:choose_layout_free_format",
+          i18nRef.current,
+        ),
     doI18n("pages:core-client_pdf_publisher:choose_documents", i18nRef.current),
     doI18n(
       "pages:core-client_pdf_publisher:configure_section",

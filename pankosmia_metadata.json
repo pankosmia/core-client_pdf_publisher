@@ -27,7 +27,12 @@
       "en": "Content goes here"
     },
     "choose_layout": {
-      "en": "Choose layout"
+      "en": "Choose book(s) and layout(s)",
+      "fr": "Choisir livre(s) et layout(s)"
+    },
+    "choose_layout_free_format": {
+      "en": "Choose format",
+      "fr": "Choisir un format"
     },
     "layouts": {
       "en": "Layouts",
