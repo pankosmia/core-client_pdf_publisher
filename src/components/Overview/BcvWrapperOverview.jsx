@@ -88,8 +88,8 @@ export function BcvWrapperOverview({
                     component="div"
                     key={idt}
                     variant="body2"
-                    color="text.secondary"
                     sx={{
+                      color: "text.secondary",
                       justifyContent: "left",
                       paddingLeft: 2,
                       display: "flex",
@@ -114,8 +114,8 @@ export function BcvWrapperOverview({
                               <Typography
                                 key={idt}
                                 variant="body2"
-                                color="text.secondary"
                                 sx={{
+                                  color: "text.secondary",
                                   justifyContent: "left",
                                   display: "flex",
                                 }}
