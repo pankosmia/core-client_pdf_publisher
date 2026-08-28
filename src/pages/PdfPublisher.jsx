@@ -588,7 +588,7 @@ export function PdfPublisher() {
                                   )}
                                 </Typography>
                                 {w.type === "bcvWrapper" && (
-                                  <Typography color="text.secondary">
+                                  <Typography sx={{ color: "text.secondary" }}>
                                     {w.ranges.length}{" "}
                                     {doI18n(
                                       `pages:core-client_pdf_publisher:books`,
@@ -610,6 +610,11 @@ export function PdfPublisher() {
                                         i18nRef.current,
                                       )}, `;
                                     })}
+                                  </Typography>
+                                )}
+                                {w.type !== "bcvWrapper" && (
+                                  <Typography sx={{ color: "text.secondary" }}>
+                                    {w.content.md.name.split("/")[1]}
                                   </Typography>
                                 )}
                               </Box>
