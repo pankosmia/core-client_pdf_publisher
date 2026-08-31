@@ -142,6 +142,7 @@ export function ContentDialogue({
   const [isRessourcesStep3Complete, setIsRessourcesStep3Complete] =
     useState(false);
   const [summary, setSummary] = useState({});
+  const [active, setActive] = useState(1);
   const steps = [
     wrapperName === "bcvWrapper"
       ? doI18n("pages:core-client_pdf_publisher:choose_layout", i18nRef.current)
