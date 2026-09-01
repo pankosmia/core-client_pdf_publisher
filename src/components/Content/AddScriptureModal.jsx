@@ -105,8 +105,9 @@ export default function AddScriptureModal({
     .map((e) => {
       return { ...e[1], path: e[0] };
     })
-    .filter((r) => type.includes(projectSummaries[r.path].flavor))
-
+    .filter((r) =>
+      type.some((t) => t.includes(projectSummaries[r.path].flavor)),
+    )
     .map((rep, n) => {
       return {
         ...rep,
@@ -155,7 +156,7 @@ export default function AddScriptureModal({
         size="xl"
         isOpen={openResourcesDialog}
         closeFn={() => setOpenResourcesDialog(false)}
-        titleLabel={``}
+        titleLabel={`${doI18n(`pages:core-client_pdf_publisher:select`, i18nRef.current)} ${type.map((t) => doI18n(`flavors:names:${t}`, i18nRef.current)).join(` ${doI18n("pages:core-client_pdf_publisher:or", i18nRef.current)} `)}`}
       >
         <DialogContent>
           <Box sx={{ m: 2 }}>

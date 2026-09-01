@@ -1,10 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { freeFormat, iconBySection } from "../../pdf-gen/helpers/constants";
-import { typeThatNeedRessourceSelection } from "../../pdf-gen/helpers/constants";
 import { doI18n } from "pankosmia-lib/i18n";
 import { sectionHandlerLookup } from "../../pdf-gen/sectionHandlerLookup";
-import { InfoRessource } from "../RessourcesChecker/InfoRessource";
-import { convertionTypes } from "../../pdf-gen/helpers/constants";
 
 export function FreeFormatOverview({
   section,

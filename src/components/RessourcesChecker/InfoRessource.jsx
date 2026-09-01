@@ -11,6 +11,7 @@ export const InfoRessource = ({
   typographyVariant = null,
   icons = true,
 }) => {
+  let prunedFlavors = flavors.map((f) => f.split("/")[1]);
   if (!summary?.[pathElem]?.name) {
     return (
       <>
@@ -33,7 +34,7 @@ export const InfoRessource = ({
       toolTipErrors.bookCode.push(bc);
     }
   });
-  if (!flavors.includes(summary?.[pathElem]?.flavor)) {
+  if (!prunedFlavors.includes(summary?.[pathElem]?.flavor)) {
     toolTipErrors.flavor = summary?.[pathElem]?.flavor;
   }
   if (toolTipErrors.bookCode.length > 0) {

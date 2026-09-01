@@ -65,14 +65,14 @@ export const iconBySection = {
 export const convertionTypes = {
   md: [],
   pdf: [],
-  jxl: ["x-juxtalinear"],
+  jxl: ["scripture/x-juxtalinear"],
   scripture: ["textTranslation"],
-  notes: ["x-bcvnotes", "x-bcvquestions"],
-  src: ["textTranslation"],
-  obs: ["textStories"],
-  obsImg: ["x-obsimages"],
-  bcvNotes: ["x-bcvnotes", "x-bcvquestions"],
-  scriptureSrc: ["textTranslation"],
+  notes: ["parascriptural/x-bcvnotes", "parascriptural/x-bcvquestions"],
+  src: ["scripture/textTranslation"],
+  obs: ["gloss/textStories"],
+  obsImg: ["peripheral/x-obsimages"],
+  bcvNotes: ["parascriptural/x-bcvnotes", "parascriptural/x-bcvquestions"],
+  scriptureSrc: ["scripture/textTranslation"],
 };
 
 export const conversionSection = {

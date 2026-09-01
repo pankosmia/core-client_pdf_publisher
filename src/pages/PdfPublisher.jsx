@@ -29,7 +29,6 @@ import {
 } from "@mui/material";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import "react-pdf/dist/Page/AnnotationLayer.css";
-import { convertionTypes, iconBySection } from "../pdf-gen/helpers/constants";
 import { SelectOption } from "../components/SelectOptions";
 import EditIcon from "@mui/icons-material/Edit";
 import {
