@@ -235,6 +235,7 @@ export function RessourceSelection({
         {e.fields
           .filter((f) => typeThatNeedRessourceSelection.includes(f.id))
           .map((f, ids) => {
+            console.log(f);
             const isRequired = f?.nValues[0] >= 1;
             if (f.typeSpec) {
               const defaultInstances = f?.nValues?.[0] ?? 1;
@@ -414,6 +415,7 @@ export function RessourceSelection({
 
                     <Box sx={{ ml: "auto" }}>
                       <AddScriptureModal
+                        required={f.nValues[0] > 0}
                         ChangeInSection={(src) =>
                           setCurrentSections((prev) => {
                             if (card) {

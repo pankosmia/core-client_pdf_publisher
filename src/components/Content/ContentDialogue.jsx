@@ -346,12 +346,14 @@ export function ContentDialogue({
       >
         <DialogContent
           sx={{
-            overflowY: "auto",
-            overflowX: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            minHeight: 0,
           }}
           ref={contentRef}
         >
           <PanStepperPicker
+            requiredFieldsLabel
             steps={steps}
             isStepValid={isStepValid}
             renderStepContent={(step) => {
