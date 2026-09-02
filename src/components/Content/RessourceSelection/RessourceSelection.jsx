@@ -343,97 +343,117 @@ export function RessourceSelection({
             } else {
               return (
                 <Box
-                  key={ids}
                   sx={{
-                    m: 2,
-                    gap: 2,
                     display: "flex",
-                    flexDirection: "column",
+                    flexDirection: "row",
+                    alignItems: "flex-start",
                   }}
                 >
-                  <Typography sx={{ fontWeight: "bold" }}>
-                    {f.label[lang]?.includes("#")
-                      ? f.label[lang].replace("#", sectionKey + 1)
-                      : f.label[lang]}
-                    {isRequired && (
-                      <span style={{ color: "black", marginLeft: 4 }}>*</span>
-                    )}
-                  </Typography>
+                  {card && (
+                    <Box
+                      sx={{
+                        width: 40,
+                        display: "flex",
+                        justifyContent: "center",
+                        pt: 1,
+                        flexShrink: 0,
+                      }}
+                    />
+                  )}
+
                   <Box
+                    key={ids}
                     sx={{
+                      m: 2,
+                      gap: 2,
                       display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: 1,
+                      flexDirection: "column",
+                      width: "100%",
                     }}
                   >
+                    <Typography sx={{ fontWeight: "bold" }}>
+                      {f.label[lang]?.includes("#")
+                        ? f.label[lang].replace("#", sectionKey + 1)
+                        : f.label[lang]}
+                      {isRequired && (
+                        <span style={{ color: "black", marginLeft: 4 }}>*</span>
+                      )}
+                    </Typography>
                     <Box
                       sx={{
                         display: "flex",
                         flexDirection: "row",
                         alignItems: "center",
-                        gap: 2,
+                        gap: 1,
                       }}
                     >
-                      {(() => {
-                        const selectedId = card
-                          ? currentSections?.[id]?.["content"]?.[f.id]
-                          : currentSections?.[id]?.[f.id];
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: 2,
+                        }}
+                      >
+                        {(() => {
+                          const selectedId = card
+                            ? currentSections?.[id]?.["content"]?.[f.id]
+                            : currentSections?.[id]?.[f.id];
 
-                        return selectedId ? (
-                          <Typography
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 0.5,
-                            }}
-                          >
-                            {/* {summary?.[selectedId]?.name} */}
-                            <InfoRessource
-                              summary={summary}
-                              pathElem={selectedId}
-                              flavors={convertionTypes[f.id]}
-                              bRanges={bRanges}
-                              i18nRef={i18nRef}
-                            />
-                          </Typography>
-                        ) : (
-                          <Typography>
-                            {doI18n(
-                              `pages:core-client_pdf_publisher:selectRessource`,
-                              i18nRef.current,
-                            )}
-                            {isRequired && (
-                              <span style={{ color: "black", marginLeft: 4 }}>
-                                *
-                              </span>
-                            )}
-                          </Typography>
-                        );
-                      })()}
-                    </Box>
+                          return selectedId ? (
+                            <Typography
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 0.5,
+                              }}
+                            >
+                              <InfoRessource
+                                summary={summary}
+                                pathElem={selectedId}
+                                flavors={convertionTypes[f.id]}
+                                bRanges={bRanges}
+                                i18nRef={i18nRef}
+                              />
+                            </Typography>
+                          ) : (
+                            <Typography>
+                              {doI18n(
+                                `pages:core-client_pdf_publisher:selectRessource`,
+                                i18nRef.current,
+                              )}
+                              {isRequired && (
+                                <span style={{ color: "black", marginLeft: 4 }}>
+                                  *
+                                </span>
+                              )}
+                            </Typography>
+                          );
+                        })()}
+                      </Box>
 
-                    <Box sx={{ ml: "auto" }}>
-                      <AddScriptureModal
-                        required={f.nValues[0] > 0}
-                        ChangeInSection={(src) =>
-                          setCurrentSections((prev) => {
-                            if (card) {
-                              let copy = [...prev];
-                              copy[id].content = {
-                                ...copy[id].content,
-                                [f.id]: src,
-                              };
-                              return copy;
-                            } else {
-                              let copy = [...prev];
-                              copy[id] = { ...copy[id], [f.id]: src };
-                              return copy;
-                            }
-                          })
-                        }
-                        type={convertionTypes[f.id]}
-                      />
+                      <Box sx={{ ml: "auto" }}>
+                        <AddScriptureModal
+                          required={f.nValues[0] > 0}
+                          ChangeInSection={(src) =>
+                            setCurrentSections((prev) => {
+                              if (card) {
+                                let copy = [...prev];
+                                copy[id].content = {
+                                  ...copy[id].content,
+                                  [f.id]: src,
+                                };
+                                return copy;
+                              } else {
+                                let copy = [...prev];
+                                copy[id] = { ...copy[id], [f.id]: src };
+                                return copy;
+                              }
+                            })
+                          }
+                          type={convertionTypes[f.id]}
+                        />
+                      </Box>
                     </Box>
                   </Box>
                 </Box>
