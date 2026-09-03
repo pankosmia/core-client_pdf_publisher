@@ -91,6 +91,7 @@ export function RessourceSelection({
       return { ...prev, [key]: current - 1 };
     });
   };
+  console.log(currentSections);
   // Seed instanceCounts with the real default count for every typeSpec field
   // on first render (and whenever the signature changes), so increments
   // always start from the correct base instead of an undefined/wrong value.
@@ -248,6 +249,22 @@ export function RessourceSelection({
 
               return (
                 <Box key={ids}>
+                  <Typography sx={{ fontWeight: "bold", ml: 2 }}>
+                    {f.label[lang]?.includes("#")
+                      ? f.label[lang].replace("#", sectionKey + 1)
+                      : f.label[lang]}
+                    {isRequired && (
+                      <>
+                        <span style={{ color: "black", marginLeft: 4 }}>*</span>
+                        <span
+                          style={{ color: "black", marginLeft: 4 }}
+                        >{`(${f.nValues[0]} - ${f.nValues[1]} ${doI18n(
+                          `pages:core-client_pdf_publisher:required`,
+                          i18nRef.current,
+                        )})`}</span>
+                      </>
+                    )}
+                  </Typography>
                   {Array.from({ length: nInstances }).map((_, i) => {
                     // Read/write this instance's data from currentSections[id][f.id][i]
                     const instanceData =
@@ -327,133 +344,128 @@ export function RessourceSelection({
                       </Box>
                     );
                   })}
-                  <Button
-                    disabled={atMax}
-                    onClick={() => incrementInstanceCount(id, f.id, maxCount)}
-                  >
-                    <Typography>
-                      {doI18n(
-                        `pages:core-client_pdf_publisher:Add`,
-                        i18nRef.current,
-                      ) + ` ${f.label[lang]}`}
-                    </Typography>
-                  </Button>
-                </Box>
-              );
-            } else {
-              return (
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "flex-start",
-                  }}
-                >
-                  {card && (
+                  <Box>
                     <Box
                       sx={{
-                        width: 40,
                         display: "flex",
                         justifyContent: "center",
                         pt: 1,
                         flexShrink: 0,
                       }}
                     />
-                  )}
-
+                    {f.nValues[0] < f.nValues[1] && (
+                      <Button
+                        sx={{ ml: "48px" }}
+                        disabled={atMax}
+                        onClick={() =>
+                          incrementInstanceCount(id, f.id, maxCount)
+                        }
+                      >
+                        <Typography>
+                          {doI18n(
+                            `pages:core-client_pdf_publisher:Add`,
+                            i18nRef.current,
+                          ) + ` ${f.label[lang]}`}
+                        </Typography>
+                      </Button>
+                    )}
+                  </Box>
+                </Box>
+              );
+            } else {
+              return (
+                <Box
+                  key={ids}
+                  sx={{
+                    m: 2,
+                    gap: 2,
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "100%",
+                  }}
+                >
+                  <Typography sx={{ fontWeight: "bold" }}>
+                    {f.label[lang]?.includes("#")
+                      ? f.label[lang].replace("#", sectionKey + 1)
+                      : f.label[lang]}
+                    {isRequired && (
+                      <span style={{ color: "black", marginLeft: 4 }}>*</span>
+                    )}
+                  </Typography>
                   <Box
-                    key={ids}
                     sx={{
-                      m: 2,
-                      gap: 2,
                       display: "flex",
-                      flexDirection: "column",
-                      width: "100%",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 1,
                     }}
                   >
-                    <Typography sx={{ fontWeight: "bold" }}>
-                      {f.label[lang]?.includes("#")
-                        ? f.label[lang].replace("#", sectionKey + 1)
-                        : f.label[lang]}
-                      {isRequired && (
-                        <span style={{ color: "black", marginLeft: 4 }}>*</span>
-                      )}
-                    </Typography>
                     <Box
                       sx={{
                         display: "flex",
                         flexDirection: "row",
                         alignItems: "center",
-                        gap: 1,
+                        gap: 2,
                       }}
                     >
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: 2,
-                        }}
-                      >
-                        {(() => {
-                          const selectedId = card
-                            ? currentSections?.[id]?.["content"]?.[f.id]
-                            : currentSections?.[id]?.[f.id];
+                      {(() => {
+                        const selectedId = card
+                          ? currentSections?.[id]?.["content"]?.[f.id]
+                          : currentSections?.[id]?.[f.id];
 
-                          return selectedId ? (
-                            <Typography
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 0.5,
-                              }}
-                            >
-                              <InfoRessource
-                                summary={summary}
-                                pathElem={selectedId}
-                                flavors={convertionTypes[f.id]}
-                                bRanges={bRanges}
-                                i18nRef={i18nRef}
-                              />
-                            </Typography>
-                          ) : (
-                            <Typography>
-                              {doI18n(
-                                `pages:core-client_pdf_publisher:selectRessource`,
-                                i18nRef.current,
-                              )}
-                              {isRequired && (
-                                <span style={{ color: "black", marginLeft: 4 }}>
-                                  *
-                                </span>
-                              )}
-                            </Typography>
-                          );
-                        })()}
-                      </Box>
+                        return selectedId ? (
+                          <Typography
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 0.5,
+                            }}
+                          >
+                            <InfoRessource
+                              summary={summary}
+                              pathElem={selectedId}
+                              flavors={convertionTypes[f.id]}
+                              bRanges={bRanges}
+                              i18nRef={i18nRef}
+                            />
+                          </Typography>
+                        ) : (
+                          <Typography>
+                            {doI18n(
+                              `pages:core-client_pdf_publisher:selectRessource`,
+                              i18nRef.current,
+                            )}
+                            {isRequired && (
+                              <span style={{ color: "black", marginLeft: 4 }}>
+                                *
+                              </span>
+                            )}
+                          </Typography>
+                        );
+                      })()}
+                    </Box>
 
-                      <Box sx={{ ml: "auto" }}>
-                        <AddScriptureModal
-                          required={f.nValues[0] > 0}
-                          ChangeInSection={(src) =>
-                            setCurrentSections((prev) => {
-                              if (card) {
-                                let copy = [...prev];
-                                copy[id].content = {
-                                  ...copy[id].content,
-                                  [f.id]: src,
-                                };
-                                return copy;
-                              } else {
-                                let copy = [...prev];
-                                copy[id] = { ...copy[id], [f.id]: src };
-                                return copy;
-                              }
-                            })
-                          }
-                          type={convertionTypes[f.id]}
-                        />
-                      </Box>
+                    <Box sx={{ ml: "auto" }}>
+                      <AddScriptureModal
+                        required={f.nValues[0] > 0}
+                        ChangeInSection={(src) =>
+                          setCurrentSections((prev) => {
+                            if (card) {
+                              let copy = [...prev];
+                              copy[id].content = {
+                                ...copy[id].content,
+                                [f.id]: src,
+                              };
+                              return copy;
+                            } else {
+                              let copy = [...prev];
+                              copy[id] = { ...copy[id], [f.id]: src };
+                              return copy;
+                            }
+                          })
+                        }
+                        type={convertionTypes[f.id]}
+                      />
                     </Box>
                   </Box>
                 </Box>

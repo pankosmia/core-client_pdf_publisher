@@ -11,6 +11,7 @@ export const InfoRessource = ({
   typographyVariant = null,
   icons = true,
 }) => {
+  console.log(flavors);
   let prunedFlavors = flavors.map((f) => f.split("/")[1]);
   if (!summary?.[pathElem]?.name) {
     return (

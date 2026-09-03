@@ -50,7 +50,6 @@ import {
   checkPathBooks,
   checkPathsSections,
 } from "../components/RessourcesChecker/checkSpecs";
-import { InfoRessource } from "../components/RessourcesChecker/InfoRessource";
 import { typeThatNeedRessourceSelection } from "../pdf-gen/helpers/constants";
 import { BcvWrapperOverview } from "../components/Overview/BcvWrapperOverview";
 import { FreeFormatOverview } from "../components/Overview/FreeFormatOverview";

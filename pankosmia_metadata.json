@@ -161,8 +161,8 @@
       "en": "PDF file"
     },
     "selectRessource": {
-      "en": "Select resource",
-      "fr": "Selectionner ressource"
+      "en": "No resource selected",
+      "fr": "Aucune ressource sélectionnée"
     },
     "select": {
       "en": "Select",
@@ -267,6 +267,10 @@
     "saveRequiredForPrint": {
       "en": "Import required for print",
       "fr": "Importation requise pour l'impression"
+    },
+    "required": {
+      "en": "Required",
+      "fr": "Requis"
     },
     "saveRequiredForPrintTooltip": {
       "en": "This file must be saved to the project before it can be used when printing the PDF.",
