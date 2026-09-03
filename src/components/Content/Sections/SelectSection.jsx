@@ -87,9 +87,11 @@ export function SelectSection({
 
   return (
     <Box sx={{ mt: 2, p: 2 }}>
-      <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-        {doI18n("pages:core-client_pdf_publisher:layouts", i18nRef.current)}
-      </Typography>
+      {wrapperName != "markdownPdfWrapper" && (
+        <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+          {doI18n("pages:core-client_pdf_publisher:layouts", i18nRef.current)}
+        </Typography>
+      )}
       {/* Helper text shown only in multi-select mode, explaining that order matters */}
       {allowMultiple && (
         <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
