@@ -439,7 +439,6 @@ export function PdfPublisher() {
               `/api/burrito/ingredient/raw/${currentProjectRef.current.organization}/${currentProjectRef.current.source}/${currentProjectRef.current.project}?ipath=specs.json`,
               JSON.stringify(body),
             );
-            console.log(response.text);
             if (response.ok) {
               setProjectSpecs({
                 global: JSON.parse(headerInfo),

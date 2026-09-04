@@ -68,30 +68,49 @@ export function RessourceSelection({
   const removeInstanceAt = (sectionId, fieldId, index, minCount) => {
     setCurrentSections((prev) => {
       const copy = prev.map((s) => ({ ...s }));
+
       if (!copy[sectionId]) return prev;
-      const fieldArr = [...(copy[sectionId][fieldId] || [])];
+
+      const fieldArr = [...(copy[sectionId].content?.[fieldId] || [])];
+
+      // Don't allow deleting required/minimum instances
       if (
         minCount !== undefined &&
         minCount !== null &&
         fieldArr.length <= minCount
       ) {
-        return prev; // already at the floor, do nothing
+        return prev;
       }
+
+      // Remove only the instance corresponding to the clicked trashcan
       fieldArr.splice(index, 1);
-      copy[sectionId] = { ...copy[sectionId], [fieldId]: fieldArr };
+
+      copy[sectionId] = {
+        ...copy[sectionId],
+        content: {
+          ...copy[sectionId].content,
+          [fieldId]: fieldArr,
+        },
+      };
+
       return copy;
     });
 
     setInstanceCounts((prev) => {
       const key = `${sectionId}-${fieldId}`;
       const current = prev[key] ?? 1;
+
       if (minCount !== undefined && minCount !== null && current <= minCount) {
         return prev;
       }
-      return { ...prev, [key]: current - 1 };
+
+      return {
+        ...prev,
+        [key]: current - 1,
+      };
     });
   };
-  console.log(currentSections);
+
   // Seed instanceCounts with the real default count for every typeSpec field
   // on first render (and whenever the signature changes), so increments
   // always start from the correct base instead of an undefined/wrong value.
@@ -236,7 +255,6 @@ export function RessourceSelection({
         {e.fields
           .filter((f) => typeThatNeedRessourceSelection.includes(f.id))
           .map((f, ids) => {
-            console.log(f);
             const isRequired = f?.nValues[0] >= 1;
             if (f.typeSpec) {
               const defaultInstances = f?.nValues?.[0] ?? 1;

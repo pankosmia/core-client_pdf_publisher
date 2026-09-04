@@ -155,6 +155,7 @@ export function ContentDialogue({
       i18nRef.current,
     ),
   ];
+  console.log(currentSections);
   const [documentInfo, setDocumentInfo] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
   useEffect(() => {

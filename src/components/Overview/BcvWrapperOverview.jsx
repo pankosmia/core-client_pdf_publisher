@@ -149,10 +149,6 @@ export function BcvWrapperOverview({
                     ) : (
                       <>
                         {`${field?.label?.[lang]} -`}
-                        {() => {
-                          console.log(field.id);
-                        }}
-
                         <InfoRessource
                           summary={projectSummaries}
                           pathElem={value}
