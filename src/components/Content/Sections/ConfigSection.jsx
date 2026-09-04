@@ -145,6 +145,8 @@ export function ConfigSection({
 
                 return (
                   <Box key={i}>
+                    <Divider sx={{ mt: 2 }} />
+
                     <Box
                       sx={{
                         display: "flex",
@@ -179,6 +181,7 @@ export function ConfigSection({
                       summary={summary}
                       card={false}
                     />
+                    <Divider sx={{ mt: 2 }} />
                   </Box>
                 );
               });
@@ -218,7 +221,6 @@ export function ConfigSection({
               isFirstOption = false;
               return (
                 <Box>
-                  <Divider sx={{ mt: 2 }} />
                   <FieldPicker
                     key={ids}
                     fieldInfo={f}

@@ -68,29 +68,49 @@ export function RessourceSelection({
   const removeInstanceAt = (sectionId, fieldId, index, minCount) => {
     setCurrentSections((prev) => {
       const copy = prev.map((s) => ({ ...s }));
+
       if (!copy[sectionId]) return prev;
-      const fieldArr = [...(copy[sectionId][fieldId] || [])];
+
+      const fieldArr = [...(copy[sectionId].content?.[fieldId] || [])];
+
+      // Don't allow deleting required/minimum instances
       if (
         minCount !== undefined &&
         minCount !== null &&
         fieldArr.length <= minCount
       ) {
-        return prev; // already at the floor, do nothing
+        return prev;
       }
+
+      // Remove only the instance corresponding to the clicked trashcan
       fieldArr.splice(index, 1);
-      copy[sectionId] = { ...copy[sectionId], [fieldId]: fieldArr };
+
+      copy[sectionId] = {
+        ...copy[sectionId],
+        content: {
+          ...copy[sectionId].content,
+          [fieldId]: fieldArr,
+        },
+      };
+
       return copy;
     });
 
     setInstanceCounts((prev) => {
       const key = `${sectionId}-${fieldId}`;
       const current = prev[key] ?? 1;
+
       if (minCount !== undefined && minCount !== null && current <= minCount) {
         return prev;
       }
-      return { ...prev, [key]: current - 1 };
+
+      return {
+        ...prev,
+        [key]: current - 1,
+      };
     });
   };
+
   // Seed instanceCounts with the real default count for every typeSpec field
   // on first render (and whenever the signature changes), so increments
   // always start from the correct base instead of an undefined/wrong value.
@@ -247,6 +267,22 @@ export function RessourceSelection({
 
               return (
                 <Box key={ids}>
+                  <Typography sx={{ fontWeight: "bold", ml: 2 }}>
+                    {f.label[lang]?.includes("#")
+                      ? f.label[lang].replace("#", sectionKey + 1)
+                      : f.label[lang]}
+                    {isRequired && (
+                      <>
+                        <span style={{ color: "black", marginLeft: 4 }}>*</span>
+                        <span
+                          style={{ color: "black", marginLeft: 4 }}
+                        >{`(${f.nValues[0]} - ${f.nValues[1]} ${doI18n(
+                          `pages:core-client_pdf_publisher:required`,
+                          i18nRef.current,
+                        )})`}</span>
+                      </>
+                    )}
+                  </Typography>
                   {Array.from({ length: nInstances }).map((_, i) => {
                     // Read/write this instance's data from currentSections[id][f.id][i]
                     const instanceData =
@@ -326,17 +362,32 @@ export function RessourceSelection({
                       </Box>
                     );
                   })}
-                  <Button
-                    disabled={atMax}
-                    onClick={() => incrementInstanceCount(id, f.id, maxCount)}
-                  >
-                    <Typography>
-                      {doI18n(
-                        `pages:core-client_pdf_publisher:Add`,
-                        i18nRef.current,
-                      ) + ` ${f.label[lang]}`}
-                    </Typography>
-                  </Button>
+                  <Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        pt: 1,
+                        flexShrink: 0,
+                      }}
+                    />
+                    {f.nValues[0] < f.nValues[1] && (
+                      <Button
+                        sx={{ ml: "48px" }}
+                        disabled={atMax}
+                        onClick={() =>
+                          incrementInstanceCount(id, f.id, maxCount)
+                        }
+                      >
+                        <Typography>
+                          {doI18n(
+                            `pages:core-client_pdf_publisher:Add`,
+                            i18nRef.current,
+                          ) + ` ${f.label[lang]}`}
+                        </Typography>
+                      </Button>
+                    )}
+                  </Box>
                 </Box>
               );
             } else {
@@ -348,6 +399,7 @@ export function RessourceSelection({
                     gap: 2,
                     display: "flex",
                     flexDirection: "column",
+                    width: "100%",
                   }}
                 >
                   <Typography sx={{ fontWeight: "bold" }}>
@@ -387,7 +439,6 @@ export function RessourceSelection({
                               gap: 0.5,
                             }}
                           >
-                            {/* {summary?.[selectedId]?.name} */}
                             <InfoRessource
                               summary={summary}
                               pathElem={selectedId}
@@ -414,6 +465,7 @@ export function RessourceSelection({
 
                     <Box sx={{ ml: "auto" }}>
                       <AddScriptureModal
+                        required={f.nValues[0] > 0}
                         ChangeInSection={(src) =>
                           setCurrentSections((prev) => {
                             if (card) {

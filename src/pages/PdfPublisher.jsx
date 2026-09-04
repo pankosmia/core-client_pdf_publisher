@@ -50,7 +50,6 @@ import {
   checkPathBooks,
   checkPathsSections,
 } from "../components/RessourcesChecker/checkSpecs";
-import { InfoRessource } from "../components/RessourcesChecker/InfoRessource";
 import { typeThatNeedRessourceSelection } from "../pdf-gen/helpers/constants";
 import { BcvWrapperOverview } from "../components/Overview/BcvWrapperOverview";
 import { FreeFormatOverview } from "../components/Overview/FreeFormatOverview";
@@ -440,7 +439,6 @@ export function PdfPublisher() {
               `/api/burrito/ingredient/raw/${currentProjectRef.current.organization}/${currentProjectRef.current.source}/${currentProjectRef.current.project}?ipath=specs.json`,
               JSON.stringify(body),
             );
-            console.log(response.text);
             if (response.ok) {
               setProjectSpecs({
                 global: JSON.parse(headerInfo),

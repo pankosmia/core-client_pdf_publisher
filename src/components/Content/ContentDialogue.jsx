@@ -10,7 +10,6 @@ import { useState, useContext, useEffect, cloneElement, useRef } from "react";
 import { doI18n } from "pankosmia-lib/i18n";
 import { SelectSection } from "./Sections/SelectSection";
 import { sectionHandlerLookup } from "../../pdf-gen/sectionHandlerLookup";
-import { conversionSection } from "../../pdf-gen/helpers/constants";
 import { RessourceSelection } from "./RessourceSelection/RessourceSelection";
 import { ConfigSection } from "./Sections/ConfigSection";
 import { BRangesPicker } from "./Sections/BRangesPicker";
@@ -156,6 +155,7 @@ export function ContentDialogue({
       i18nRef.current,
     ),
   ];
+  console.log(currentSections);
   const [documentInfo, setDocumentInfo] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
   useEffect(() => {
@@ -292,7 +292,18 @@ export function ContentDialogue({
     return fields
       .map((f, originalIndex) => ({ f, originalIndex }))
       .sort((a, b) => {
+        // First: fields with at least one value come first
+        const aHasValues = a.f.nValues?.[0] > 0;
+        const bHasValues = b.f.nValues?.[0] > 0;
+
+        if (aHasValues !== bHasValues) {
+          return bHasValues - aHasValues;
+        }
+
+        // Second: follow the existing field type order
         const diff = getOrderIndex(a.f) - getOrderIndex(b.f);
+
+        // Finally: preserve original order
         return diff !== 0 ? diff : a.originalIndex - b.originalIndex;
       })
       .map(({ f }) =>
@@ -346,12 +357,14 @@ export function ContentDialogue({
       >
         <DialogContent
           sx={{
-            overflowY: "auto",
-            overflowX: "hidden",
+            display: "flex",
+            flexDirection: "column",
+            minHeight: 0,
           }}
           ref={contentRef}
         >
           <PanStepperPicker
+            requiredFieldsLabel
             steps={steps}
             isStepValid={isStepValid}
             renderStepContent={(step) => {
