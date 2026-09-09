@@ -224,7 +224,7 @@ export function ConfigSection({
                     fieldInfo={f}
                     lang={lang}
                     currentIndex={sectionKey}
-                    currentFieldValue={currentSections?.[id]?.[f.id]}
+                    currentFieldValue={currentSections?.[id]?.content?.[f.id]}
                     ChangeInSection={(src) =>
                       setCurrentSections((prev) => {
                         if (card) {
@@ -251,7 +251,7 @@ export function ConfigSection({
                 fieldInfo={f}
                 lang={lang}
                 currentIndex={sectionKey}
-                currentFieldValue={currentSections?.[id]?.[f.id]}
+                currentFieldValue={currentSections?.[id]?.content?.[f.id]}
                 ChangeInSection={(src) =>
                   setCurrentSections((prev) => {
                     if (card) {

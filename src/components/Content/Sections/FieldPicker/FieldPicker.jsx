@@ -11,7 +11,6 @@ export function FieldPicker({
   lang,
 }) {
   const require = fieldInfo.nValues[0] > 0;
-
   if (typeof fieldInfo.typeLiteral === typeof true || fieldInfo.typeLiteral) {
     ChangeInSection((prev) => {
       const newState = typeof prev === "object" ? prev : JSON.parse(prev);

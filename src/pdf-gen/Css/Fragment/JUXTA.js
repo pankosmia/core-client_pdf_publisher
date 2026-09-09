@@ -57,7 +57,9 @@ export const JUXTA = `.jxlGreek {
     line-height: %%BODYLINEHEIGHT%%pt;
     font-size: %%FOOTNOTEFONTSIZE%%pt;
     vertical-align: baseline;
-    white-space: nowrap;
+    white-space: normal;
+    display: ruby;
+    overflow-wrap: break-word;
 }
 
 .sourceContent {
