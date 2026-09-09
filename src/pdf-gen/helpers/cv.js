@@ -1,9 +1,9 @@
 export const quoteForCv = (pk, sentenceRecord, bookCode, cv) => {
-  const cvRecord = pk
-    .gqlQuerySync(
-      `{docSet(id:"${sentenceRecord.id}") { document(bookCode:"${bookCode}") {cv(chapterVerses: "${cv}") {tokens {subType payload scopes(startsWith: ["attribute/milestone/zaln/x-content"])}}}}}`,
-    )
-    .data.docSet.document.cv.map((cvr) => cvr.tokens)
+  const cvResult = pk.gqlQuerySync(
+    `{docSet(id:"${sentenceRecord.id}") { document(bookCode:"${bookCode}") {cv(chapterVerses: "${cv}") {tokens {subType payload scopes(startsWith: ["attribute/milestone/zaln/x-content"])}}}}}`,
+  );
+  const cvRecord = cvResult.data.docSet.document.cv
+    .map((cvr) => cvr.tokens)
     .reduce((a, b) => [...a, ...b], []);
   return {
     type: sentenceRecord.type,
@@ -13,7 +13,7 @@ export const quoteForCv = (pk, sentenceRecord, bookCode, cv) => {
   };
 };
 
-export const vrNumbers = (vrs) => {
+const vrNumbers = (vrs) => {
   let [fromV, toV] = vrs.split("-").map((vs) => parseInt(vs));
   let ret = [];
   while (fromV <= toV + 1) {
