@@ -2,6 +2,7 @@ import { BooleanPicker } from "./Pickers/booleanPicker";
 import { SelectPicker } from "./Pickers/SelectPicker";
 import { IntPicker } from "./Pickers/IntPicker";
 import { TextPicker } from "./Pickers/textPicker";
+import { useEffect } from "react";
 
 export function FieldPicker({
   currentFieldValue,
@@ -11,23 +12,25 @@ export function FieldPicker({
   lang,
 }) {
   const require = fieldInfo.nValues[0] > 0;
+  useEffect(() => {
+    if (typeof fieldInfo.typeLiteral === typeof true || fieldInfo.typeLiteral) {
+      ChangeInSection(fieldInfo.typeLiteral);
+    }
+  }, []);
   if (typeof fieldInfo.typeLiteral === typeof true || fieldInfo.typeLiteral) {
-    ChangeInSection((prev) => {
-      const newState = typeof prev === "object" ? prev : JSON.parse(prev);
-      newState[fieldInfo.id] = fieldInfo.typeLiteral;
-      return JSON.stringify(newState);
-    });
-
     return (
       <div
         style={{
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          justifyContent: "center",
+          mt: 2,
+          marginLeft: 12,
+          width: "100%",
+          gap: 2,
         }}
       >
-        <div>{"fieldInfo.label[lang]"} :</div>
+        <div>{fieldInfo.label[lang]} :</div>
         <div style={{ fontSize: 16 }}>{fieldInfo.typeLiteral}</div>
       </div>
     );

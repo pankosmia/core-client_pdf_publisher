@@ -23,6 +23,7 @@ export default function AddScriptureModal({
   setSelectedResources,
   ChangeInSection,
   type,
+  required,
 }) {
   const { debugRef } = useContext(debugContext);
   const { i18nRef } = useContext(i18nContext);
@@ -145,7 +146,7 @@ export default function AddScriptureModal({
         sx={{
           marginX: 1,
         }}
-        variant="contained"
+        variant={required ? "contained" : "outlined"}
         onClick={() => setOpenResourcesDialog(true)}
       >
         <Typography variant="body">

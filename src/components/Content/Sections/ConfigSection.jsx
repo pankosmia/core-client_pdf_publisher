@@ -16,6 +16,7 @@ const isFieldsValid = (fields, sectionData, isCard) => {
     .filter(
       (f) =>
         allowedConfig.includes(f.typeName) ||
+        f.typeLiteral ||
         f.typeEnum ||
         f.typeSpec ||
         typeThatNeedRessourceSelection.includes(f.id),
@@ -110,6 +111,7 @@ export function ConfigSection({
               allowedConfig.includes(f.typeName) ||
               f.typeEnum ||
               f.typeSpec ||
+              f.typeLiteral ||
               typeThatNeedRessourceSelection.includes(f.id),
           )
           .map((f, ids) => {
@@ -145,6 +147,8 @@ export function ConfigSection({
 
                 return (
                   <Box key={i}>
+                    <Divider sx={{ mt: 2 }} />
+
                     <Box
                       sx={{
                         display: "flex",
@@ -179,6 +183,7 @@ export function ConfigSection({
                       summary={summary}
                       card={false}
                     />
+                    <Divider sx={{ mt: 2 }} />
                   </Box>
                 );
               });
@@ -218,13 +223,16 @@ export function ConfigSection({
               isFirstOption = false;
               return (
                 <Box>
-                  <Divider sx={{ mt: 2 }} />
                   <FieldPicker
                     key={ids}
                     fieldInfo={f}
                     lang={lang}
                     currentIndex={sectionKey}
-                    currentFieldValue={currentSections?.[id]?.content?.[f.id]}
+                    currentFieldValue={
+                      currentSections?.[id]?.content?.[f.id] != undefined
+                        ? currentSections?.[id]?.content?.[f.id]
+                        : currentSections?.[id]?.[f.id]
+                    }
                     ChangeInSection={(src) =>
                       setCurrentSections((prev) => {
                         if (card) {

@@ -52,7 +52,6 @@ export function SelectSection({
   const handleSelection = (section) => {
     if (allowMultiple) {
       setCurrentSections((prev) => {
-        console.log(section);
         const exists = prev.some((s) => s.type === section);
 
         if (exists) {

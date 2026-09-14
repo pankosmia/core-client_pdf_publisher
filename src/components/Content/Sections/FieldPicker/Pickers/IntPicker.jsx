@@ -16,22 +16,11 @@ export function IntPicker({
   currentIndex,
 }) {
   const [value, setValue] = useState(
-    currentFieldValue ?? fieldInfo?.suggestedDefault ?? "",
+    currentFieldValue ?? fieldInfo?.suggestedDefault ?? 0,
   );
 
   const handleChange = (event) => {
     let newValue = event.target.value;
-
-    if (fieldInfo.minValue != null) {
-      const intVal = parseInt(newValue, 10);
-      if (!isNaN(intVal)) {
-        if (intVal < fieldInfo.minValue) newValue = fieldInfo.minValue;
-        if (intVal > fieldInfo.maxValue) newValue = fieldInfo.maxValue;
-      } else {
-        newValue = "";
-      }
-    }
-
     setValue(newValue);
   };
 
@@ -48,11 +37,6 @@ export function IntPicker({
     ? fieldInfo.label[lang].replace("#", currentIndex)
     : fieldInfo.label[lang];
 
-  const rangeText =
-    fieldInfo.minValue != null
-      ? ` (${fieldInfo.minValue}-${fieldInfo.maxValue})`
-      : "";
-
   const inputId = `${fieldInfo.id}-input`;
   const hasError = require && value === "";
 
@@ -67,17 +51,14 @@ export function IntPicker({
       }}
     >
       <FormControl error={hasError} sx={{ minWidth: 400 }}>
-        <InputLabel htmlFor={inputId}>
-          {labelText}
-          {rangeText}
-        </InputLabel>
+        <InputLabel htmlFor={inputId}>{labelText}</InputLabel>
 
         <OutlinedInput
           id={inputId}
           value={value}
           onChange={handleChange}
           onBlur={handleBlur}
-          label={`${labelText}${rangeText}`}
+          label={`${labelText}`}
           type="number"
           sx={{
             "& input[type=number]": {
@@ -89,8 +70,6 @@ export function IntPicker({
             },
           }}
           inputProps={{
-            min: fieldInfo.minValue,
-            max: fieldInfo.maxValue,
             step: 1,
           }}
         />
