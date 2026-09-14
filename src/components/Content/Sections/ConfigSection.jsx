@@ -16,6 +16,7 @@ const isFieldsValid = (fields, sectionData, isCard) => {
     .filter(
       (f) =>
         allowedConfig.includes(f.typeName) ||
+        f.typeLiteral ||
         f.typeEnum ||
         f.typeSpec ||
         typeThatNeedRessourceSelection.includes(f.id),
@@ -110,6 +111,7 @@ export function ConfigSection({
               allowedConfig.includes(f.typeName) ||
               f.typeEnum ||
               f.typeSpec ||
+              f.typeLiteral ||
               typeThatNeedRessourceSelection.includes(f.id),
           )
           .map((f, ids) => {
@@ -226,7 +228,11 @@ export function ConfigSection({
                     fieldInfo={f}
                     lang={lang}
                     currentIndex={sectionKey}
-                    currentFieldValue={currentSections?.[id]?.[f.id]}
+                    currentFieldValue={
+                      currentSections?.[id]?.content?.[f.id] != undefined
+                        ? currentSections?.[id]?.content?.[f.id]
+                        : currentSections?.[id]?.[f.id]
+                    }
                     ChangeInSection={(src) =>
                       setCurrentSections((prev) => {
                         if (card) {
@@ -253,7 +259,7 @@ export function ConfigSection({
                 fieldInfo={f}
                 lang={lang}
                 currentIndex={sectionKey}
-                currentFieldValue={currentSections?.[id]?.[f.id]}
+                currentFieldValue={currentSections?.[id]?.content?.[f.id]}
                 ChangeInSection={(src) =>
                   setCurrentSections((prev) => {
                     if (card) {

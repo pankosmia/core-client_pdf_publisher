@@ -274,12 +274,14 @@ export function RessourceSelection({
                     {isRequired && (
                       <>
                         <span style={{ color: "black", marginLeft: 4 }}>*</span>
-                        <span
-                          style={{ color: "black", marginLeft: 4 }}
-                        >{`(${f.nValues[0]} - ${f.nValues[1]} ${doI18n(
-                          `pages:core-client_pdf_publisher:required`,
-                          i18nRef.current,
-                        )})`}</span>
+                        {f?.nValues?.[0] != f?.nValues?.[1] && (
+                          <span
+                            style={{ color: "black", marginLeft: 4 }}
+                          >{`(${f.nValues[0]} - ${f.nValues[1]} ${doI18n(
+                            `pages:core-client_pdf_publisher:texts`,
+                            i18nRef.current,
+                          )})`}</span>
+                        )}
                       </>
                     )}
                   </Typography>

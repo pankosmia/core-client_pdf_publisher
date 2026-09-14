@@ -268,9 +268,9 @@
       "en": "Import required for print",
       "fr": "Importation requise pour l'impression"
     },
-    "required": {
-      "en": "Required",
-      "fr": "Requis"
+    "texts": {
+      "en": "texts",
+      "fr": "textes"
     },
     "saveRequiredForPrintTooltip": {
       "en": "This file must be saved to the project before it can be used when printing the PDF.",

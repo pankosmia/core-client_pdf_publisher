@@ -9,9 +9,12 @@ export function BooleanPicker({
   require,
   currentIndex,
 }) {
-  const [selected, setSelected] = useState(
-    currentFieldValue ?? fieldInfo.suggestedDefault ?? false,
-  );
+  let currentExist =
+    typeof currentFieldValue === typeof false
+      ? currentFieldValue
+      : fieldInfo.suggestedDefault;
+
+  const [selected, setSelected] = useState(currentExist);
 
   useEffect(() => {
     setJsonSpec(selected);
