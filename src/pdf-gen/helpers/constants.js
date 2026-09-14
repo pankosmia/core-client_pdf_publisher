@@ -74,6 +74,8 @@ export const convertionTypes = {
   obsImg: ["peripheral/x-obsimages"],
   bcvNotes: ["parascriptural/x-bcvnotes", "parascriptural/x-bcvquestions"],
   scriptureSrc: ["scripture/textTranslation"],
+  bottomTextSrc: ["scripture/textTranslation"],
+  topTextSrc: ["scripture/textTranslation"],
 };
 
 export const conversionSection = {
@@ -103,6 +105,8 @@ export const typeThatNeedRessourceSelection = [
   "scriptureSrc",
   "tNotes",
   "glossNotes",
+  "bottomTextSrc",
+  "topTextSrc",
 ];
 
 export const freeFormat = ["pdf", "md"];

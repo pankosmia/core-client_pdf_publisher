@@ -7,9 +7,21 @@ export const cvForSentence = (sentence, punctuation) => {
   const cvSet = new Set([]);
   sentence.chunks.forEach((c) => c.source.forEach((se) => cvSet.add(se.cv)));
   const cvValues = Array.from(cvSet).sort((a, b) => {
-    const aa = a.split(":").map((s) => parseInt(s));
-    const bb = b.split(":").map((s) => parseInt(s));
-    return aa[1] - bb[1];
+    const aBits = a.split(":");
+    let aa = [parseInt(aBits[0])];
+    if (aBits[1].includes("-")) {
+      aa = [...aa, aBits[1].split("-").map((s) => parseInt(s))];
+    } else {
+      aa = [...aa, parseInt(aBits[1])];
+    }
+    const bBits = b.split(":");
+    let bb = [parseInt(bBits[0])];
+    if (bBits[1].includes("-")) {
+      bb = [...bb, bBits[1].split("-").map((s) => parseInt(s))];
+    } else {
+      bb = [...bb, parseInt(bBits[1])];
+    }
+    return aa[0] - bb[0] || aa[1] - bb[1];
   });
   const cv1 = cvValues[0];
   const cv2 = cvValues[cvValues.length - 1];
@@ -21,7 +33,7 @@ export const cvForSentence = (sentence, punctuation) => {
   if (c1 === c2) {
     return `${c1}${referencePunctuation.chapterVerse}${v1}${referencePunctuation.verseRange}${v2}`;
   }
-  return `${c1}${referencePunctuation.chapterVerse}${v1}${referencePunctuation.verseRange}${c2}referencePunctuation.chapterVerse}${v2}`;
+  return `${c1}${referencePunctuation.chapterVerse}${v1}${referencePunctuation.verseRange}${c2}${referencePunctuation.chapterVerse}${v2}`;
 };
 
 export const tidyLhsText = (cvRecord) => {

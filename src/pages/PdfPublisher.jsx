@@ -609,9 +609,14 @@ export function PdfPublisher() {
                                     })}
                                   </Typography>
                                 )}
-                                {w.type !== "bcvWrapper" && (
+                                {w.type === "markdown" && (
                                   <Typography sx={{ color: "text.secondary" }}>
                                     {w.content.md.name.split("/")[1]}
+                                  </Typography>
+                                )}
+                                {w.type === "pdf" && (
+                                  <Typography sx={{ color: "text.secondary" }}>
+                                    {w.content.pdf.name.split("/")[1]}
                                   </Typography>
                                 )}
                               </Box>
