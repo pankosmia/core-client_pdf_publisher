@@ -383,7 +383,7 @@ export function RessourceSelection({
                       >
                         <Typography>
                           {doI18n(
-                            `pages:core-client_pdf_publisher:Add`,
+                            `pages:core-client_pdf_publisher:add`,
                             i18nRef.current,
                           ) + ` ${f.label[lang]}`}
                         </Typography>

@@ -32,24 +32,27 @@
     },
     "choose_layout_free_format": {
       "en": "Choose format",
-      "fr": "Choisir un format"
+      "fr": "Choisir format"
     },
     "layouts": {
       "en": "Layouts",
-      "fr": "layouts"
+      "fr": "Layouts"
     },
     "choose_documents": {
-      "en": "Choose document(s)"
+      "en": "Choose document(s)",
+      "fr": "Choisir document(s)"
     },
     "configure_section": {
-      "en": "Configure section"
+      "en": "Configure section",
+      "fr": "Configurer section"
     },
     "add_section": {
-      "en": "New section"
+      "en": "New section",
+      "fr": "Nouvelle section"
     },
     "add": {
       "en": "Add",
-      "fr": "Selectionner"
+      "fr": "Ajouter"
     },
     "edit_section": {
       "en": "Save",
@@ -63,76 +66,78 @@
       "fr": "PDF"
     },
     "paraBibleSection": {
-      "en": "Formatted Bible"
+      "en": "Formatted Bible",
+      "fr": "Bible formatée"
     },
     "bcvBibleSection": {
-      "en": "Bible by verse"
+      "en": "Bible by verse",
+      "fr": "Bible par verset"
     },
     "twoColumnSection": {
-      "en": "Two Bibles in two columns"
+      "en": "Two Bibles in two columns",
+      "fr": "Deux Bibles en deux colonnes"
     },
     "jxlSimpleSection": {
-      "en": "Juxtalinear"
+      "en": "Juxtalinear",
+      "fr": "Juxtalinéaire"
     },
     "bookNoteSection": {
-      "en": "Book introduction"
+      "en": "Book introduction",
+      "fr": "Introduction de livre"
     },
     "biblePlusNotesSection": {
-      "en": "Notes focus (by verse)"
+      "en": "Notes focus (by verse)",
+      "fr": "Focalisé sur notes (par verset)"
     },
     "notesOnlySection": {
-      "en": "Notes only"
+      "en": "Notes only",
+      "fr": "Notes seulement"
     },
     "fourColumnSpreadSection": {
-      "en": "Four Bibles on facing pages"
+      "en": "Four Bibles on facing pages",
+      "fr": "Quatre Bibles en vis-à-vis"
     },
     "jxlSpreadSection": {
-      "en": "Juxtalinear on facing pages"
+      "en": "Juxtalinear on facing pages",
+      "fr": "Juxtalinéaire en vis-à-vis"
     },
     "obsSection": {
-      "en": "Obs"
+      "en": "OBS"
     },
     "obsPlusNotesSection": {
-      "en": "Obs with notes "
+      "en": "OBS with notes",
+      "fr": "OBS avec notes"
     },
     "free_format": {
-      "en": "External file"
+      "en": "External file",
+      "fr": "Fichier externe"
     },
     "one-page-bible": {
-      "en": "One-page Bible"
+      "en": "Biblical content",
+      "fr": "Contenu biblique"
     },
     "one-page-notes": {
-      "en": "One-page notes"
+      "en": "Notes",
+      "fr": "Notes"
     },
     "double-page": {
       "en": "Double-page spread"
     },
     "obs": {
-      "en": "Obs"
-    },
-    "selectRessourceForBook": {
-      "en": "Please select resources first to load available book ranges.",
-      "fr": "Sélectionnez des ressources avant de pouvoir choisir les livres"
-    },
-    "noOverlap": {
-      "en": "Your ressources containt no Book in commun",
-      "fr": "Vos ressources ne contiennent aucun livre en commun"
-    },
-    "multipleSelection": {
-      "en": "Multiple layouts",
-      "fr": "Layouts muliple"
+      "en": "OBS",
+      "fr": "OBS"
     },
     "multipleSelectionDescription1": {
       "en": "You can assemble several layouts, they will be cycled through",
-      "fr": "Vous pouvez assemblez plusieurs layouts, ils seront cicle"
+      "fr": "Vous pouvez assembler plusieurs layouts, ils seront parcouru"
     },
     "multipleSelectionDescription2": {
       "en": "for each selected book",
-      "fr": "pour chaque livre"
+      "fr": "pour chaque livre sélectionné"
     },
     "multipleSelectionDescription3": {
       "en": "of the section.",
-      "fr": "de chaque section"
+      "fr": "de la section"
     },
     "print": {
       "en": "Print",
@@ -143,114 +148,100 @@
       "fr": "Sections"
     },
     "general_setting": {
-      "en": "General settings"
-    },
-    "remember_save": {
-      "en": "Remember to save your project"
+      "en": "General settings",
+      "fr": "Paramètres généraux"
     },
     "bcvWrapper": {
-      "en": "Bible books"
+      "en": "Bible books",
+      "fr": "Livres de la Bible"
     },
     "obsWrapper": {
-      "en": "Open Bible Stories"
-    },
-    "markdownWrapper": {
-      "en": "Markdown file"
-    },
-    "pdfWrapper": {
-      "en": "PDF file"
+      "en": "Open Bible Stories",
+      "fr": "Open Bible Stories"
     },
     "selectRessource": {
-      "en": "No resource selected",
-      "fr": "Aucune ressource sélectionnée"
+      "en": "Select a resource",
+      "fr": "Sélectionnez une ressource"
     },
     "select": {
       "en": "Select",
-      "fr": "Selectionner"
-    },
-    "Add": {
-      "en": "Add",
-      "fr": "Ajouter"
+      "fr": "Sélectionner"
     },
     "save_success": {
-      "en": "Your project was successfully saved",
-      "fr": "Votre projet a été sauvegardé avec succès"
+      "en": "Project successfully saved",
+      "fr": "Projet sauvegardé avec succès"
     },
     "save_error": {
       "en": "An error occurred while saving:",
-      "fr": "Une erreur est survenue lors de la sauvegarde :"
+      "fr": "Une erreur est survenue pendant la sauvegarde :"
     },
     "missing_ressources": {
-      "en": "You are missing ressources at",
-      "fr": "Il vous manques des ressources à"
+      "en": "Missing ressources in",
+      "fr": "Ressources manquantes dans"
     },
     "missing_book": {
-      "en": "%%RESOURCE%% is missing book(s) :",
-      "fr": "%%RESOURCE%% manque les livres :"
+      "en": "%%RESOURCE%% is missing books:",
+      "fr": "%%RESOURCE%% n'a pas les livres :"
     },
     "flavor_miss_match": {
-      "en": "%%RESOURCE%% is not of the right type : ",
-      "fr": "%%RESOURCE%%  n'est du bon type :"
+      "en": "%%RESOURCE%% is not of the right type:",
+      "fr": "%%RESOURCE%% n'est du bon type :"
     },
     "ressource_errors": {
       "en": "%%RESOURCE%% has multiple errors",
       "fr": "%%RESOURCE%% a plusieurs erreurs"
     },
     "dragAndDrop": {
-      "en": "Drag & drop %%DOCTYPE%% here, or click to browse",
-      "fr": "Drag & drop %%DOCTYPE%% ici, our cliquer pour rechercher"
+      "en": "Drop a %%DOCTYPE%% here or click to search",
+      "fr": "Déposez un %%DOCTYPE%% ici ou cliquez pour rechercher"
     },
     "singleFile": {
-      "en": "Single file only",
+      "en": "One file only",
       "fr": "Un seul fichier"
     },
     "edit": {
-      "en": "Edit",
-      "fr": "Editer"
+      "en": "Write",
+      "fr": "Écrire"
     },
     "preview": {
       "en": "Preview",
-      "fr": "Prévisualisation"
+      "fr": "Aperçu"
     },
     "nothingToPreview": {
-      "en": "Nothing to preview yet.",
-      "fr": "Rien à afficher pour le moment"
+      "en": "Nothing to preview for now.",
+      "fr": "Rien à afficher pour le moment."
     },
     "createMarkdown": {
-      "en": "Create new markdown document",
-      "fr": "Créer un nouveau document markdown"
+      "en": "New Markdown file",
+      "fr": "Nouveau fichier Markdown"
     },
     "or": {
       "en": "or",
       "fr": "ou"
-    },
-    "save": {
-      "en": "save",
-      "fr": "sauvegarder"
     },
     "markdownPdfWrapper": {
       "en": "External file",
       "fr": "Fichier externe"
     },
     "pdf": {
-      "en": "Pdf",
-      "fr": "Pdf"
+      "en": "PDF",
+      "fr": "PDF"
     },
     "markdown": {
       "en": "Markdown",
       "fr": "Markdown"
     },
     "print_disabled_not_viewer": {
-      "en": "You can't print if you are not inside the Viewer",
-      "fr": "Vous ne pouvez pas imprimer si vous n'etes pas dans le Viewer"
+      "en": "You can't print if you are not in the Viewer",
+      "fr": "Vous ne pouvez pas imprimer si vous n'êtes pas dans le Viewer"
     },
     "print_disabled_sections_issue": {
-      "en": "Some of the section still have probleme be sure to check them",
-      "fr": "Certaine section(s) ont des erreurs"
+      "en": "Some section(s) have issues",
+      "fr": "Certaine(s) section(s) ont des erreurs"
     },
     "as": {
       "en": "as",
-      "fr": "pour"
+      "fr": "en"
     },
     "books": {
       "en": "book(s)",
@@ -259,10 +250,6 @@
     "book_plural": {
       "en": "Books *",
       "fr": "Livres *"
-    },
-    "currentlySelected": {
-      "en": "Currently selected",
-      "fr": "Actuellement sélectionné"
     },
     "saveRequiredForPrint": {
       "en": "Import required for print",
@@ -278,27 +265,27 @@
     },
     "step": {
       "en": "Current step ##CURRENT##/##GLOBAL##",
-      "fr": "Etape actuelle ##CURRENT##/##GLOBAL##"
+      "fr": "Étape actuelle ##CURRENT##/##GLOBAL##"
     },
     "errorGet": {
       "en": "Could not fetch",
-      "fr": "N'as pas reussi a fetch"
+      "fr": "N'as pas pu fetch"
     },
     "need_firefox": {
-      "en": "Firefox engine is required to create PDFs and is not installed yet. Download it below, then generate the pdf.",
-      "fr": "Firefox est nécessaire pour créer des PDFs. Télécharger le en appuyant sur le bouton dessous pour commencer "
+      "en": "You need to download a render engine to print PDFs. Manage system plugins at any time from the app settings.",
+      "fr": "Vous devez télécharger un moteur de rendu pour imprimer des PDFs. Gérez les plugins système à tout moment depuis les paramètres de l'app."
     },
     "Firefox_not_installed": {
-      "en": "Firefox not installed",
-      "fr": "Firefox n'est pas installé"
+      "en": "System plugin required",
+      "fr": "Plugin système nécessaire"
     },
     "not_yet_implemented": {
-      "en": "Sorry, this feature is not yet implemented",
-      "fr": "Cette fonctionnalité n'est pas encore prête"
+      "en": "This feature is not available for now",
+      "fr": "Cette fonctionnalité n'est pas disponible pour le moment"
     },
     "print_succes": {
-      "en": "Printed successfully in the Downloads folder!",
-      "fr": "Impression réussie dans le dossier Téléchargements !"
+      "en": "Printed successfully in the Downloads folder",
+      "fr": "Impression réussie dans le dossier Téléchargements"
     }
   }
 }

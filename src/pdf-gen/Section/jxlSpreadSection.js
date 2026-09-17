@@ -39,7 +39,7 @@ export class jxlSpreadSection extends Section {
           id: "showPageNumber",
           label: {
             en: "Show page numbers",
-            fr: "Afficher numéro de page",
+            fr: "Afficher numéros de page",
           },
           typeName: "boolean",
           nValues: [1, 1],
@@ -48,8 +48,8 @@ export class jxlSpreadSection extends Section {
         {
           id: "jxl",
           label: {
-            en: "Juxta source",
-            fr: "Source pour Juxta",
+            en: "Juxtalinear source",
+            fr: "Source pour juxtalinéaire",
           },
           typeName: "juxta",
           nValues: [1, 1],
@@ -95,7 +95,7 @@ export class jxlSpreadSection extends Section {
           id: "firstSentence",
           label: {
             en: "First sentence number",
-            fr: "N° de première phrase",
+            fr: "Numéro de première phrase",
           },
           typeName: "number",
           nValues: [0, 1],
@@ -104,7 +104,7 @@ export class jxlSpreadSection extends Section {
           id: "lastSentence",
           label: {
             en: "Last sentence number",
-            fr: "N° de dernière phrase",
+            fr: "Numéro de dernière phrase",
           },
           typeName: "number",
           nValues: [0, 1],
@@ -122,7 +122,7 @@ export class jxlSpreadSection extends Section {
               id: "text",
               label: {
                 en: "Scripture # text label",
-                fr: "Etiquette pour texte biblique #",
+                fr: "Étiquette pour texte biblique #",
               },
               typeName: "string",
               nValues: [1, 1],
@@ -130,7 +130,7 @@ export class jxlSpreadSection extends Section {
             {
               id: "src",
               label: {
-                en: "Source # text source",
+                en: "Scripture # text source",
                 fr: "Source pour texte biblique #",
               },
               typeName: "translationText",
