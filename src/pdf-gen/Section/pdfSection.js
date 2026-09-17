@@ -35,7 +35,7 @@ export class pdfSection extends Section {
             {
               id: "either",
               label: {
-                en: "Next Page",
+                en: "Next page",
                 fr: "Page suivante",
               },
             },
@@ -47,7 +47,7 @@ export class pdfSection extends Section {
           id: "showPageNumber",
           label: {
             en: "Show page numbers",
-            fr: "Afficher numéro de page",
+            fr: "Afficher numéros de page",
           },
           typeName: "boolean",
           nValues: [1, 1],
@@ -56,8 +56,8 @@ export class pdfSection extends Section {
         {
           id: "pdf",
           label: {
-            en: "External PDF source",
-            fr: "Source pour PDF externe",
+            en: "PDF external file",
+            fr: "Fichier externe PDF",
           },
           typeName: "pdf",
           nValues: [1, 1],

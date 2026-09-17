@@ -75,7 +75,7 @@ export class obsPlusNotesSection extends Section {
           id: "showPageNumber",
           label: {
             en: "Show page numbers",
-            fr: "Afficher numéro de page",
+            fr: "Afficher numéros de page",
           },
           typeName: "boolean",
           nValues: [1, 1],
@@ -93,7 +93,7 @@ export class obsPlusNotesSection extends Section {
         {
           id: "obsImg",
           label: {
-            en: "OBS source images",
+            en: "OBS images source",
             fr: "Source pour images OBS",
           },
           typeName: "obsImg",

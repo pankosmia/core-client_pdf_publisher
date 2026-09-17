@@ -58,7 +58,7 @@ export class biblePlusNotesSection extends Section {
           id: "showPageNumber",
           label: {
             en: "Show page numbers",
-            fr: "Afficher numéro de page",
+            fr: "Afficher numéros de page",
           },
           typeName: "boolean",
           nValues: [1, 1],
@@ -116,7 +116,7 @@ export class biblePlusNotesSection extends Section {
               id: "rows",
               label: {
                 en: "row",
-                fr: "rangé",
+                fr: "rangée",
               },
             },
           ],
@@ -126,8 +126,8 @@ export class biblePlusNotesSection extends Section {
         {
           id: "notesWidth",
           label: {
-            en: "% width of notes",
-            fr: "% largeur des notes",
+            en: "% of width for notes",
+            fr: "% de la largeur pour les notes",
           },
           typeName: "number",
           maxValue: 80,
@@ -138,7 +138,7 @@ export class biblePlusNotesSection extends Section {
         {
           id: "scriptureSrc",
           label: {
-            en: "Scripture text Source",
+            en: "Scripture text source",
             fr: "Source pour texte biblique",
           },
           typeName: "translationText",
@@ -147,7 +147,7 @@ export class biblePlusNotesSection extends Section {
         {
           id: "scriptureType",
           label: {
-            en: "Scripture text Type",
+            en: "Scripture text type",
             fr: "Type de texte biblique",
           },
           typeEnum: [

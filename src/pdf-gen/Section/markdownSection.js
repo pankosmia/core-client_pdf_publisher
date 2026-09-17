@@ -51,7 +51,7 @@ export class markdownSection extends Section {
           id: "showPageNumber",
           label: {
             en: "Show page numbers",
-            fr: "Afficher numéro de page",
+            fr: "Afficher numéros de page",
           },
           typeName: "boolean",
           nValues: [1, 1],
@@ -70,8 +70,8 @@ export class markdownSection extends Section {
         {
           id: "md",
           label: {
-            en: "Markdown Source",
-            fr: "Source pour markdown",
+            en: "Markdown external file",
+            fr: "Fichier externe Markdown",
           },
           typeName: "md",
           nValues: [1, 1],

@@ -44,7 +44,7 @@ export class twoColumnSection extends Section {
             {
               id: "either",
               label: {
-                en: "Next Page",
+                en: "Next page",
                 fr: "Page suivante",
               },
             },
@@ -56,7 +56,7 @@ export class twoColumnSection extends Section {
           id: "showPageNumber",
           label: {
             en: "Show page numbers",
-            fr: "Afficher numéro de page",
+            fr: "Afficher numéros de page",
           },
           typeName: "boolean",
           nValues: [1, 1],
@@ -83,7 +83,7 @@ export class twoColumnSection extends Section {
               id: "text",
               label: {
                 en: "Scripture # text label",
-                fr: "Etiquette pour texte biblique #",
+                fr: "Étiquette pour texte biblique #",
               },
               typeName: "string",
               nValues: [1, 1],
@@ -91,7 +91,7 @@ export class twoColumnSection extends Section {
             {
               id: "src",
               label: {
-                en: "Source # text source",
+                en: "Scripture # text source",
                 fr: "Source pour texte biblique #",
               },
               typeName: "translationText",

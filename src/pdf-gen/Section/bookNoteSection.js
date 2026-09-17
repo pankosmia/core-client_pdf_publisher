@@ -47,7 +47,7 @@ export class bookNoteSection extends Section {
           id: "showPageNumber",
           label: {
             en: "Show page numbers",
-            fr: "Afficher numéro de page",
+            fr: "Afficher numéros de page",
           },
           typeName: "boolean",
           nValues: [1, 1],
@@ -56,7 +56,7 @@ export class bookNoteSection extends Section {
         {
           id: "notes",
           label: {
-            en: "Notes Source",
+            en: "Notes source",
             fr: "Source pour notes",
           },
           typeName: "tNotes",

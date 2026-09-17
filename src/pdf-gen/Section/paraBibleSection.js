@@ -49,7 +49,7 @@ export class paraBibleSection extends Section {
           id: "showPageNumber",
           label: {
             en: "Show page numbers",
-            fr: "Afficher numéro de page",
+            fr: "Afficher numéros de page",
           },
           typeName: "boolean",
           nValues: [1, 1],
@@ -112,8 +112,8 @@ export class paraBibleSection extends Section {
           id: "showWordAtts",
           typeLiteral: false,
           label: {
-            en: "Show word atts",
-            fr: "Afficher attributs des mots",
+            en: "Show word attributes",
+            fr: "Afficher attributs de mot",
           },
           nValues: [1, 1],
           suggestedDefault: false,
@@ -183,7 +183,7 @@ export class paraBibleSection extends Section {
           typeName: "boolean",
           label: {
             en: "Show character-level formatting",
-            fr: "Afficher styles de caractère",
+            fr: "Afficher styles des caractères",
           },
           nValues: [1, 1],
           suggestedDefault: true,
@@ -193,7 +193,7 @@ export class paraBibleSection extends Section {
           typeName: "boolean",
           label: {
             en: "Show chapter numbers",
-            fr: "Afficher numéros de chapitre",
+            fr: "Afficher numéros de chapitres",
           },
           nValues: [1, 1],
           suggestedDefault: true,
@@ -213,7 +213,7 @@ export class paraBibleSection extends Section {
           typeName: "boolean",
           label: {
             en: "Show verse number for verse one",
-            fr: "Afficher numéro de verset pour v1",
+            fr: "Afficher numéro de verset pour verset un",
           },
           nValues: [1, 1],
           suggestedDefault: false,
@@ -223,7 +223,7 @@ export class paraBibleSection extends Section {
           typeName: "boolean",
           label: {
             en: "Show asterisk after words in glossary",
-            fr: "Afficher une étoile après des mot dans le glossaire",
+            fr: "Afficher une étoile après des mots dans le glossaire",
           },
           nValues: [1, 1],
           suggestedDefault: false,
