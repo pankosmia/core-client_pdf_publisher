@@ -1,0 +1,3 @@
+export const firstLeft = `<section class="firstLeft">
+    <p class="%%LANGCLASS%%"><span class="transAbbr">%%LABEL%%</span>%%CONTENT%%</p>
+</section>`;

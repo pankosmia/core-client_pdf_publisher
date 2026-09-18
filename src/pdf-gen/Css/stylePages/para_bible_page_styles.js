@@ -1,0 +1,454 @@
+export const para_bible_page_styles = `%%%ATPAGE%%%
+
+body {
+    font-size: %%BODYFONTSIZE%%pt;
+    line-height: %%BODYLINEHEIGHT%%pt;
+    font-family: %%BODYFONT%%;
+    text-align: justify;
+    text-align-last: start;
+}
+
+section.chapters {
+    column-fill: balance;
+    page-break-before: avoid;
+    page-break-inside: auto;
+    -webkit-column-break-inside: auto;
+}
+
+%%%P%%%
+
+h1 {
+    page-break-after: avoid;
+}
+
+h1, h2, h3, h4, .paras_usfm_iot {
+    margin-top: 0;
+    margin-bottom: 0;
+    break-after: avoid;
+    -webkit-column-break-after: avoid;
+}
+
+::footnote-call {
+    font-style: italic;
+    font-size: 0.5em;
+    vertical-align: top;
+    padding-left: 1pt;
+    line-height: 1;
+}
+
+::footnote-marker {
+    font-weight: normal;
+    line-height: 1;
+}
+
+.glossary_star {
+    color: #777;
+}
+
+.bcv_note {
+    font-size: %%FOOTNOTEFONTSIZE%%pt;
+    line-height: %%FOOTNOTELINEHEIGHT%%pt;
+    float: footnote;
+    font-family: %%BODYFONT2%%;
+}
+
+.bcv_note::footnote-call {
+    content: none;
+}
+
+.bcv_note::footnote-marker {
+    content: none;
+}
+
+/* paras CSS format : */
+.paras_default {
+    color: purple;
+}
+.paras_usfm_b {
+    min-height: %%BODYLINEHEIGHT%%pt;
+}
+.paras_usfm_d {
+    font-style: italic;
+}
+.paras_usfm_f {
+    font-size: %%FOOTNOTEFONTSIZE%%pt;
+    line-height: %%FOOTNOTELINEHEIGHT%%pt;
+    float: footnote;
+    font-family: %%BODYFONT2%%;
+}
+.paras_usfm_hanging_graft {
+}
+.paras_usfm_ib {
+    min-height: %%BODYLINEHEIGHT%%pt;
+}
+.paras_usfm_ili {
+    display: list-item;
+    list-style-type: disc;
+    list-style-position: inside;
+    padding-left: 24pt;
+    text-indent: -12pt;
+    font-family: %%BODYFONT2%%;
+    break-inside: avoid;
+}
+.paras_usfm_ili2 {
+    display: list-item;
+    list-style-type: circle;
+    list-style-position: inside;
+    padding-left: 36pt;
+    text-indent: -12pt;
+    font-family: %%BODYFONT2%%;
+    break-inside: avoid;
+}
+.paras_usfm_ili3 {
+    display: list-item;
+    list-style-position: inside;
+    list-style-type: circle;
+    padding-left: 48pt;
+    text-indent: -12pt;
+    font-family: %%BODYFONT2%%;
+    break-inside: avoid;
+}
+.paras_usfm_im {
+    font-family: %%BODYFONT2%%
+}
+.paras_usfm_im:has(.wrappers_usfm_k) {
+    padding-top: %%BODYLINEHEIGHT%%pt;
+    text-indent: -1em;
+    margin-left: 1em;}
+.paras_usfm_imt {
+    font-weight: normal;
+    font-style: italic;
+    font-size: %%H1FONTSIZE%%pt;
+    line-height: %%H1LINEHEIGHT%%pt;
+    padding-top: %%BODYLINEHEIGHT%%pt;
+    padding-bottom: %%BODYLINEHEIGHT%%pt;
+    text-align: center;
+    font-family: %%BODYFONT2%%;
+}
+.paras_usfm_imt2 {
+    font-weight: normal;
+    font-style: italic;
+    font-size: %%H2FONTSIZE%%pt;
+    line-height: %%H2LINEHEIGHT%%pt;
+    text-align: center;
+    font-family: %%BODYFONT2%%;
+}
+.paras_usfm_imt3 {
+    font-weight: normal;
+    font-style: italic;
+    font-size: %%H3FONTSIZE%%pt;
+    line-height: %%H3LINEHEIGHT%%pt;
+    text-align: center;
+    font-family: %%BODYFONT2%%;
+}
+.paras_usfm_ip {
+    text-indent: 12pt;
+    font-family: %%BODYFONT2%%
+}
+.paras_usfm_ipi {
+    padding-left: 12pt;
+    text-indent: 12pt;
+    font-family: %%BODYFONT2%%
+}
+.paras_usfm_io {
+    padding-left: 12pt;
+    font-family: %%BODYFONT2%%;
+    text-align: left;
+}
+.paras_usfm_iot {
+    font-weight: bold;
+    font-size: %%H4FONTSIZE%%pt;
+    line-height: %%H4LINEHEIGHT%%pt;
+    font-family: %%BODYFONT2%%;
+    text-align: left
+}
+.paras_usfm_is {
+    font-style: italic;
+    font-size: %%H2FONTSIZE%%pt;
+    line-height: %%H2LINEHEIGHT%%pt;
+    padding-top: %%BODYLINEHEIGHT%%pt;
+    font-family: %%BODYFONT2%%;
+    break-after: avoid;
+}
+.paras_usfm_is2 {
+    font-style: italic;
+    font-size: %%H3FONTSIZE%%pt;
+    line-height: %%H3LINEHEIGHT%%pt;
+    font-family: %%BODYFONT2%%;
+    break-after: avoid;
+}
+.paras_usfm_is3 {
+    font-style: italic;
+    font-size: %%H4FONTSIZE%%pt;
+    line-height: %%H4LINEHEIGHT%%pt;
+    font-family: %%BODYFONT2%%;
+    break-after: avoid;
+}
+.paras_usfm_li {
+    display: list-item;
+    list-style-position: inside;
+    list-style-type: disc;
+    padding-left: 24pt;
+    text-indent: -12pt;
+}
+.paras_usfm_li2 {
+    display: list-item;
+    list-style-position: inside;
+    list-style-type: circle;
+    padding-left: 36pt;
+    text-indent: -12pt;
+}
+.paras_usfm_li3 {
+    display: list-item;
+    list-style-position: inside;
+    list-style-type: circle;
+    padding-left: 48pt;
+    text-indent: -12pt;
+}
+.paras_usfm_m {
+    break-before: avoid-column;
+}
+.paras_usfm_mi {
+    padding-left: 12pt;
+}
+.paras_usfm_mr {
+    font-size: %%H4FONTSIZE%%pt;
+    line-height: %%H4LINEHEIGHT%%pt;
+    font-style: italic;
+    font-family: %%HEADINGFONT%%;
+}
+.paras_usfm_ms {
+    font-size: %%H4FONTSIZE%%pt;
+    line-height: %%H4LINEHEIGHT%%pt;
+    font-weight: bold;
+    font-family: %%HEADINGFONT%%;
+}
+.paras_usfm_ms2 {
+    font-weight: bold;
+    font-family: %%HEADINGFONT%%;
+}
+.paras_usfm_mt {
+    font-weight: normal;
+    font-style: italic;
+    font-size: %%H1FONTSIZE%%pt;
+    line-height: %%H1LINEHEIGHT%%pt;
+    padding-top: %%BODYLINEHEIGHT%%pt;
+    padding-bottom: %%BODYLINEHEIGHT%%pt;
+    text-align: center;
+    font-family: %%HEADINGFONT%%;
+}
+.paras_usfm_mt2 {
+    font-weight: normal;
+    font-style: italic;
+    font-size: %%H2FONTSIZE%%pt;
+    line-height: %%H2LINEHEIGHT%%pt;
+    text-align: center;
+    font-family: %%HEADINGFONT%%;
+}
+.paras_usfm_mt3 {
+    font-weight: normal;
+    font-style: italic;
+    font-size: %%H3FONTSIZE%%pt;
+    line-height: %%H3LINEHEIGHT%%pt;
+    text-align: center;
+    font-family: %%HEADINGFONT%%;
+}
+.paras_usfm_nb {
+}
+.paras_usfm_p {
+    text-indent: 12pt;
+    break-inside: auto;
+}
+.paras_usfm_pc {
+    text-align: center;
+}
+.paras_usfm_pi {
+    padding-left: 12pt;
+    text-indent: 12pt;
+}
+.paras_usfm_pi2 {
+    padding-left: 24pt;
+    text-indent: 12pt;
+}
+.paras_usfm_pi3 {
+    padding-left: 36pt;
+    text-indent: 12pt;
+}
+.paras_usfm_q {
+    padding-left: 12pt;
+    text-align: left;
+    line-height: 10pt;
+    font-size: %%BODYFONTSIZE%%pt;
+    line-height: %%BODYLINEHEIGHT%%pt;
+}
+.paras_usfm_q2 {
+    padding-left: 24pt;
+    text-align: left;
+    font-size: %%BODYFONTSIZE%%pt;
+    line-height: %%BODYLINEHEIGHT%%pt;
+}
+.paras_usfm_q3 {
+    padding-left: 36pt;
+    text-align: left;
+    font-size: %%BODYFONTSIZE%%pt;
+    line-height: %%BODYLINEHEIGHT%%pt;
+}
+.paras_usfm_q4 {
+    padding-left: 48pt;
+    text-align: left;
+    font-size: %%BODYFONTSIZE%%pt;
+    line-height: %%BODYLINEHEIGHT%%pt;
+}
+.paras_usfm_qa {
+    font-weight: bold;
+    font-size: %%H1FONTSIZE%%pt;
+    line-height: %%H1LINEHEIGHT%%pt;
+}
+.paras_usfm_qr {
+    text-align: right;
+}
+.paras_usfm_r {
+    font-weight: bold;
+    font-family: %%HEADINGFONT%%;
+}
+.paras_usfm_s {
+    font-style: italic;
+    font-size: %%H2FONTSIZE%%pt;
+    line-height: %%H2LINEHEIGHT%%pt;
+    font-family: %%HEADINGFONT%%;
+    text-align: left;
+}
+.paras_usfm_s2 {
+    font-style: italic;
+    font-size: %%H3FONTSIZE%%pt;
+    line-height: %%H3LINEHEIGHT%%pt;
+    font-family: %%HEADINGFONT%%;
+    text-align: left;
+}
+.paras_usfm_s3 {
+    font-style: italic;
+    font-size: %%H4FONTSIZE%%pt;
+    line-height: %%H4LINEHEIGHT%%pt;
+    font-family: %%HEADINGFONT%%;
+    text-align: left;
+}
+paras_usfm_sr {
+    font-size: %%H3FONTSIZE%%pt;
+    line-height: %%H3LINEHEIGHT%%pt;
+    font-family: %%HEADINGFONT%%;
+    text-align: left;
+}
+.paras_usfm_tr {
+}
+.paras_usfm_x {
+    font-size: %%FOOTNOTEFONTSIZE%%pt;
+    line-height: %%FOOTNOTELINEHEIGHT%%pt;
+    float: footnote;
+    font-family: %%FOOTNOTEFONT%%;
+}
+/* marks CSS format : */
+.marks_default {
+}
+.marks_chapter_label {
+    font-size: 40pt;
+    height: 30pt;
+    line-height: 25pt;
+    float: left;
+    padding: 0;
+    margin: 0 6pt 0 0;
+    text-indent: 0;
+    vertical-align: middle;
+}
+p:has(.marks_chapter_label) {
+    text-indent: 0;
+}
+.marks_verses_label {
+    font-weight: bold;
+    font-size: 70%;
+    line-height: 1;
+    margin-right: 2pt;
+    vertical-align: baseline;
+}
+/* wrappers CSS format : */
+.wrappers_default {
+}
+.wrappers_usfm_add {
+    font-style: italic;
+}
+.wrappers_usfm_bd {
+    font-weight: bold;
+}
+.wrappers_usfm_bdit {
+    font-weight: bold;
+    font-style: italic;
+}
+.wrappers_usfm_bk {
+    font-style: italic;
+}
+.wrappers_chapter {
+}
+.wrappers_usfm_fl {
+}
+.wrappers_usfm_fm {
+}
+.wrappers_usfm_fq {
+    font-style: italic;
+}
+.wrappers_usfm_fqa {
+    font-style: italic;
+}
+.wrappers_usfm_fr {
+    font-weight: bold;
+}
+.wrappers_usfm_ft {
+}
+.wrappers_usfm_it {
+    font-style: italic;
+}
+.wrappers_usfm_k {
+    font-weight: bold;
+}
+.wrappers_usfm_nd {
+    font-weight: bold;
+    font-size: smaller;
+    text-transform: uppercase;
+}
+.wrappers_usfm_qs {
+    font-style: italic;
+}
+.wrappers_usfm_pn {
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: #777;
+    text-decoration-thickness: 1pt;
+}
+.wrappers_usfm_png {
+    text-decoration: underline;
+    text-decoration-style: dashed;
+    text-decoration-color: #777;
+    text-decoration-thickness: 1pt;
+}
+.wrappers_usfm_qt {
+    font-style: italic;
+}
+.wrappers_usfm_sc {
+    font-size: smaller;
+    text-transform: uppercase;
+}
+.wrappers_usfm_sls {
+    font-family: %%GREEKFONT%%;
+}
+.wrappers_usfm_tl {
+    font-style: italic;
+}
+.wrappers_verses {
+}
+.wrappers_usfm_wj {
+}
+.wrappers_usfm_xk {
+}
+.wrappers_usfm_xo {
+    font-weight: bold;
+}
+.wrappers_usfm_xt {
+}`;

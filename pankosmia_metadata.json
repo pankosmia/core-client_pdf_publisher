@@ -1,18 +1,291 @@
 {
-  "id": "contenthandler-template",
+  "id": "core-client_pdf_publisher",
+  "minServerVersion": "0.16.16",
+  "exclude_from_menu": true,
+  "exclude_from_dashboard": true,
   "require": {
     "net": false,
-    "debug": true
+    "debug": false
+  },
+  "endpoints": {
+    "x-printspec": {
+      "edit": {
+        "doc": "main page for pdf print",
+        "label": "pages:core-client-workspace:main",
+        "url": ""
+      }
+    }
   },
   "i18n": {
     "title": {
-      "en": "contenthandler-template"
+      "en": "PDF Publisher"
     },
     "summary": {
       "en": "contenthandler-template"
     },
     "stub_content": {
       "en": "Content goes here"
+    },
+    "choose_layout": {
+      "en": "Choose book(s) and layout(s)",
+      "fr": "Choisir livre(s) et layout(s)"
+    },
+    "choose_layout_free_format": {
+      "en": "Choose format",
+      "fr": "Choisir format"
+    },
+    "layouts": {
+      "en": "Layouts *",
+      "fr": "Layouts *"
+    },
+    "choose_documents": {
+      "en": "Choose document(s)",
+      "fr": "Choisir document(s)"
+    },
+    "configure_section": {
+      "en": "Configure section",
+      "fr": "Configurer section"
+    },
+    "add_section": {
+      "en": "New section",
+      "fr": "Nouvelle section"
+    },
+    "add": {
+      "en": "Add",
+      "fr": "Ajouter"
+    },
+    "edit_section": {
+      "en": "Save",
+      "fr": "Sauvegarder"
+    },
+    "markdownSection": {
+      "en": "Markdown"
+    },
+    "pdfSection": {
+      "en": "PDF",
+      "fr": "PDF"
+    },
+    "paraBibleSection": {
+      "en": "Formatted Bible",
+      "fr": "Bible formatée"
+    },
+    "bcvBibleSection": {
+      "en": "Bible by verse",
+      "fr": "Bible par verset"
+    },
+    "twoColumnSection": {
+      "en": "Two Bibles in two columns",
+      "fr": "Deux Bibles en deux colonnes"
+    },
+    "jxlSimpleSection": {
+      "en": "Juxtalinear",
+      "fr": "Juxtalinéaire"
+    },
+    "bookNoteSection": {
+      "en": "Book introduction",
+      "fr": "Introduction de livre"
+    },
+    "biblePlusNotesSection": {
+      "en": "Notes focus (by verse)",
+      "fr": "Focalisé sur notes (par verset)"
+    },
+    "notesOnlySection": {
+      "en": "Notes only",
+      "fr": "Notes seulement"
+    },
+    "fourColumnSpreadSection": {
+      "en": "Four Bibles on facing pages",
+      "fr": "Quatre Bibles en vis-à-vis"
+    },
+    "jxlSpreadSection": {
+      "en": "Juxtalinear on facing pages",
+      "fr": "Juxtalinéaire en vis-à-vis"
+    },
+    "obsSection": {
+      "en": "OBS"
+    },
+    "obsPlusNotesSection": {
+      "en": "OBS with notes",
+      "fr": "OBS avec notes"
+    },
+    "free_format": {
+      "en": "External file",
+      "fr": "Fichier externe"
+    },
+    "one-page-bible": {
+      "en": "Biblical content",
+      "fr": "Contenu biblique"
+    },
+    "one-page-notes": {
+      "en": "Notes",
+      "fr": "Notes"
+    },
+    "double-page": {
+      "en": "Double-page spread"
+    },
+    "obs": {
+      "en": "OBS",
+      "fr": "OBS"
+    },
+    "multipleSelectionDescription1": {
+      "en": "You can assemble several layouts, they will be cycled through",
+      "fr": "Vous pouvez assembler plusieurs layouts, ils seront parcouru"
+    },
+    "multipleSelectionDescription2": {
+      "en": "for each selected book",
+      "fr": "pour chaque livre sélectionné"
+    },
+    "multipleSelectionDescription3": {
+      "en": "of the section.",
+      "fr": "de la section"
+    },
+    "print": {
+      "en": "Print",
+      "fr": "Imprimer"
+    },
+    "pdf_sections": {
+      "en": "Sections",
+      "fr": "Sections"
+    },
+    "general_setting": {
+      "en": "General settings",
+      "fr": "Paramètres généraux"
+    },
+    "bcvWrapper": {
+      "en": "Bible books",
+      "fr": "Livres de la Bible"
+    },
+    "obsWrapper": {
+      "en": "Open Bible Stories",
+      "fr": "Open Bible Stories"
+    },
+    "selectRessource": {
+      "en": "Select a resource",
+      "fr": "Sélectionnez une ressource"
+    },
+    "select": {
+      "en": "Select",
+      "fr": "Sélectionner"
+    },
+    "save_success": {
+      "en": "Project successfully saved",
+      "fr": "Projet sauvegardé avec succès"
+    },
+    "save_error": {
+      "en": "An error occurred while saving:",
+      "fr": "Une erreur est survenue pendant la sauvegarde :"
+    },
+    "missing_ressources": {
+      "en": "Missing ressources in",
+      "fr": "Ressources manquantes dans"
+    },
+    "missing_book": {
+      "en": "%%RESOURCE%% is missing books:",
+      "fr": "%%RESOURCE%% n'a pas les livres :"
+    },
+    "flavor_miss_match": {
+      "en": "%%RESOURCE%% is not of the right type:",
+      "fr": "%%RESOURCE%% n'est du bon type :"
+    },
+    "ressource_errors": {
+      "en": "%%RESOURCE%% has multiple errors",
+      "fr": "%%RESOURCE%% a plusieurs erreurs"
+    },
+    "dragAndDrop": {
+      "en": "Drop a %%DOCTYPE%% here or click to search",
+      "fr": "Déposez un %%DOCTYPE%% ici ou cliquez pour rechercher"
+    },
+    "singleFile": {
+      "en": "One file only",
+      "fr": "Un seul fichier"
+    },
+    "edit": {
+      "en": "Write",
+      "fr": "Écrire"
+    },
+    "preview": {
+      "en": "Preview",
+      "fr": "Aperçu"
+    },
+    "nothingToPreview": {
+      "en": "Nothing to preview for now.",
+      "fr": "Rien à afficher pour le moment."
+    },
+    "createMarkdown": {
+      "en": "New Markdown file",
+      "fr": "Nouveau fichier Markdown"
+    },
+    "or": {
+      "en": "or",
+      "fr": "ou"
+    },
+    "markdownPdfWrapper": {
+      "en": "External file",
+      "fr": "Fichier externe"
+    },
+    "pdf": {
+      "en": "PDF",
+      "fr": "PDF"
+    },
+    "markdown": {
+      "en": "Markdown",
+      "fr": "Markdown"
+    },
+    "print_disabled_not_viewer": {
+      "en": "You can't print if you are not in the Viewer",
+      "fr": "Vous ne pouvez pas imprimer si vous n'êtes pas dans le Viewer"
+    },
+    "print_disabled_sections_issue": {
+      "en": "Some section(s) have issues",
+      "fr": "Certaine(s) section(s) ont des erreurs"
+    },
+    "as": {
+      "en": "as",
+      "fr": "en"
+    },
+    "books": {
+      "en": "book(s)",
+      "fr": "livre(s)"
+    },
+    "book_plural": {
+      "en": "Books *",
+      "fr": "Livres *"
+    },
+    "saveRequiredForPrint": {
+      "en": "Import required for print",
+      "fr": "Importation requise pour l'impression"
+    },
+    "texts": {
+      "en": "texts",
+      "fr": "textes"
+    },
+    "saveRequiredForPrintTooltip": {
+      "en": "This file must be saved to the project before it can be used when printing the PDF.",
+      "fr": "Ce fichier doit être sauvegardé dans le projet avant de pouvoir être utilisé lors de l'impression du PDF."
+    },
+    "step": {
+      "en": "Current step ##CURRENT##/##GLOBAL##",
+      "fr": "Étape actuelle ##CURRENT##/##GLOBAL##"
+    },
+    "errorGet": {
+      "en": "Could not fetch",
+      "fr": "N'as pas pu fetch"
+    },
+    "need_firefox": {
+      "en": "You need to download a render engine to print PDFs. Manage system plugins at any time from the app settings.",
+      "fr": "Vous devez télécharger un moteur de rendu pour imprimer des PDFs. Gérez les plugins système à tout moment depuis les paramètres de l'app."
+    },
+    "Firefox_not_installed": {
+      "en": "System plugin required",
+      "fr": "Plugin système nécessaire"
+    },
+    "not_yet_implemented": {
+      "en": "This feature is not available for now",
+      "fr": "Cette fonctionnalité n'est pas disponible pour le moment"
+    },
+    "print_succes": {
+      "en": "Printed successfully in the Downloads folder",
+      "fr": "Impression réussie dans le dossier Téléchargements"
     }
   }
 }

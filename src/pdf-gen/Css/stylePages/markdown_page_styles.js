@@ -1,0 +1,58 @@
+export const markdown_page_styles = `%%%ATPAGE%%%
+
+%%%BODY2%%%
+
+h1 {
+    font-size: %%H1FONTSIZE%%pt;
+    line-height: %%H1LINEHEIGHT%%pt;
+    font-weight: bold;
+    margin: 0;
+    margin-bottom: %%H1BOTTOMMARGIN%%pt;
+    border-bottom: %%H1BOTTOMBORDERWIDTH%%pt solid black;
+    padding-bottom: %%H1BOTTOMMARGIN%%pt;
+    width: %%PAGEBODYWIDTH%%pt;
+    font-family: %%BODYFONT2%%;
+    break-after: avoid;
+}
+
+h2 {
+    margin: 0;
+    margin-top: %%BODYLINEHEIGHT%%pt;
+    padding: 0;
+    font-family: %%BODYFONT2%%;
+    font-size:%%H2FONTSIZE%%pt;
+    line-height:%%H2LINEHEIGHT%%pt;
+}
+h3 {
+    margin: 0;
+    margin-top: %%BODYLINEHEIGHT%%pt;
+    padding: 0;
+    font-family: %%BODYFONT2%%;
+    font-size:%%H3FONTSIZE%%pt;
+    line-height:%%H3LINEHEIGHT%%pt;
+    font-weight: normal;
+}
+h4 {
+    margin: 0;
+    margin-top: %%BODYLINEHEIGHT%%pt;
+    padding: 0;
+    font-family: %%BODYFONT2%%;
+    font-size:%%H4FONTSIZE%%pt;
+    line-height:%%H4LINEHEIGHT%%pt;
+    font-weight: normal;
+    font-style: italic;
+}
+
+p {
+    margin: 0;
+    margin-bottom: %%BODYLINEHEIGHT%%pt;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+    font-style: italic;
+}
+
+%%%FOOTNOTE%%%`;

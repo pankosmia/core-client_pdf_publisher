@@ -1,0 +1,13 @@
+export const sentence = `<section class="sentence" data-n="1" data-cv="PHP 1:1">
+    <section class="leftPane">
+        <h2 class="phraseN">%%BOOKNAME%% %%SENTENCEREF%%</span></h2>
+            %%LEFTCONTENT%%
+        %%NOTES%%
+    </section>
+    <section class="rightPane">
+        <h2 class="sentenceRef">%%BOOKNAME%% %%SENTENCEREF%%</span></h2>
+        <section class="jxl">
+            %%JXL%%
+        </section>
+    </section>
+</section>`;

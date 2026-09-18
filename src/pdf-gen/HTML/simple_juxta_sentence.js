@@ -1,0 +1,11 @@
+export const simple_juxta_sentence = `<section class="sentence" data-n="1" data-cv="PHP 1:1">
+    <section class="rightPane">
+        <h2 class="sentenceHeader"><span class="sentenceRef">%%BOOKNAME%% %%SENTENCEREF%%</span></span></h2>
+        <section class="jxlTopText">%%TOPTEXT%%</section>
+        <section class="jxl">
+            %%JXL%%
+        %%NOTES%%
+        </section>
+    </section>
+    <section class="jxlBottomText">%%BOTTOMTEXT%%</section>
+</section>`;

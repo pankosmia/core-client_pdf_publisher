@@ -1,0 +1,13 @@
+export const H1 = `h1 {
+    font-size: %%H1FONTSIZE%%pt;
+    line-height: %%H1LINEHEIGHT%%pt;
+    font-weight: bold;
+    margin: 0;
+    padding-top: %%BODYLINEHEIGHT%%;
+    margin-bottom: %%H1BOTTOMMARGIN%%pt;
+    border-bottom: %%H1BOTTOMBORDERWIDTH%%pt solid black;
+    padding-bottom: %%H1BOTTOMMARGIN%%pt;
+    width: %%PAGEBODYWIDTH%%pt;
+    font-family: %%HEADINGFONT%%;
+    break-after: avoid;
+}`;

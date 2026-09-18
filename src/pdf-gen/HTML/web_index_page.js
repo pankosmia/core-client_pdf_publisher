@@ -1,0 +1,15 @@
+export const web_index_page = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    <title>Web Index</title>
+</head>
+<body>
+<h1>Web Index</h1>
+<ul>
+    %%LINKS%%
+    <li><a href="./pdf/manifest.json">Manifest JSON</a></li>
+</ul>
+</body>
+</html>`;

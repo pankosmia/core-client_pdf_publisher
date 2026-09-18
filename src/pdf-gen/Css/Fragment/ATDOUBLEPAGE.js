@@ -1,0 +1,20 @@
+export const ATDOUBLEPAGE = `@page {
+    size: %%DOUBLEPAGEWIDTH%%pt %%PAGEHEIGHT%%pt;
+    margin-right: %%MARGINOUTER%%pt;
+    margin-left: %%MARGINOUTER%%pt;
+    margin-bottom: %%MARGINBOTTOM%%pt;
+    margin-top: %%MARGINTOP%%pt;
+
+    @top-center {
+    }
+    @footnote {
+        float: bottom;
+    }
+    
+}
+.footnotesCol {
+    columns: 2;
+    column-gap: %%DOUBLEMARGININNER%%pt;
+    margin-top: %%BODYLINEHEIGHT%%pt;
+}
+`;
