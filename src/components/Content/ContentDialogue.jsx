@@ -341,7 +341,7 @@ export function ContentDialogue({
             onCloseFromOutise();
           }
         }}
-        size="md"
+        size="lg"
         titleLabel={
           type === "edit"
             ? doI18n(
