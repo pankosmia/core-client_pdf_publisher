@@ -20,7 +20,7 @@ export const InfoRessource = ({
           variant={typographyVariant ? typographyVariant : "body1"}
           color="text.primary"
         >{` ${doI18n(
-          `pages:core-client_pdf_publisher:missing_ressources`,
+          `pages:core-client-pdf_publisher:missing_ressources`,
           i18nRef.current,
         )} : ${pathElem}`}</Typography>
       </>
@@ -40,7 +40,7 @@ export const InfoRessource = ({
   if (toolTipErrors.bookCode.length > 0) {
     toolTipMessages.push(
       `${doI18n(
-        `pages:core-client_pdf_publisher:missing_book`,
+        `pages:core-client-pdf_publisher:missing_book`,
         i18nRef.current,
       ).replace(
         "%%RESOURCE%%",
@@ -51,7 +51,7 @@ export const InfoRessource = ({
   if (toolTipErrors.flavor !== "") {
     toolTipMessages.push(
       `${doI18n(
-        `pages:core-client_pdf_publisher:flavor_miss_match`,
+        `pages:core-client-pdf_publisher:flavor_miss_match`,
         i18nRef.current,
       ).replace(
         "%%RESOURCE%%",
@@ -75,7 +75,7 @@ export const InfoRessource = ({
             sx={typographySx ? typographySx : {}}
           >
             {doI18n(
-              `pages:core-client_pdf_publisher:ressource_errors`,
+              `pages:core-client-pdf_publisher:ressource_errors`,
               i18nRef.current,
             ).replace("%%RESOURCE%%", summary?.[pathElem]?.name)}
           </Typography>

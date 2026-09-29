@@ -62,7 +62,7 @@ export function BcvWrapperOverview({
             }}
           >
             {doI18n(
-              `pages:core-client_pdf_publisher:${section.type + "Section"}`,
+              `pages:core-client-pdf_publisher:${section.type + "Section"}`,
               i18nRef.current,
             )}
           </Typography>

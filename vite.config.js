@@ -28,5 +28,5 @@ export default defineConfig({
     emptyOutDir: true,
     sourcemap: true,
   },
-  base: "/clients/core-client_pdf_publisher",
+  base: "/clients/core-client-pdf_publisher",
 });

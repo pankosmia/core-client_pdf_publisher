@@ -61,7 +61,7 @@ export function ConfigSection({
         setLang(langs.json[0]);
       } else {
         enqueueSnackbar(
-          doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+          doI18n(`pages:core-client-pdf_publisher:errorGet`, i18nRef.current) +
             " /api/settings/languages" +
             `${langs.status}): ${langs.error}`,
           { variant: "error" },
@@ -339,7 +339,7 @@ export function ConfigSection({
                                 </Box>
                                 <Typography sx={{ alignContent: "center" }}>
                                   {doI18n(
-                                    `pages:core-client_pdf_publisher:${e.sectionType + "Section"}`,
+                                    `pages:core-client-pdf_publisher:${e.sectionType + "Section"}`,
                                     i18nRef.current,
                                   )}
                                 </Typography>

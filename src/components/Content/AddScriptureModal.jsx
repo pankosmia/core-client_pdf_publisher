@@ -46,7 +46,7 @@ export default function AddScriptureModal({
       setProjectSummaries(summariesResponse.json);
     } else {
       enqueueSnackbar(
-        doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+        doI18n(`pages:core-client-pdf_publisher:errorGet`, i18nRef.current) +
           " /api/burrito/metadata/summaries" +
           `${summariesResponse.status}): ${summariesResponse.error}`,
         { variant: "error" },
@@ -135,7 +135,7 @@ export default function AddScriptureModal({
               setOpenResourcesDialog(false);
             }}
           >
-            {doI18n("pages:core-client_pdf_publisher:add", i18nRef.current)}
+            {doI18n("pages:core-client-pdf_publisher:add", i18nRef.current)}
           </Button>
         ),
       };
@@ -150,14 +150,14 @@ export default function AddScriptureModal({
         onClick={() => setOpenResourcesDialog(true)}
       >
         <Typography variant="body">
-          {doI18n("pages:core-client_pdf_publisher:select", i18nRef.current)}
+          {doI18n("pages:core-client-pdf_publisher:select", i18nRef.current)}
         </Typography>
       </Button>
       <PanDialog
         size="xl"
         isOpen={openResourcesDialog}
         closeFn={() => setOpenResourcesDialog(false)}
-        titleLabel={`${doI18n(`pages:core-client_pdf_publisher:select`, i18nRef.current)} ${type.map((t) => doI18n(`flavors:names:${t}`, i18nRef.current)).join(` ${doI18n("pages:core-client_pdf_publisher:or", i18nRef.current)} `)}`}
+        titleLabel={`${doI18n(`pages:core-client-pdf_publisher:select`, i18nRef.current)} ${type.map((t) => doI18n(`flavors:names:${t}`, i18nRef.current)).join(` ${doI18n("pages:core-client-pdf_publisher:or", i18nRef.current)} `)}`}
       >
         <DialogContent>
           <Box sx={{ m: 2 }}>

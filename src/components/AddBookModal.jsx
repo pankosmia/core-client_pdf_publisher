@@ -44,7 +44,7 @@ export default function AddBookModal({
       setProjectSummaries(summariesResponse.json);
     } else {
       enqueueSnackbar(
-        doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+        doI18n(`pages:core-client-pdf_publisher:errorGet`, i18nRef.current) +
           " /api/burrito/metadata/summaries" +
           `${summariesResponse.status}): ${summariesResponse.error}`,
         { variant: "error" },
@@ -87,7 +87,7 @@ export default function AddBookModal({
     {
       field: "name",
       headerName: doI18n(
-        "pages:core-client_pdf_publisher:row_name",
+        "pages:core-client-pdf_publisher:row_name",
         i18nRef.current,
       ),
       // minWidth: 110,
@@ -96,7 +96,7 @@ export default function AddBookModal({
     {
       field: "description",
       headerName: doI18n(
-        "pages:core-client_pdf_publisher:row_description",
+        "pages:core-client-pdf_publisher:row_description",
         i18nRef.current,
       ),
       // minWidth: 130,
@@ -105,7 +105,7 @@ export default function AddBookModal({
     {
       field: "source",
       headerName: doI18n(
-        "pages:core-client_pdf_publisher:row_source",
+        "pages:core-client-pdf_publisher:row_source",
         i18nRef.current,
       ),
       // minWidth: 110,
@@ -114,7 +114,7 @@ export default function AddBookModal({
     {
       field: "language",
       headerName: doI18n(
-        "pages:core-client_pdf_publisher:row_language",
+        "pages:core-client-pdf_publisher:row_language",
         i18nRef.current,
       ),
       // minWidth: 100,
@@ -154,7 +154,7 @@ export default function AddBookModal({
         closeFn={() => setOpenResourcesDialog(false)}
         size="md"
         titleLabel={`${doI18n(
-          "pages:core-client_pdf_publisher:import_zip_project",
+          "pages:core-client-pdf_publisher:import_zip_project",
           i18nRef.current,
         )}`}
       >
@@ -177,7 +177,7 @@ export default function AddBookModal({
                 }}
               >
                 {doI18n(
-                  "pages:core-client_pdf_publisher:choose_resources_tCore",
+                  "pages:core-client-pdf_publisher:choose_resources_tCore",
                   i18nRef.current,
                 )}
               </Typography>
@@ -194,7 +194,7 @@ export default function AddBookModal({
                 }}
               >
                 <Typography variant="body2">
-                  {`${doI18n("pages:core-client_pdf_publisher:editing", i18nRef.current, debugRef.current)} ${currentProjectRef.current && currentProjectRef.current.project}`}
+                  {`${doI18n("pages:core-client-pdf_publisher:editing", i18nRef.current, debugRef.current)} ${currentProjectRef.current && currentProjectRef.current.project}`}
                 </Typography>
                 {/* <PlayArrowIcon /> */}
               </Fab>

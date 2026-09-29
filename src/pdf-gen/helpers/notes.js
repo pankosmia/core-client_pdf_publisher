@@ -154,7 +154,7 @@ export const bcvNotes = async (
       return notes;
     } else {
       enqueueSnackbar(
-        doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+        doI18n(`pages:core-client-pdf_publisher:errorGet`, i18nRef.current) +
           `/api/burrito/ingredient/raw/${notesPath}?ipath=${fileWithBook}.tsv` +
           `${notesRowsRaw.status}): ${notesRowsRaw.error}`,
         { variant: "error" },
@@ -162,7 +162,7 @@ export const bcvNotes = async (
     }
   } else {
     enqueueSnackbar(
-      doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+      doI18n(`pages:core-client-pdf_publisher:errorGet`, i18nRef.current) +
         `/api/burrito/metadata/summary/${notesPath}` +
         `${summary.status}): ${summary.error}`,
       { variant: "error" },

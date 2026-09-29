@@ -167,7 +167,7 @@ export function PdfPublisher() {
               });
               enqueueSnackbar(
                 doI18n(
-                  `pages:core-client_pdf_publisher:errorGet`,
+                  `pages:core-client-pdf_publisher:errorGet`,
                   i18nRef.current,
                 ) +
                   ` /api/burrito/ingredient/raw/${currentProjectRef.current.organization}/${currentProjectRef.current.source}/${currentProjectRef.current.project}?ipath=specs.json` +
@@ -189,7 +189,7 @@ export function PdfPublisher() {
         } else {
           enqueueSnackbar(
             doI18n(
-              `pages:core-client_pdf_publisher:errorGet`,
+              `pages:core-client-pdf_publisher:errorGet`,
               i18nRef.current,
             ) +
               `/api/burrito/paths/${currentProjectRef.current.organization}/${currentProjectRef.current.source}/${currentProjectRef.current.project}` +
@@ -289,7 +289,7 @@ export function PdfPublisher() {
           setCurrentNumberOfStepsValidated((prev) => {
             const next = prev + 1;
             setMessageSnackbar(
-              doI18n("pages:core-client_pdf_publisher:step", i18nRef.current)
+              doI18n("pages:core-client-pdf_publisher:step", i18nRef.current)
                 .replace("##CURRENT##", next)
                 .replace("##GLOBAL##", totalSteps),
             );
@@ -304,12 +304,12 @@ export function PdfPublisher() {
       setNumberOfStepsToValidate(0);
       setCurrentNumberOfStepsValidated(0);
       enqueueSnackbar(
-        doI18n(`pages:core-client_pdf_publisher:print_succes`, i18nRef.current),
+        doI18n(`pages:core-client-pdf_publisher:print_succes`, i18nRef.current),
         { variant: "success" },
       );
     } else {
       enqueueSnackbar(
-        doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+        doI18n(`pages:core-client-pdf_publisher:errorGet`, i18nRef.current) +
           ` /api/settings/typography/` +
           `${font.status}): ${font.error}`,
         { variant: "error" },
@@ -328,7 +328,7 @@ export function PdfPublisher() {
         setProjectSummaries(summariesResponse.json);
       } else {
         enqueueSnackbar(
-          doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+          doI18n(`pages:core-client-pdf_publisher:errorGet`, i18nRef.current) +
             " /api/burrito/metadata/summaries" +
             `${summariesResponse.status}): ${summariesResponse.error}`,
           { variant: "error" },
@@ -344,7 +344,7 @@ export function PdfPublisher() {
         setlang(langs.json[0]);
       } else {
         enqueueSnackbar(
-          doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+          doI18n(`pages:core-client-pdf_publisher:errorGet`, i18nRef.current) +
             " /api/settings/languages" +
             `${langs.status}): ${langs.error}`,
           { variant: "error" },
@@ -384,7 +384,7 @@ export function PdfPublisher() {
     <Box>
       <PanDialog
         titleLabel={doI18n(
-          `pages:core-client_pdf_publisher:Firefox_not_installed`,
+          `pages:core-client-pdf_publisher:Firefox_not_installed`,
           i18nRef.current,
         )}
         isOpen={firefoxModalOpen}
@@ -394,7 +394,7 @@ export function PdfPublisher() {
         <DialogContent>
           <DialogContentText sx={{ mb: 2 }}>
             {doI18n(
-              `pages:core-client_pdf_publisher:need_firefox`,
+              `pages:core-client-pdf_publisher:need_firefox`,
               i18nRef.current,
             )}
           </DialogContentText>
@@ -407,7 +407,7 @@ export function PdfPublisher() {
         />
       </PanDialog>
       <Header
-        titleKey={`${doI18n("pages:core-client_pdf_publisher:title", i18nRef.current)}`}
+        titleKey={`${doI18n("pages:core-client-pdf_publisher:title", i18nRef.current)}`}
         currentId="core-contenthandler_text_translation"
         requireNet={false}
       />
@@ -446,7 +446,7 @@ export function PdfPublisher() {
               });
               enqueueSnackbar(
                 doI18n(
-                  `pages:core-client_pdf_publisher:save_success`,
+                  `pages:core-client-pdf_publisher:save_success`,
                   i18nRef.current,
                 ),
                 { variant: "success" },
@@ -454,7 +454,7 @@ export function PdfPublisher() {
             } else {
               enqueueSnackbar(
                 doI18n(
-                  `pages:core-client_pdf_publisher:save_error`,
+                  `pages:core-client-pdf_publisher:save_error`,
                   i18nRef.current,
                 ) + response.error,
                 { variant: "error" },
@@ -486,7 +486,7 @@ export function PdfPublisher() {
         <Box>
           <Typography sx={{ fontWeight: "bold", pb: 2 }} variant="subtitle2">
             {doI18n(
-              `pages:core-client_pdf_publisher:general_setting`,
+              `pages:core-client-pdf_publisher:general_setting`,
               i18nRef.current,
             )}
           </Typography>
@@ -523,7 +523,7 @@ export function PdfPublisher() {
         <Box>
           <Typography sx={{ fontWeight: "bold", pb: 2 }} variant="subtitle2">
             {doI18n(
-              `pages:core-client_pdf_publisher:pdf_sections`,
+              `pages:core-client-pdf_publisher:pdf_sections`,
               i18nRef.current,
             )}
           </Typography>
@@ -580,7 +580,7 @@ export function PdfPublisher() {
                               >
                                 <Typography sx={{ fontWeight: 600 }}>
                                   {doI18n(
-                                    `pages:core-client_pdf_publisher:${w.type}`,
+                                    `pages:core-client-pdf_publisher:${w.type}`,
                                     i18nRef.current,
                                   )}
                                 </Typography>
@@ -588,22 +588,22 @@ export function PdfPublisher() {
                                   <Typography sx={{ color: "text.secondary" }}>
                                     {w.ranges.length}{" "}
                                     {doI18n(
-                                      `pages:core-client_pdf_publisher:books`,
+                                      `pages:core-client-pdf_publisher:books`,
                                       i18nRef.current,
                                     )}{" "}
                                     {doI18n(
-                                      `pages:core-client_pdf_publisher:as`,
+                                      `pages:core-client-pdf_publisher:as`,
                                       i18nRef.current,
                                     )}{" "}
                                     {w.sections.map((s, id) => {
                                       if (id === w.sections.length - 1) {
                                         return `${doI18n(
-                                          `pages:core-client_pdf_publisher:${s.type + "Section"}`,
+                                          `pages:core-client-pdf_publisher:${s.type + "Section"}`,
                                           i18nRef.current,
                                         )}`;
                                       }
                                       return `${doI18n(
-                                        `pages:core-client_pdf_publisher:${s.type + "Section"}`,
+                                        `pages:core-client-pdf_publisher:${s.type + "Section"}`,
                                         i18nRef.current,
                                       )}, `;
                                     })}
@@ -748,12 +748,12 @@ export function PdfPublisher() {
 
               const tooltipTitle = notInViewer
                 ? doI18n(
-                    `pages:core-client_pdf_publisher:print_disabled_not_viewer`,
+                    `pages:core-client-pdf_publisher:print_disabled_not_viewer`,
                     i18nRef.current,
                   )
                 : sectionsHaveIssues
                   ? doI18n(
-                      `pages:core-client_pdf_publisher:print_disabled_sections_issue`,
+                      `pages:core-client-pdf_publisher:print_disabled_sections_issue`,
                       i18nRef.current,
                     )
                   : "";
@@ -798,7 +798,7 @@ export function PdfPublisher() {
                           ) : (
                             <Typography>
                               {doI18n(
-                                `pages:core-client_pdf_publisher:print`,
+                                `pages:core-client-pdf_publisher:print`,
                                 i18nRef.current,
                               )}
                             </Typography>

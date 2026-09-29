@@ -144,14 +144,14 @@ export function ContentDialogue({
   const [active, setActive] = useState(1);
   const steps = [
     wrapperName === "bcvWrapper"
-      ? doI18n("pages:core-client_pdf_publisher:choose_layout", i18nRef.current)
+      ? doI18n("pages:core-client-pdf_publisher:choose_layout", i18nRef.current)
       : doI18n(
-          "pages:core-client_pdf_publisher:choose_layout_free_format",
+          "pages:core-client-pdf_publisher:choose_layout_free_format",
           i18nRef.current,
         ),
-    doI18n("pages:core-client_pdf_publisher:choose_documents", i18nRef.current),
+    doI18n("pages:core-client-pdf_publisher:choose_documents", i18nRef.current),
     doI18n(
-      "pages:core-client_pdf_publisher:configure_section",
+      "pages:core-client-pdf_publisher:configure_section",
       i18nRef.current,
     ),
   ];
@@ -191,7 +191,7 @@ export function ContentDialogue({
         setSummary(summariesResponse.json);
       } else {
         enqueueSnackbar(
-          doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+          doI18n(`pages:core-client-pdf_publisher:errorGet`, i18nRef.current) +
             " /api/burrito/metadata/summaries" +
             `${summariesResponse.status}): ${summariesResponse.error}`,
           { variant: "error" },
@@ -345,11 +345,11 @@ export function ContentDialogue({
         titleLabel={
           type === "edit"
             ? doI18n(
-                "pages:core-client_pdf_publisher:edit_section",
+                "pages:core-client-pdf_publisher:edit_section",
                 i18nRef.current,
               )
             : doI18n(
-                "pages:core-client_pdf_publisher:add_section",
+                "pages:core-client-pdf_publisher:add_section",
                 i18nRef.current,
               )
         }
@@ -393,7 +393,7 @@ export function ContentDialogue({
             }}
             primaryActionKey={
               type === "edit"
-                ? "pages:core-client_pdf_publisher:edit_section"
+                ? "pages:core-client-pdf_publisher:edit_section"
                 : null
             }
             handleCreate={() => {

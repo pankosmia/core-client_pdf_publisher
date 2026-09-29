@@ -253,7 +253,7 @@ export function ImportDocument({
         .catch((error) => {
           enqueueSnackbar(
             `${doI18n(
-              `pages:core-client_pdf_publisher:errorGet`,
+              `pages:core-client-pdf_publisher:errorGet`,
               i18nRef.current,
             )}: ${error.message}`,
             { variant: "error" },
@@ -275,7 +275,7 @@ export function ImportDocument({
         .catch((error) => {
           enqueueSnackbar(
             `${doI18n(
-              `pages:core-client_pdf_publisher:errorGet`,
+              `pages:core-client-pdf_publisher:errorGet`,
               i18nRef.current,
             )}: ${error.message}`,
             { variant: "error" },
@@ -357,13 +357,13 @@ export function ImportDocument({
                 <CloudUpload sx={{ fontSize: 40, color: "text.secondary" }} />
                 <Typography variant="body1">
                   {doI18n(
-                    "pages:core-client_pdf_publisher:dragAndDrop",
+                    "pages:core-client-pdf_publisher:dragAndDrop",
                     i18nRef.current,
                   ).replace("%%DOCTYPE%%", documentType)}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
                   {doI18n(
-                    "pages:core-client_pdf_publisher:singleFile",
+                    "pages:core-client-pdf_publisher:singleFile",
                     i18nRef.current,
                   )}
                 </Typography>
@@ -376,7 +376,7 @@ export function ImportDocument({
               <Divider>
                 <Typography variant="caption" color="text.secondary">
                   {doI18n(
-                    "pages:core-client_pdf_publisher:or",
+                    "pages:core-client-pdf_publisher:or",
                     i18nRef.current,
                   )}
                 </Typography>
@@ -388,7 +388,7 @@ export function ImportDocument({
                 fullWidth
               >
                 {doI18n(
-                  "pages:core-client_pdf_publisher:createMarkdown",
+                  "pages:core-client-pdf_publisher:createMarkdown",
                   i18nRef.current,
                 )}
               </Button>
@@ -436,13 +436,13 @@ export function ImportDocument({
             <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ px: 1 }}>
               <Tab
                 label={doI18n(
-                  "pages:core-client_pdf_publisher:edit",
+                  "pages:core-client-pdf_publisher:edit",
                   i18nRef.current,
                 )}
               />
               <Tab
                 label={doI18n(
-                  "pages:core-client_pdf_publisher:preview",
+                  "pages:core-client-pdf_publisher:preview",
                   i18nRef.current,
                 )}
               />
@@ -467,7 +467,7 @@ export function ImportDocument({
             ) : (
               <Typography variant="body2" color="text.secondary">
                 {doI18n(
-                  "pages:core-client_pdf_publisher:nothingToPreview",
+                  "pages:core-client-pdf_publisher:nothingToPreview",
                   i18nRef.current,
                 )}
               </Typography>
@@ -491,12 +491,12 @@ export function ImportDocument({
             startIcon={<Save />}
             onClick={handleSave}
           >
-            {doI18n("pages:core-client_pdf_publisher:save", i18nRef.current)}
+            {doI18n("pages:core-client-pdf_publisher:save", i18nRef.current)}
           </Button>
 
           <Tooltip
             title={doI18n(
-              "pages:core-client_pdf_publisher:saveRequiredForPrintTooltip",
+              "pages:core-client-pdf_publisher:saveRequiredForPrintTooltip",
               i18nRef.current,
             )}
           >
@@ -512,7 +512,7 @@ export function ImportDocument({
               <InfoOutlined fontSize="small" color="action" />
               <Typography variant="caption" color="text.secondary">
                 {doI18n(
-                  "pages:core-client_pdf_publisher:saveRequiredForPrint",
+                  "pages:core-client-pdf_publisher:saveRequiredForPrint",
                   i18nRef.current,
                 )}
               </Typography>

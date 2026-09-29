@@ -175,7 +175,7 @@ export class obsSection extends Section {
         } else {
           enqueueSnackbar(
             doI18n(
-              `pages:core-client_pdf_publisher:errorGet`,
+              `pages:core-client-pdf_publisher:errorGet`,
               i18nRef.current,
             ) + `/api/burrito/paths/${section.content.obsImg}`,
             `${imgRepoResponse.status}): ${imgRepoResponse.error}`,
@@ -185,7 +185,7 @@ export class obsSection extends Section {
       }
     } else {
       enqueueSnackbar(
-        doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+        doI18n(`pages:core-client-pdf_publisher:errorGet`, i18nRef.current) +
           `/api/burrito/ingredients/raw/${section.content.obs}?ipath=content` +
           `${storiesJsonResponse.status}): ${storiesJsonResponse.error}`,
         { variant: "error" },

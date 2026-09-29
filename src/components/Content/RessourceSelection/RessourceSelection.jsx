@@ -164,7 +164,7 @@ export function RessourceSelection({
         setlang(langs.json[0]);
       } else {
         enqueueSnackbar(
-          doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+          doI18n(`pages:core-client-pdf_publisher:errorGet`, i18nRef.current) +
             " /api/settings/languages" +
             `${langs.status}): ${langs.error}`,
           { variant: "error" },
@@ -278,7 +278,7 @@ export function RessourceSelection({
                           <span
                             style={{ color: "black", marginLeft: 4 }}
                           >{`(${f.nValues[0]} - ${f.nValues[1]} ${doI18n(
-                            `pages:core-client_pdf_publisher:texts`,
+                            `pages:core-client-pdf_publisher:texts`,
                             i18nRef.current,
                           )})`}</span>
                         )}
@@ -383,7 +383,7 @@ export function RessourceSelection({
                       >
                         <Typography>
                           {doI18n(
-                            `pages:core-client_pdf_publisher:add`,
+                            `pages:core-client-pdf_publisher:add`,
                             i18nRef.current,
                           ) + ` ${f.label[lang]}`}
                         </Typography>
@@ -452,7 +452,7 @@ export function RessourceSelection({
                         ) : (
                           <Typography>
                             {doI18n(
-                              `pages:core-client_pdf_publisher:selectRessource`,
+                              `pages:core-client-pdf_publisher:selectRessource`,
                               i18nRef.current,
                             )}
                             {isRequired && (
@@ -552,7 +552,7 @@ export function RessourceSelection({
                                 </Box>
                                 <Typography sx={{ alignContent: "center" }}>
                                   {doI18n(
-                                    `pages:core-client_pdf_publisher:${e.sectionType + "Section"}`,
+                                    `pages:core-client-pdf_publisher:${e.sectionType + "Section"}`,
                                     i18nRef.current,
                                   )}
                                 </Typography>

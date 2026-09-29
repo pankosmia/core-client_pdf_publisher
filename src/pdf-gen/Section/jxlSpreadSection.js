@@ -266,7 +266,7 @@ export class jxlSpreadSection extends Section {
           } else {
             enqueueSnackbar(
               doI18n(
-                `pages:core-client_pdf_publisher:errorGet`,
+                `pages:core-client-pdf_publisher:errorGet`,
                 i18nRef.current,
               ) +
                 `/api/burrito/ingredient/raw/${section.content.glossNotes[0].notes}?ipath=${section.bcvRange}.tsv` +
@@ -277,7 +277,7 @@ export class jxlSpreadSection extends Section {
         } else {
           enqueueSnackbar(
             doI18n(
-              `pages:core-client_pdf_publisher:errorGet`,
+              `pages:core-client-pdf_publisher:errorGet`,
               i18nRef.current,
             ) +
               `/api/burrito/ingredient/raw/${section.content.glossNotes[0].pivot}?ipath=${section.bcvRange}.tsv` +
@@ -466,7 +466,7 @@ export class jxlSpreadSection extends Section {
       });
     } else {
       enqueueSnackbar(
-        doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+        doI18n(`pages:core-client-pdf_publisher:errorGet`, i18nRef.current) +
           `/api/burrito/ingredient/raw/${section.content.jxl}?ipath=${section.bcvRange}.json` +
           `${jsonFileResponse.status}): ${jsonFileResponse.error}`,
         { variant: "error" },

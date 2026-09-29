@@ -88,7 +88,7 @@ export function SelectSection({
     <Box sx={{ mt: 2, p: 2 }}>
       {wrapperName != "markdownPdfWrapper" && (
         <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-          {doI18n("pages:core-client_pdf_publisher:layouts", i18nRef.current)}
+          {doI18n("pages:core-client-pdf_publisher:layouts", i18nRef.current)}
         </Typography>
       )}
       {/* Helper text shown only in multi-select mode, explaining that order matters */}
@@ -98,19 +98,19 @@ export function SelectSection({
           <Box sx={{ display: "flex", flexDirection: "row", gap: "0.3em" }}>
             <Typography>
               {doI18n(
-                "pages:core-client_pdf_publisher:multipleSelectionDescription1",
+                "pages:core-client-pdf_publisher:multipleSelectionDescription1",
                 i18nRef.current,
               )}
             </Typography>
             <Typography sx={{ fontWeight: "bold" }}>
               {doI18n(
-                "pages:core-client_pdf_publisher:multipleSelectionDescription2",
+                "pages:core-client-pdf_publisher:multipleSelectionDescription2",
                 i18nRef.current,
               )}
             </Typography>
             <Typography>
               {doI18n(
-                "pages:core-client_pdf_publisher:multipleSelectionDescription3",
+                "pages:core-client-pdf_publisher:multipleSelectionDescription3",
                 i18nRef.current,
               )}
             </Typography>
@@ -126,7 +126,7 @@ export function SelectSection({
               {/* Category heading (e.g. "Text sections", "Media sections", etc.) */}
               <Typography variant="body1">
                 {doI18n(
-                  `pages:core-client_pdf_publisher:${name}`,
+                  `pages:core-client-pdf_publisher:${name}`,
                   i18nRef.current,
                 )}
               </Typography>
@@ -225,7 +225,7 @@ export function SelectSection({
                           {/* Localized label for this section type */}
                           <Typography sx={{ userSelect: "none" }}>
                             {doI18n(
-                              `pages:core-client_pdf_publisher:${section}`,
+                              `pages:core-client-pdf_publisher:${section}`,
                               i18nRef.current,
                             )}
                           </Typography>

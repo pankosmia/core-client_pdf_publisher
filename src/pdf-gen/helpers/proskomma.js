@@ -46,7 +46,7 @@ export const pkWithDocs = async (
         pk.importDocument({ lang, abbr }, "usfm", contentString.text);
       } else {
         enqueueSnackbar(
-          doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+          doI18n(`pages:core-client-pdf_publisher:errorGet`, i18nRef.current) +
             `/api/burrito/ingredient/raw/${docSpec.path}?ipath=${matchingBookUsfm}.usfm` +
             `${contentString.status}): ${contentString.error}`,
           { variant: "error" },
@@ -54,7 +54,7 @@ export const pkWithDocs = async (
       }
     } else {
       enqueueSnackbar(
-        doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+        doI18n(`pages:core-client-pdf_publisher:errorGet`, i18nRef.current) +
           ` /api/burrito/metadata/summary/${docSpec.path}`,
         `${summary.status}): ${summary.error}`,
         { variant: "error" },

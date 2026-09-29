@@ -136,7 +136,7 @@ export class markdownSection extends Section {
       });
     } else {
       enqueueSnackbar(
-        doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+        doI18n(`pages:core-client-pdf_publisher:errorGet`, i18nRef.current) +
           `/api/burrito/ingredient/bytes/${section.content.md.src}?ipath=${section.content.md.name}` +
           `${mkrText.status}): ${mkrText.error}`,
         { variant: "error" },

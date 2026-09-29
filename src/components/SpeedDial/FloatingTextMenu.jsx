@@ -58,7 +58,7 @@ export default function FloatingTextMenu({ i18nRef, setWrappers }) {
             {action.name === "obsWrapper" ? (
               <Tooltip
                 title={doI18n(
-                  "pages:core-client_pdf_publisher:not_yet_implemented",
+                  "pages:core-client-pdf_publisher:not_yet_implemented",
                   i18nRef.current,
                 )}
                 placement="right"
@@ -77,7 +77,7 @@ export default function FloatingTextMenu({ i18nRef, setWrappers }) {
                     }}
                   >
                     {doI18n(
-                      `pages:core-client_pdf_publisher:${action.name}`,
+                      `pages:core-client-pdf_publisher:${action.name}`,
                       i18nRef.current,
                     )}
                   </MenuItem>
@@ -96,7 +96,7 @@ export default function FloatingTextMenu({ i18nRef, setWrappers }) {
                 }}
               >
                 {doI18n(
-                  `pages:core-client_pdf_publisher:${action.name}`,
+                  `pages:core-client-pdf_publisher:${action.name}`,
                   i18nRef.current,
                 )}
               </MenuItem>

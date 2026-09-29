@@ -21,7 +21,7 @@ const getObsNotes = async (notesPath, notesRef, i18nRef) => {
       .join("\n");
   } else {
     enqueueSnackbar(
-      doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+      doI18n(`pages:core-client-pdf_publisher:errorGet`, i18nRef.current) +
         `/api/burrito/ingredient/raw/${notesPath}?ipath=${"OBS.tsv"}` +
         `${obsResponse.status}): ${obsResponse.error}`,
       { variant: "error" },
@@ -259,7 +259,7 @@ export class obsPlusNotesSection extends Section {
         } else {
           enqueueSnackbar(
             doI18n(
-              `pages:core-client_pdf_publisher:errorGet`,
+              `pages:core-client-pdf_publisher:errorGet`,
               i18nRef.current,
             ) + `/api/burrito/paths/${section.content.obsImg}`,
             `${imgRepoResponse.status}): ${imgRepoResponse.error}`,
@@ -269,7 +269,7 @@ export class obsPlusNotesSection extends Section {
       }
     } else {
       enqueueSnackbar(
-        doI18n(`pages:core-client_pdf_publisher:errorGet`, i18nRef.current) +
+        doI18n(`pages:core-client-pdf_publisher:errorGet`, i18nRef.current) +
           `/api/burrito/ingredient/raw/${section.content.jxl}?ipath=${section.bcvRange}.json` +
           `${storiesJsonResponse.status}): ${storiesJsonResponse.error}`,
         { variant: "error" },

@@ -87,7 +87,7 @@ export function BRangesPicker({ bRanges, setBRanges, currentSections }) {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2, p: 2 }}>
       <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-        {doI18n("pages:core-client_pdf_publisher:book_plural", i18nRef.current)}
+        {doI18n("pages:core-client-pdf_publisher:book_plural", i18nRef.current)}
       </Typography>
       <Box display="flex" gap={1} mb={2}>
         {Object.keys(BOOK_GROUPS).map((groupKey) => (
