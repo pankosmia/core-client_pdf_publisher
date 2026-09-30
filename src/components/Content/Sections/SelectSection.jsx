@@ -131,7 +131,14 @@ export function SelectSection({
                 )}
               </Typography>
 
-              <Box sx={{ display: "flex", flexDirection: "row", margin: 2 }}>
+              <Box
+                sx={{
+                  flexDirection: "row",
+                  marginTop: 1,
+                  marginBottom: 2,
+                  display: "flow-root",
+                }}
+              >
                 {/* One clickable card per section type in this category */}
                 {sections.map((section, id) => (
                   <Badge
@@ -156,7 +163,8 @@ export function SelectSection({
                       sx={{
                         width: 128,
                         height: 128,
-                        mr: 2,
+                        mr: 1,
+                        mt: 1,
                         cursor: "pointer",
                         transition: "all 0.2s ease",
 

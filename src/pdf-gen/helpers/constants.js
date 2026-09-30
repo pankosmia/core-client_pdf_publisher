@@ -35,14 +35,15 @@ export const constants = {
 export const sectionsTypes = {
   markdownPdfWrapper: { free_format: ["pdfSection", "markdownSection"] },
   bcvWrapper: {
-    "one-page-bible": [
+    "biblical-content": [
       "bcvBibleSection",
       "jxlSimpleSection",
       "paraBibleSection",
       "twoColumnSection",
+      "fourColumnSpreadSection",
+      "jxlSpreadSection",
     ],
     "one-page-notes": ["bookNoteSection", "biblePlusNotesSection"],
-    "double-page": ["fourColumnSpreadSection", "jxlSpreadSection"],
   },
   obsWrapper: { obs: ["obsSection", "obsPlusNotesSection"] },
 };
