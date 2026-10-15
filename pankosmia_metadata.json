@@ -12,7 +12,7 @@
       "edit": {
         "doc": "main page for pdf print",
         "label": "pages:core-client-workspace:main",
-        "url": ""
+        "url": "core-client_pdf_publisher#"
       }
     }
   },
