@@ -9,11 +9,13 @@
   },
   "endpoints": {
     "x-printspec": {
-      "edit": {
-        "doc": "main page for pdf print",
-        "label": "pages:core-client-workspace:main",
-        "url": "core-client_pdf_publisher#"
-      }
+      "edit": [
+        {
+          "doc": "main page for pdf print",
+          "label": "pages:core-client-workspace:main",
+          "url": "core-client_pdf_publisher#"
+        }
+      ]
     }
   },
   "i18n": {
