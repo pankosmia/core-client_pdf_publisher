@@ -38,6 +38,7 @@ import {
   debugContext,
   PanDialog,
   PanDialogActions,
+  AssetDownloadDialog,
 } from "pankosmia-rcl";
 import { ContentDialogue } from "../components/Content/ContentDialogue";
 import { Delete, DragIndicator, ExpandMore, Save } from "@mui/icons-material";
@@ -382,30 +383,12 @@ export function PdfPublisher() {
   };
   return (
     <Box>
-      <PanDialog
-        titleLabel={doI18n(
-          `pages:core-client_pdf_publisher:Firefox_not_installed`,
-          i18nRef.current,
-        )}
+      <AssetDownloadDialog
         isOpen={firefoxModalOpen}
-        closeFn={() => setFirefoxModalOpen(false)}
-        size="sm"
-      >
-        <DialogContent>
-          <DialogContentText sx={{ mb: 2 }}>
-            {doI18n(
-              `pages:core-client_pdf_publisher:need_firefox`,
-              i18nRef.current,
-            )}
-          </DialogContentText>
-          <FirefoxInstaller />
-        </DialogContent>
-        <PanDialogActions
-          onlyCloseButton
-          closeFn={() => handleClose()}
-          closeLabel="Close"
-        />
-      </PanDialog>
+        closeFn={handleClose}
+        actionButtonPlugin={handleClose}
+        asset={"firefox"}
+      />
       <Header
         titleKey={`${doI18n("pages:core-client_pdf_publisher:title", i18nRef.current)}`}
         currentId="core-contenthandler_text_translation"
