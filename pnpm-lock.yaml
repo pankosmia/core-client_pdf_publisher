@@ -38,8 +38,8 @@ importers:
         specifier: 0.0.5
         version: 0.0.5
       pankosmia-rcl:
-        specifier: 0.8.14
-        version: 0.8.14(1bfbbf07b38d15b3d4887a0aa062241b)
+        specifier: 0.8.18
+        version: 0.8.18(1bfbbf07b38d15b3d4887a0aa062241b)
       pdf-lib:
         specifier: ^1.17.1
         version: 1.17.1
@@ -5151,10 +5151,10 @@ packages:
       }
     engines: { node: ">=24", pnpm: 11.20.0 }
 
-  pankosmia-rcl@0.8.14:
+  pankosmia-rcl@0.8.18:
     resolution:
       {
-        integrity: sha512-R77Q6mK7viY94goaYV4EXghRjZKdnf9W6WK6FGoNovPvbMQz7VekEHHYL0o9fKzsdPaSgfBDKjAh5Z+oGojWGA==,
+        integrity: sha512-LY6h1vdPBqA/7zASNtP8ZEQ3riSB3lXWJsaTUUWe4le0KgF2tUDsybfqmMrqOry3MrMZStyA2ceaU8YXq15ZjQ==,
       }
     engines: { node: ">=24", pnpm: 11.20.0 }
     peerDependencies:
@@ -9972,7 +9972,7 @@ snapshots:
 
   pankosmia-lib@0.0.5: {}
 
-  pankosmia-rcl@0.8.14(1bfbbf07b38d15b3d4887a0aa062241b):
+  pankosmia-rcl@0.8.18(1bfbbf07b38d15b3d4887a0aa062241b):
     dependencies:
       "@emotion/cache": 11.14.0
       "@emotion/react": 11.14.0(@types/react@19.2.18)(react@19.2.8)(supports-color@7.2.0)
